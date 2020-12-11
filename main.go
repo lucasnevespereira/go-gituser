@@ -1,33 +1,37 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"go-gituser/helpers"
+	"go-gituser/models"
 	"os"
 	"strings"
 )
 
-var (
-	errInvalidArguments = errors.New("Invalid Arguments 🙁")
-)
-
 func main() {
+
 	if len(os.Args) != 2 {
-		helpers.PrintError(errInvalidArguments)
+		helpers.PrintErrorInvalidArguments()
 	}
 
 	argValue := strings.ToUpper(os.Args[1])
+	gitAccount := models.Account{}
 
 	switch argValue {
 	case "WORK":
-		fmt.Println("Work mode")
+		gitAccount.SetWorkMode()
+		gitUsername := gitAccount.GetAccountUsername()
+		gitEmail := gitAccount.GetAccountEmail()
+		helpers.RunModeConfig(gitUsername, gitEmail)
 	case "SCHOOL":
-		fmt.Println("School mode")
+		gitAccount.SetSchoolMode()
+		gitUsername := gitAccount.GetAccountUsername()
+		gitEmail := gitAccount.GetAccountEmail()
+		helpers.RunModeConfig(gitUsername, gitEmail)
 	case "PERSONAL":
-		fmt.Println("Personal mode")
-	default:
-		fmt.Println("Personal Mode")
+		gitAccount.SetPersonalMode()
+		gitUsername := gitAccount.GetAccountUsername()
+		gitEmail := gitAccount.GetAccountEmail()
+		helpers.RunModeConfig(gitUsername, gitEmail)
 	}
 
 }

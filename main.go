@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"go-gituser/helpers"
 	"go-gituser/models"
@@ -14,31 +15,26 @@ func main() {
 		helpers.PrintErrorInvalidArguments()
 	}
 
-	help := flag.Bool("help", false, "Print usage information")
+	help := flag.Bool("help", false, "Print informations about the program")
+
 	flag.Parse()
+
 	if *help {
 		helpers.PrintHelp()
 	}
 
 	argValue := strings.ToUpper(os.Args[1])
 	gitAccount := models.Account{}
+	data, _ := helpers.GetDataFromJSON("data/config.json")
+	_ = json.Unmarshal(data, &gitAccount)
 
 	switch argValue {
 	case "WORK":
-		gitAccount.SetWorkMode()
-		gitUsername := gitAccount.GetAccountUsername()
-		gitEmail := gitAccount.GetAccountEmail()
-		helpers.RunModeConfig(gitUsername, gitEmail)
+		helpers.RunModeConfig(gitAccount.WorkUsername, gitAccount.WorkEmail)
 	case "SCHOOL":
-		gitAccount.SetSchoolMode()
-		gitUsername := gitAccount.GetAccountUsername()
-		gitEmail := gitAccount.GetAccountEmail()
-		helpers.RunModeConfig(gitUsername, gitEmail)
+		helpers.RunModeConfig(gitAccount.SchoolUsername, gitAccount.SchoolEmail)
 	case "PERSONAL":
-		gitAccount.SetPersonalMode()
-		gitUsername := gitAccount.GetAccountUsername()
-		gitEmail := gitAccount.GetAccountEmail()
-		helpers.RunModeConfig(gitUsername, gitEmail)
+		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonaEmail)
 	}
 
 }

@@ -3,15 +3,17 @@
 This programs automates the git config command. <br>
 So you can change between git users accouts easily.
 
+![](demo.gif)
+
 #### Modes
 
 There is currently 3 modes in this script:
 
-- "work" : for work related git account/
+- "work" : for work related git account.
 - "school" : for school related git account.
 - "personal" : for personal relared git account.
 
-### Configuration
+#### Configuration
 
 To add your respective accounts, you need to fill out the `data/config.json` file.
 
@@ -53,7 +55,7 @@ Examples:
 ./gituser personal
 ```
 
-### Help
+#### Help
 
 There is also a flag `-help` that will print some information about the program.
 

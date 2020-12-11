@@ -5,7 +5,7 @@ So you can change between git users accouts easily.
 
 ## Usage
 
-Compile by running `go build -o git`
+Compile by running `go build -o gituser`
 
 #### Modes
 
@@ -18,19 +18,19 @@ There is currently 3 modes in this script:
 Call executable file with mode
 
 ```
-./git <mode>
+./gituser <mode>
 ```
 
 Examples:
 
 ```
-./git work
+./gituser work
 ```
 
 ```
-./git school
+./gituser school
 ```
 
 ```
-./git personal
+./gituser personal
 ```

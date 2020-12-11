@@ -7,10 +7,16 @@ import (
 )
 
 var (
-	errInvalidArguments = errors.New("Invalid Arguments")
+	errInvalidArguments = errors.New("Invalid Arguments 🙁")
+	errExecutingMode    = errors.New("Something went wrong executing this mode 😭")
 )
 
-// PrintError is used to handle error logs
-func PrintError(err error) {
-	fmt.Fprintf(os.Stderr, "error %v \n", err)
+// PrintErrorInvalidArguments is used to handle error logs for invalid arguments
+func PrintErrorInvalidArguments() {
+	fmt.Fprintf(os.Stderr, "error %v \n", errInvalidArguments)
+}
+
+// PrintErrorExecutingMode is used to handle error logs after execution
+func PrintErrorExecutingMode() {
+	fmt.Fprintf(os.Stderr, "error %v \n", errExecutingMode)
 }

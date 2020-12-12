@@ -70,6 +70,11 @@ There is also a flag `--help` that will print some information about the program
 
 `./gituser --help`
 
+### Additional Information
+
+To call the executable globally in your machine you can add the program to your PATH. (MACOS)<br>
+[See Details here](MACOS_PATH.md)
+
 <hr>
 
 ## License

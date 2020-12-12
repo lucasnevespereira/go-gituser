@@ -20,16 +20,8 @@ func main() {
 		helpers.PrintErrorInvalidArguments()
 	}
 
-	help := flag.Bool("help", false, "Print informations about the program")
-
-	flag.Parse()
-
-	if *help {
-		helpers.PrintHelp()
-		os.Exit(1)
-	}
-
 	argValue := strings.ToUpper(os.Args[1])
+
 	gitAccount := models.Account{}
 
 	configFilePath := os.Getenv("PATH_TO_GITUSER_CONFIG")
@@ -40,13 +32,29 @@ func main() {
 	data, _ := helpers.GetDataFromJSON(configFilePath)
 	_ = json.Unmarshal(data, &gitAccount)
 
+	// Flags
+	help := flag.Bool("help", false, "Print informations about the program")
+	info := flag.Bool("info", false, "Print informations about the accounts")
+
+	flag.Parse()
+
+	if *help {
+		helpers.PrintHelp()
+		os.Exit(1)
+	}
+
+	if *info {
+		helpers.ReadAccountsData(gitAccount)
+		os.Exit(1)
+	}
+
 	switch argValue {
 	case "WORK":
 		helpers.RunModeConfig(gitAccount.WorkUsername, gitAccount.WorkEmail)
 	case "SCHOOL":
 		helpers.RunModeConfig(gitAccount.SchoolUsername, gitAccount.SchoolEmail)
 	case "PERSONAL":
-		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonaEmail)
+		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonalEmail)
 	}
 
 }

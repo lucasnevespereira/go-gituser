@@ -13,6 +13,7 @@ func main() {
 
 	if len(os.Args) < 2 {
 		helpers.PrintHelp()
+		os.Exit(1)
 	}
 
 	if len(os.Args) > 2 {
@@ -25,6 +26,7 @@ func main() {
 
 	if *help {
 		helpers.PrintHelp()
+		os.Exit(1)
 	}
 
 	argValue := strings.ToUpper(os.Args[1])

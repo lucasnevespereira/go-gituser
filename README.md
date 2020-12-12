@@ -38,6 +38,11 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 ```
 
+### Install Globally
+
+It is possible to set up the program to run globally in your machine (MacOS).<br>
+[See Details here](MACOS_PATH.md)
+
 ## Usage
 
 <i>Attention: </i> Make sure you've entered your information in `config.json` before compile program
@@ -73,11 +78,6 @@ There is a flag `--help` that will print some information about the program.
 There is a flag `--info` that will print some information about the accounts.
 
 `./gituser --info`
-
-### Additional Information
-
-To call the executable globally in your machine you can add the program to your PATH. (MACOS)<br>
-[See Details here](MACOS_PATH.md)
 
 <hr>
 

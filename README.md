@@ -1,9 +1,18 @@
 # Go-gituser
 
-This programs automates the git config command. <br>
-So you can change between git users accouts easily.
+This program is a Golang Command Line Tool that helps switch between Git User Accounts easily.
 
 ![](demo.gif)
+
+It automates the following commands:
+
+```
+git config --global user.name "yourUsername"
+```
+
+```
+git config --global user.email "yourEmail"
+```
 
 #### Modes
 
@@ -57,10 +66,12 @@ Examples:
 
 #### Help
 
-There is also a flag `-help` that will print some information about the program.
+There is also a flag `--help` that will print some information about the program.
 
-`./gituser -help`
+`./gituser --help`
 
-### LICENSE
+<hr>
+
+## License
 
 This project is under [MIT LICENSE](LICENSE)

@@ -11,7 +11,11 @@ import (
 
 func main() {
 
-	if len(os.Args) != 2 {
+	if len(os.Args) < 2 {
+		helpers.PrintHelp()
+	}
+
+	if len(os.Args) > 2 {
 		helpers.PrintErrorInvalidArguments()
 	}
 

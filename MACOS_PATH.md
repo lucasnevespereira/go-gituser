@@ -1,17 +1,19 @@
 ## MacOS PATH
 
-To add `./gituser` to your path on <b>MacOS</b> do the following.
+The goal of adding the program to the <b>PATH</b> is to be able to call `gituser` globally in your machine
 
-Go to `Users/YourName` you can use this shortcut `~`
+So to add the program to your path on <b>MacOS</b> do the following.
 
-```
-cd ~
-```
-
-Create a directory for your personal scripts
+Go to the directory where you keep the program
 
 ```
-mkdir myScripts
+cd Users/lucas/projects/go-gituser/
+```
+
+If you have not build the program build it
+
+```
+go build -o temp
 ```
 
 Edit your `.bash_profile` or `.zshrc` if you use zsh
@@ -23,17 +25,11 @@ nano ~/.bash_profile
 Add the following to this file
 
 ```
-# For Personal Scripts
-export PATH=~/myScripts:$PATH
+# GitUser program
+export PATH=Users/lucas/projects/go-gituser/:$PATH
 ```
 
 Save the file and exit.
-
-Now all you have to do is copy the `gituser` program to your `myScripts` folder.
-
-```
-cp yourFolderPath/gituser ~/myScripts/
-```
 
 Reopen a terminal window or source your bash_profile
 
@@ -42,3 +38,11 @@ source ~/.bash_profile
 ```
 
 And now you can call `gituser` globally 😀
+
+<hr>
+
+#### Tips
+
+The command `~/` is equivalent to `Users/lucas`, so you can use it instead
+
+`cd ~/`

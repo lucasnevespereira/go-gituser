@@ -7,13 +7,13 @@ So to add the program to your path on <b>MacOS</b> do the following.
 Go to the directory where you keep the program
 
 ```
-cd Users/lucas/projects/go-gituser/
+cd ~/projects/go-gituser/
 ```
 
 If you have not build the program build it
 
 ```
-go build -o temp
+go build -o gituser
 ```
 
 Edit your `.bash_profile` or `.zshrc` if you use zsh
@@ -26,7 +26,8 @@ Add the following to this file
 
 ```
 # GitUser program
-export PATH=Users/lucas/projects/go-gituser/:$PATH
+export PATH=~/projects/go-gituser/:$PATH
+export PATH_TO_GITUSER_CONFIG=~/projects/go-gituser/data/config.json
 ```
 
 Save the file and exit.
@@ -43,6 +44,10 @@ And now you can call `gituser` globally 😀
 
 #### Tips
 
-The command `~/` is equivalent to `Users/lucas`, so you can use it instead
+The command `~/` is equivalent to `Users/yourname`, so you can use both.
 
 `cd ~/`
+
+or
+
+`cd Users/yourname`

@@ -31,7 +31,13 @@ func main() {
 
 	argValue := strings.ToUpper(os.Args[1])
 	gitAccount := models.Account{}
-	data, _ := helpers.GetDataFromJSON("data/config.json")
+
+	configFilePath := os.Getenv("PATH_TO_GITUSER_CONFIG")
+	if configFilePath == "" {
+		configFilePath = "data/config.json"
+	}
+
+	data, _ := helpers.GetDataFromJSON(configFilePath)
 	_ = json.Unmarshal(data, &gitAccount)
 
 	switch argValue {

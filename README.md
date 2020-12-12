@@ -60,3 +60,7 @@ Examples:
 There is also a flag `-help` that will print some information about the program.
 
 `./gituser -help`
+
+### LICENSE
+
+This project is under [MIT LICENSE](LICENSE)

@@ -17,4 +17,8 @@ func PrintHelp() {
 	fmt.Println("")
 	fmt.Println(" ./gituser <mode>")
 	fmt.Println("")
+	fmt.Println("Help Manual:")
+	fmt.Println(" ./gituser --help")
+	fmt.Println("")
+
 }

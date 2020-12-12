@@ -64,11 +64,15 @@ Examples:
 ./gituser personal
 ```
 
-#### Help
+#### Flags
 
-There is also a flag `--help` that will print some information about the program.
+There is a flag `--help` that will print some information about the program.
 
 `./gituser --help`
+
+There is a flag `--info` that will print some information about the accounts.
+
+`./gituser --info`
 
 ### Additional Information
 

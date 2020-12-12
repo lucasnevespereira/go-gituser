@@ -18,9 +18,9 @@ git config --global user.email "yourEmail"
 
 There is currently 3 modes in this script:
 
-- "work" : for work related git account.
-- "school" : for school related git account.
-- "personal" : for personal relared git account.
+- "work" : for a work related git account.
+- "school" : for a school related git account.
+- "personal" : for a personal related git account.
 
 #### Configuration
 

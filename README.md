@@ -1,4 +1,6 @@
-# Go-gituser
+<img src="inline-logo@2x.png" alt="logo" width="200" />
+
+<hr>
 
 This program is a Golang Command Line Tool that helps switch between Git User Accounts easily.
 

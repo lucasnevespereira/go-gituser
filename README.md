@@ -2,7 +2,11 @@
 
 <hr>
 
-This program is a Golang Command Line Tool that helps switch between Git User Accounts easily.
+## Overview
+
+User of multiple git accounts, in order to meet my need to switch regularly between these accounts (student, professional, personal), I developed an open source cli (a command line interface) in Golang.
+
+This program helps switch between different git user accounts easily.
 
 ![](demo.gif)
 

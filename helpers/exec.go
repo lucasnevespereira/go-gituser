@@ -18,7 +18,7 @@ func execGitConfigName(name string) {
 	if err != nil {
 		PrintErrorExecutingMode()
 	}
-	fmt.Println(name + " was set as username 👤")
+	fmt.Println("👤 " + name + " was set as username")
 }
 
 func execGitConfigEmail(email string) {
@@ -28,5 +28,5 @@ func execGitConfigEmail(email string) {
 	if err != nil {
 		PrintErrorExecutingMode()
 	}
-	fmt.Println(email + " was set as email 📧")
+	fmt.Println("📧 " + email + " was set as email")
 }

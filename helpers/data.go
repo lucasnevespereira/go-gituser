@@ -19,16 +19,29 @@ func GetDataFromJSON(filename string) ([]byte, error) {
 func ReadAccountsData(account models.Account) {
 	fmt.Println("Hello, this is your accounts data 🧑🏻‍💻")
 	fmt.Println("")
-	fmt.Println("Personal Git Account :")
-	fmt.Printf("Username: %v\n", account.PersonalUsername)
-	fmt.Printf("Email: %v\n", account.PersonalEmail)
+	if account.PersonalUsername == "" {
+		fmt.Println("You have no personal account defined !")
+	} else {
+		fmt.Println("[🏠] Personal Git Account :")
+		fmt.Printf("Username: %v\n", account.PersonalUsername)
+		fmt.Printf("Email: %v\n", account.PersonalEmail)
+	}
 	fmt.Println("")
-	fmt.Println("School Git Account :")
-	fmt.Printf("Username: %v\n", account.SchoolUsername)
-	fmt.Printf("Email: %v\n", account.SchoolEmail)
+	if account.SchoolUsername == "" {
+		fmt.Println("You have no school account defined !")
+	} else {
+		fmt.Println("[📚] School Git Account :")
+		fmt.Printf("Username: %v\n", account.SchoolUsername)
+		fmt.Printf("Email: %v\n", account.SchoolEmail)
+	}
 	fmt.Println("")
-	fmt.Println("Work Git Account :")
-	fmt.Printf("Username: %v\n", account.WorkUsername)
-	fmt.Printf("Email: %v\n", account.WorkUsername)
+	if account.WorkUsername == "" {
+		fmt.Println("You have no work account defined !")
+	} else {
+		fmt.Println("[💻] Work Git Account :")
+		fmt.Printf("Username: %v\n", account.WorkUsername)
+		fmt.Printf("Email: %v\n", account.WorkUsername)
+	}
 	fmt.Println("")
+
 }

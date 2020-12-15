@@ -22,9 +22,9 @@ git config --global user.email "yourEmail"
 
 There is currently 3 modes in this script:
 
-- "work" : for a work related git account.
-- "school" : for a school related git account.
-- "personal" : for a personal related git account.
+- 💻 <b>work</b> : for a work related git account.
+- 📚 <b>school</b> : for a school related git account.
+- 🏠 <b>personal</b> : for a personal related git account.
 
 ## How to install
 
@@ -63,7 +63,7 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 ### Install Globally
 
 Set up the program to run globally on your machine (MacOs). <br>
-<i>Other OS coming soon..</i>
+<em><i>Other OS coming soon..</i></em>
 
 <!--
 [Install for MacOS](MACOS_PATH.md) </br>
@@ -75,13 +75,13 @@ To add the program to your path on <b>MacOS</b> do the following:
 
 Go to the directory where you keep the program
 
-<small>Example: </small>
+<em>Example: </em>
 
 ```
 cd ~/projects/go-gituser/
 ```
 
-If you have not build the program build it
+You can compile your program now or later, by running :
 
 ```
 go build -o gituser
@@ -93,9 +93,9 @@ Edit your `.bash_profile` or `.zshrc` if you use zsh
 nano ~/.bash_profile
 ```
 
-Add the path of your project and the path of your `data/config.json`
+Add the path of this project (go-gituser) and the path of `data/config.json`
 
-<small>Example: </small>
+<em>Example: </em>
 
 ```
 # GitUser program

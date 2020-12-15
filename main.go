@@ -51,10 +51,22 @@ func main() {
 
 	switch argValue {
 	case "WORK":
+		if gitAccount.WorkUsername == "" {
+			helpers.PrintErrorReadingAccount("work")
+			os.Exit(1)
+		}
 		helpers.RunModeConfig(gitAccount.WorkUsername, gitAccount.WorkEmail)
 	case "SCHOOL":
+		if gitAccount.SchoolUsername == "" {
+			helpers.PrintErrorReadingAccount("school")
+			os.Exit(1)
+		}
 		helpers.RunModeConfig(gitAccount.SchoolUsername, gitAccount.SchoolEmail)
 	case "PERSONAL":
+		if gitAccount.PersonalUsername == "" {
+			helpers.PrintErrorReadingAccount("personal")
+			os.Exit(1)
+		}
 		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonalEmail)
 	}
 

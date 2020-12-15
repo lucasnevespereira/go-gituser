@@ -93,7 +93,7 @@ Edit your `.bash_profile` or `.zshrc` if you use zsh
 nano ~/.bash_profile
 ```
 
-Add the path of this project (go-gituser) and the path of `data/config.json`
+Add the path of <b>this project</b> (go-gituser) and the path of `data/config.json`
 
 <em>Example: </em>
 

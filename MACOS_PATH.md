@@ -6,6 +6,8 @@ So to add the program to your path on <b>MacOS</b> do the following.
 
 Go to the directory where you keep the program
 
+Example:
+
 ```
 cd ~/projects/go-gituser/
 ```
@@ -22,7 +24,7 @@ Edit your `.bash_profile` or `.zshrc` if you use zsh
 nano ~/.bash_profile
 ```
 
-Add the following to this file
+Add the path of your project and the path of your `data/config.json`
 
 ```
 # GitUser program

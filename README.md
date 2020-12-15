@@ -62,19 +62,20 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 ### Install Globally
 
-Set up the program to run globally on your machine.<br>
+Set up the program to run globally on your machine (MacOs). <br>
+<i>Other OS coming soon..</i>
 
 <!--
 [Install for MacOS](MACOS_PATH.md) </br>
 Other OS - coming soon.. -->
 
-The goal of adding the program to the <b>PATH</b> is to be able to call `gituser` globally in your machine
+The goal of adding the program to the <b>PATH</b> is to be able to call `gituser` globally in your machine.
 
-So to add the program to your path on <b>MacOS</b> do the following.
+To add the program to your path on <b>MacOS</b> do the following:
 
 Go to the directory where you keep the program
 
-Example:
+<small>Example: </small>
 
 ```
 cd ~/projects/go-gituser/
@@ -93,6 +94,8 @@ nano ~/.bash_profile
 ```
 
 Add the path of your project and the path of your `data/config.json`
+
+<small>Example: </small>
 
 ```
 # GitUser program

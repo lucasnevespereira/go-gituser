@@ -26,7 +26,25 @@ There is currently 3 modes in this script:
 - "school" : for a school related git account.
 - "personal" : for a personal related git account.
 
-#### Configuration
+## How to install
+
+### Prerequesites
+
+At this moment to use this program you need to have `go`.
+
+Install with Homebrew
+
+```
+brew update
+```
+
+```
+brew install go
+```
+
+or visit https://golang.org/doc/install
+
+### Add your git data
 
 To add your respective accounts, you need to fill out the `data/config.json` file.
 
@@ -42,23 +60,12 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 ```
 
-### Prerequesites
-At this moment to install this program you need to have `go` installed
-
-```
-brew update
-```
-
-```
-brew install go
-```
-
-or visit https://golang.org/doc/install
-
 ### Install Globally
 
-It is possible to set up the program to run globally in your machine (MacOS).<br>
-[See Details here](MACOS_PATH.md)
+Set up the program to run globally on your machine.<br>
+
+[Install for MacOS](MACOS_PATH.md) </br>
+Other OS - coming soon..
 
 ## Usage
 
@@ -69,21 +76,21 @@ Compile by running `go build -o gituser`
 Call executable file with mode
 
 ```
-./gituser <mode>
+gituser <mode>
 ```
 
 Examples:
 
 ```
-./gituser work
+gituser work
 ```
 
 ```
-./gituser school
+gituser school
 ```
 
 ```
-./gituser personal
+gituser personal
 ```
 
 #### Flags

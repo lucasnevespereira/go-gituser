@@ -42,6 +42,19 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 ```
 
+### Prerequesites
+At this moment to install this program you need to have `go` installed
+
+```
+brew update
+```
+
+```
+brew install go
+```
+
+or visit https://golang.org/doc/install
+
 ### Install Globally
 
 It is possible to set up the program to run globally in your machine (MacOS).<br>

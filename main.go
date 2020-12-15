@@ -18,6 +18,7 @@ func main() {
 
 	if len(os.Args) > 2 {
 		helpers.PrintErrorInvalidArguments()
+		os.Exit(1)
 	}
 
 	argValue := strings.ToUpper(os.Args[1])

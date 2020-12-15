@@ -64,8 +64,51 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 Set up the program to run globally on your machine.<br>
 
+<!--
 [Install for MacOS](MACOS_PATH.md) </br>
-Other OS - coming soon..
+Other OS - coming soon.. -->
+
+The goal of adding the program to the <b>PATH</b> is to be able to call `gituser` globally in your machine
+
+So to add the program to your path on <b>MacOS</b> do the following.
+
+Go to the directory where you keep the program
+
+Example:
+
+```
+cd ~/projects/go-gituser/
+```
+
+If you have not build the program build it
+
+```
+go build -o gituser
+```
+
+Edit your `.bash_profile` or `.zshrc` if you use zsh
+
+```
+nano ~/.bash_profile
+```
+
+Add the path of your project and the path of your `data/config.json`
+
+```
+# GitUser program
+export PATH=~/projects/go-gituser/:$PATH
+export PATH_TO_GITUSER_CONFIG=~/projects/go-gituser/data/config.json
+```
+
+Save the file and exit.
+
+Reopen a terminal window or source your bash_profile
+
+```
+source ~/.bash_profile
+```
+
+And now you can call `gituser` globally 😀
 
 ## Usage
 
@@ -95,13 +138,13 @@ gituser personal
 
 #### Flags
 
-There is a flag `--help` that will print some information about the program.
+The flag `--help` will print some information about the program.
 
-`./gituser --help`
+`gituser --help`
 
-There is a flag `--info` that will print some information about the accounts.
+The flag `--info` that will print some information about the accounts.
 
-`./gituser --info`
+`gituser --info`
 
 <hr>
 

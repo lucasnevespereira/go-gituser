@@ -6,6 +6,8 @@ User of multiple git accounts, in order to meet my need to switch regularly betw
 
 This program helps switch between different git user accounts easily.
 
+![](demo.gif)
+
 It automates the following commands:
 
 ```

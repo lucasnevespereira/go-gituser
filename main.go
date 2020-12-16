@@ -36,6 +36,7 @@ func main() {
 	// Flags
 	manual := flag.Bool("manual", false, "Print informations about the program")
 	info := flag.Bool("info", false, "Print informations about the accounts")
+	now := flag.Bool("now", false, "Print current git user account")
 
 	flag.Parse()
 
@@ -46,6 +47,26 @@ func main() {
 
 	if *info {
 		helpers.ReadAccountsData(gitAccount)
+		os.Exit(1)
+	}
+
+	if *now {
+		currEmail, currName := helpers.RunCurrentAccount()
+		currName = strings.TrimSuffix(currName, "\n")
+		currEmail = strings.TrimSuffix(currEmail, "\n")
+
+		if gitAccount.PersonalUsername == (currName) && gitAccount.PersonalEmail == (currEmail) {
+			helpers.ReadCurrentAccountData(currName, currEmail, "personal")
+		}
+
+		if gitAccount.SchoolUsername == (currName) && gitAccount.SchoolEmail == (currEmail) {
+			helpers.ReadCurrentAccountData(currName, currEmail, "school")
+		}
+
+		if gitAccount.WorkUsername == (currName) && gitAccount.WorkEmail == (currEmail) {
+			helpers.ReadCurrentAccountData(currName, currEmail, "work")
+		}
+
 		os.Exit(1)
 	}
 

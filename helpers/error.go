@@ -30,10 +30,10 @@ func PrintErrorReadingInput() {
 	fmt.Fprintf(os.Stderr, color.RedString("Error: ")+"%v \n", errReadingInput)
 }
 
-// PrintErrorReadingAccount is used to handle error logs reading accounts
-func PrintErrorReadingAccount(mode string) {
+// PrintWarningReadingAccount is used to handle warning logs reading accounts
+func PrintWarningReadingAccount(mode string) {
 	fmt.Println("")
-	fmt.Printf("You have no %v account! \n", mode)
+	fmt.Fprintf(os.Stderr, color.YellowString("Warning: ")+"%v \n", "You have no "+ mode +" account 🧐")
 	fmt.Println("")
 	color.Cyan("Additional info:")
 	fmt.Printf("To add a %v account you need to add it to data/config.json \n", mode)

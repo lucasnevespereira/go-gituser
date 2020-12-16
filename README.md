@@ -125,7 +125,7 @@ Call executable file with mode
 gituser <mode>
 ```
 
-Examples:
+<em>Examples: </em>
 
 ```
 gituser work

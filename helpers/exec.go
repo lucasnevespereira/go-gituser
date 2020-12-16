@@ -30,3 +30,20 @@ func execGitConfigEmail(email string) {
 	}
 	fmt.Println("📧 " + email + " was set as email")
 }
+
+// RunCurrentAccount returns current user git account
+func RunCurrentAccount() (string, string) {
+	cmdName := exec.Command("/bin/sh", "-c", "git config --global user.name")
+	cmdEmail := exec.Command("/bin/sh", "-c", "git config --global user.email")
+
+	email, emailErr := cmdEmail.CombinedOutput()
+	if emailErr != nil {
+		PrintErrorExecutingMode()
+	}
+	name, nameErr := cmdName.CombinedOutput()
+	if nameErr != nil {
+		PrintErrorExecutingMode()
+	}
+
+	return string(email), string(name)
+}

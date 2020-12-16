@@ -22,7 +22,7 @@ func ReadAccountsData(account models.Account) {
 	if account.PersonalUsername == "" {
 		fmt.Println("You have no personal account defined !")
 	} else {
-		fmt.Println("[🏠] Personal Git Account :")
+		fmt.Println("🏠 Personal Git Account :")
 		fmt.Printf("Username: %v\n", account.PersonalUsername)
 		fmt.Printf("Email: %v\n", account.PersonalEmail)
 	}
@@ -30,7 +30,7 @@ func ReadAccountsData(account models.Account) {
 	if account.SchoolUsername == "" {
 		fmt.Println("You have no school account defined !")
 	} else {
-		fmt.Println("[📚] School Git Account :")
+		fmt.Println("📚 School Git Account :")
 		fmt.Printf("Username: %v\n", account.SchoolUsername)
 		fmt.Printf("Email: %v\n", account.SchoolEmail)
 	}
@@ -38,7 +38,7 @@ func ReadAccountsData(account models.Account) {
 	if account.WorkUsername == "" {
 		fmt.Println("You have no work account defined !")
 	} else {
-		fmt.Println("[💻] Work Git Account :")
+		fmt.Println("💻 Work Git Account :")
 		fmt.Printf("Username: %v\n", account.WorkUsername)
 		fmt.Printf("Email: %v\n", account.WorkUsername)
 	}

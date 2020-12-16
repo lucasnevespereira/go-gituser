@@ -147,6 +147,10 @@ The flag `--manual` or `-manual` will print some information about the program.
 
 The flag `--info` or `-info` that will print some information about the accounts.
 
+```
+gituser <flag>
+```
+
 <hr>
 
 ## License

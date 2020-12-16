@@ -6,10 +6,9 @@ import (
 	"github.com/fatih/color"
 )
 
-// PrintHelp prints help
-func PrintHelp() {
+// PrintManual prints manual
+func PrintManual() {
 	fmt.Println("Hi there 👋🏼")
-	fmt.Println("This is the help manual")
 	fmt.Println("")
 	color.Cyan("Description:")
 	fmt.Println("This programs automates the git config command.")
@@ -23,7 +22,8 @@ func PrintHelp() {
 	fmt.Println("")
 	color.Cyan("Flags:")
 	fmt.Println("")
-	fmt.Println(" gituser --help (Help manual)")
+	fmt.Println(" gituser --help (Help Information)")
+	fmt.Println(" gituser --manual (Manual Information)")
 	fmt.Println(" gituser --info (Accounts information)")
 	fmt.Println("")
 }

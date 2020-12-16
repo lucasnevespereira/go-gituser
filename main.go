@@ -12,7 +12,7 @@ import (
 func main() {
 
 	if len(os.Args) < 2 {
-		helpers.PrintHelp()
+		helpers.PrintManual()
 		os.Exit(1)
 	}
 
@@ -34,13 +34,13 @@ func main() {
 	_ = json.Unmarshal(data, &gitAccount)
 
 	// Flags
-	help := flag.Bool("help", false, "Print informations about the program")
+	manual := flag.Bool("manual", false, "Print informations about the program")
 	info := flag.Bool("info", false, "Print informations about the accounts")
 
 	flag.Parse()
 
-	if *help {
-		helpers.PrintHelp()
+	if *manual {
+		helpers.PrintManual()
 		os.Exit(1)
 	}
 

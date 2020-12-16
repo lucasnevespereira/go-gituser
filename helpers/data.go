@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"go-gituser/models"
 	"io/ioutil"
-	
+
 	"github.com/fatih/color"
 )
 
@@ -46,4 +46,11 @@ func ReadAccountsData(account models.Account) {
 	}
 	fmt.Println("")
 
+}
+
+// ReadCurrentAccountData prints current account data
+func ReadCurrentAccountData(name string, email string, mode string) {
+	fmt.Println("You are on the " + color.CyanString(mode) + " acccount")
+	fmt.Printf(color.BlueString("=>")+" Username: %v\n", name)
+	fmt.Printf(color.BlueString("=>")+" Email: %v\n", email)
 }

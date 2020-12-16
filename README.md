@@ -141,13 +141,15 @@ gituser personal
 
 #### Flags
 
-The flag `--help` will print some information about the program.
+`--help` or `-help` is a default flag in go that prints existing flags.
 
-`gituser --help`
+`--manual` or `-manual` will print some information about the program.
 
-The flag `--info` that will print some information about the accounts.
+`gituser -manual`
 
-`gituser --info`
+`--info` or `-info` that will print some information about the accounts.
+
+`gituser -info`
 
 <hr>
 

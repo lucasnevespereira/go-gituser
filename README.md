@@ -151,6 +151,10 @@ The flag `--info` or `-info` that will print some information about the accounts
 gituser <flag>
 ```
 
+## How to Contribute
+
+If you want to contribute to this project please read the [Contribution Guide](CONTRIBUTING.md).
+
 <hr>
 
 ## License

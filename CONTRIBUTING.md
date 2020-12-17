@@ -29,23 +29,6 @@ git clone <forked repo url>
 - Fill out the `data/config.json` with your accounts.
 - Follow the installation steps [here](MACOS_PATH.md).
 
-### Setup upstream repository for later updates
-
-At this moment if you run `git remote -v` you'll see that your forked repo is your origin. This is what we want because it's there where you'll push your changes.
-
-However if the <b> go-gituser </b> root program changes, you may have to updated and make a git pull from `lucasnevespereira/go-gituser` and not your forked repo.
-To handle this situation we are going to add a second remote poiting to the root project, we are going to call it `upstream`
-
-```
-git remote add upstream https://github.com/lucasnevespereira/go-gituser
-```
-
-Now if you want to update your forked repo from the root repo, run :
-
-```
-git pull upstream main
-```
-
 ## Create a new branch
 
 Please use the following convention for your branch name:
@@ -120,7 +103,7 @@ To optimize commit readability, I am trying to put in place the following conven
   └─⫸ Commit Type: chore|doc|feat|fix|ui|refactor|test
 ```
 
-##### Types
+<b>Types of commits </b>
 
 Must be one of the following:
 
@@ -130,6 +113,46 @@ Must be one of the following:
 - **fix**: Fixing a bug.
 - **refactor**: A code change that neither fixes a bug nor adds a feature.
 - **test**: Adding missing tests or correcting existing tests.
+
+### Push your code
+
+```
+git push
+```
+
+If you have a `git push --set-upstream origin <branch-name>` message. Copy and run it that command so you can push your branch.
+
+```
+git push --set-upstream origin <branch-name>
+```
+
+## Create a Pull Request
+
+After pushing your branch normally you'll have a link to create a pull request in your terminal. Click on that link. <br>
+If you don't find it go to your github repo, find your branch and click the button <b>Create a Pull Request<b>
+
+To submit the Pull Request(PR) write a `Title`, `Leave a message` and press `Create pull request` button.
+
+<hr>
+
+## How to update
+
+At this moment if you run `git remote -v` you'll see that your forked repo is your origin. This is what we want because it's there where you'll push your changes.
+
+However if the <b> go-gituser </b> root program changes, you may have to updated and make a git pull from `lucasnevespereira/go-gituser` and not your forked repo.
+To handle this situation we are going to add a second remote poiting to the root project, we are going to call it `upstream`
+
+```
+git remote add upstream https://github.com/lucasnevespereira/go-gituser
+```
+
+### Update
+
+Now if you want to update your forked repo from the root repo, run :
+
+```
+git pull upstream main
+```
 
 <hr>
 

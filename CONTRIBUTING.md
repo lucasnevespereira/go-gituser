@@ -129,7 +129,7 @@ git push --set-upstream origin <branch-name>
 ## Create a Pull Request
 
 After pushing your branch normally you'll have a link to create a pull request in your terminal. Click on that link. <br>
-If you don't find it go to your github repo, find your branch and click the button <b>Create a Pull Request<b>
+If you don't find it go to your github repo, find your branch and click the button <b>Create a Pull Request</b>
 
 To submit the Pull Request(PR) write a `Title`, `Leave a message` and press `Create pull request` button.
 

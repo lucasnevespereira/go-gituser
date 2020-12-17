@@ -1,4 +1,4 @@
-<img src="inline-logo.png" alt="logo" width="200" />
+<img src="assets/inline-logo.png" alt="logo" width="200" />
 
 ## Overview
 
@@ -6,7 +6,7 @@ User of multiple git accounts, in order to meet my need to switch regularly betw
 
 This program helps switch between different git user accounts easily.
 
-![](demo.gif)
+![](assets/demo.gif)
 
 It automates the following commands:
 

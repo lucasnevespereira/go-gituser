@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"go-gituser/config"
 	"go-gituser/helpers"
 	"go-gituser/models"
 	"os"
@@ -89,6 +90,8 @@ func main() {
 			os.Exit(1)
 		}
 		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonalEmail)
+	case "CONFIG":
+		config.InitSetData()
 	}
 
 }

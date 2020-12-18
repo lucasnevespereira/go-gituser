@@ -2,9 +2,9 @@
 
 ## Overview
 
-<img align="right" width="100" src="assets/logo.png" alt="logo" />
-
 User of multiple git accounts, in order to meet my need to switch regularly between these accounts (student, professional, personal), I developed an open source cli (a command line interface) in Golang.
+
+<img align="right" width="100" src="assets/logo.png" alt="logo" />
 
 This program helps switch between different git user accounts easily.
 

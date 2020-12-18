@@ -67,6 +67,7 @@ func InitSetData() {
 		}
 	}
 
+	checkForEmptyAccountData()
 	writeAccountData()
 
 }
@@ -139,6 +140,32 @@ func writeAccountData() {
 	file, _ := json.MarshalIndent(data, "", " ")
 
 	ioutil.WriteFile(filename, file, 666)
+
+}
+
+// checkForEmptyAccountData checks if there is no overrides with empty accounts.
+func checkForEmptyAccountData() {
+	currAccount := models.Account{}
+
+	configFilePath := os.Getenv("PATH_TO_GITUSER_CONFIG")
+
+	data, _ := helpers.GetDataFromJSON(configFilePath)
+	_ = json.Unmarshal(data, &currAccount)
+
+	if pEmail == "" || pUsername == "" {
+		pEmail = currAccount.PersonalEmail
+		pUsername = currAccount.PersonalUsername
+	}
+
+	if wEmail == "" || wUsername == "" {
+		wEmail = currAccount.WorkEmail
+		wUsername = currAccount.WorkUsername
+	}
+
+	if sEmail == "" || sUsername == "" {
+		sEmail = currAccount.SchoolEmail
+		sUsername = currAccount.SchoolUsername
+	}
 
 }
 

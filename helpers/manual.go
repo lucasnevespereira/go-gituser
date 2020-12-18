@@ -24,5 +24,6 @@ func PrintManual() {
 	fmt.Println(" gituser --help (Flags Usages)")
 	fmt.Println(" gituser --manual (Prints Manual)")
 	fmt.Println(" gituser --info (Prints Accounts)")
+	fmt.Println(" gituser --now (Prints Current Account)")
 	fmt.Println("")
 }

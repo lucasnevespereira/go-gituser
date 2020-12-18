@@ -1,6 +1,6 @@
 # How to contribute to Go-Gituser
 
-<img align="right" width="100" src="assets/logo.png" alt="fork this repository" />
+<img align="right" width="100" src="assets/logo.png" alt="logo" />
 
 Hello there 👋🏼 <br>
 Welcome to the contribution guide.

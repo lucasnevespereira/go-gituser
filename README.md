@@ -105,15 +105,13 @@ Run the following command :
 gituser config
 ```
 
-<em>This command will help you setup your different git accounts. <em>
+<em>This command will help you setup your different git accounts. </em>
 
 ## Usage
 
-<i>Attention: </i> Make sure you've entered your information in `config.json` before compile program
+<small><b>Reminder:</b> To compile run `go build -o gituser` </small> <br>
 
-Compile by running `go build -o gituser`
-
-Call executable file with mode
+Call executable with mode
 
 ```
 gituser <mode>

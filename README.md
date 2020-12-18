@@ -44,22 +44,6 @@ brew install go
 
 or visit https://golang.org/doc/install
 
-### Add your git data
-
-To add your respective accounts, you need to fill out the `data/config.json` file.
-
-```
-{
-  "personalUsername": "enterYourUsernameHere",
-  "personalEmail": "enterYourEmailHere",
-  "schoolUsername": "enterYourUsernameHere",
-  "schoolEmail": "enterYourEmailHere",
-  "workUsername": "enterYourUsernameHere",
-  "workEmail": "enterYourEmailHere"
-}
-
-```
-
 ### Setup Globally
 
 Set up the program to run globally on your machine (MacOs). <br>
@@ -112,6 +96,16 @@ source ~/.bash_profile
 ```
 
 And now you can call `gituser` globally 😀
+
+### Add your git account data
+
+Run the following command :
+
+```
+gituser config
+```
+
+<em>This command will help you setup your different git accounts. <em>
 
 ## Usage
 

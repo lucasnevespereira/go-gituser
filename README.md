@@ -1,4 +1,4 @@
-<img src="assets/inline-logo.png" alt="logo" width="200" />
+<img src="assets/inline-logo.png" alt="logo" width="320" />
 
 ## Overview
 

@@ -60,7 +60,7 @@ To add your respective accounts, you need to fill out the `data/config.json` fil
 
 ```
 
-### Install Globally
+### Setup Globally
 
 Set up the program to run globally on your machine (MacOs). <br>
 <em><i>Other OS coming soon..</i></em>

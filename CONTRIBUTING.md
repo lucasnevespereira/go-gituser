@@ -35,7 +35,7 @@ Please use the following convention for your branch name:
 
 ### Types of branches
 
-- **chore**: Changes in the chore of the project.
+- **core**: Changes in the core of the project.
 - **doc**: Documentation or assets changes.
 - **feat**: Adding a new feature.
 - **fix**: Fixing a bug.
@@ -67,7 +67,7 @@ git checkout -b doc/improvedInstallationGuide
 ```
 
 ```
-git checkout -b chore/addNewPackage
+git checkout -b core/addNewPackage
 ```
 
 Create a branch using the `git checkout` command:
@@ -100,14 +100,14 @@ To optimize commit readability, I am trying to put in place the following conven
   │                │
   │                └─⫸ Description of the changes.
   │
-  └─⫸ Commit Type: chore|doc|feat|fix|ui|refactor|test
+  └─⫸ Commit Type: core|doc|feat|fix|ui|refactor|test
 ```
 
 <b>Types of commits </b>
 
 Must be one of the following:
 
-- **chore**: Changes in the chore of the project.
+- **core**: Changes in the core of the project.
 - **doc**: Documentation or assets changes.
 - **feat**: Adding a new feature.
 - **fix**: Fixing a bug.

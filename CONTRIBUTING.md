@@ -26,8 +26,8 @@ git clone <forked repo url>
 
 ### Install program
 
-- Fill out the `data/config.json` with your accounts.
-- Follow the installation steps [here](MACOS_PATH.md).
+- Run `make install` to install it in your `$HOME/bin`.
+- Run `gituser config` to setup your git data.
 
 ## Create a new branch
 

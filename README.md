@@ -46,56 +46,14 @@ or visit https://golang.org/doc/install
 
 ### Setup Globally
 
-Set up the program to run globally on your machine (MacOs). <br>
-<em><i>Other OS coming soon..</i></em>
-
-<!--
-[Install for MacOS](MACOS_PATH.md) </br>
-Other OS - coming soon.. -->
-
-The goal of adding the program to the <b>PATH</b> is to be able to call `gituser` globally in your machine.
-
-To add the program to your path on <b>MacOS</b> do the following:
-
-Go to the directory where you keep the program
-
-<em>Example: </em>
+Run the following command from the root of the project:
 
 ```
-cd ~/projects/go-gituser/
+make install
 ```
+<em>This will build gituser and move it to your `$HOME/bin`</em>
 
-You can compile your program now or later, by running :
-
-```
-go build -o gituser
-```
-
-Edit your `.bash_profile` or `.zshrc` if you use zsh
-
-```
-nano ~/.bash_profile
-```
-
-Add the path of <b>this project</b> (go-gituser) and the path of `data/config.json`
-
-<em>Example: </em>
-
-```
-# GitUser program
-export PATH=~/projects/go-gituser/:$PATH
-export PATH_TO_GITUSER_CONFIG=~/projects/go-gituser/data/config.json
-```
-
-Save the file and exit.
-
-Reopen a terminal window or source your bash_profile
-
-```
-source ~/.bash_profile
-```
-
-And now you can call `gituser` globally 😀
+Now you can call `gituser` globally 😀
 
 ### Add your git account data
 

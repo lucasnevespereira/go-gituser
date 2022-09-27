@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-gituser/models"
 	"io/ioutil"
+	"os"
 
 	"github.com/fatih/color"
 )
@@ -12,7 +13,7 @@ import (
 func GetDataFromJSON(filename string) ([]byte, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println(err)
+		return []byte{}, err
 	}
 	return data, nil
 }
@@ -53,4 +54,25 @@ func ReadCurrentAccountData(name string, email string, mode string) {
 	fmt.Println("You are on the " + color.CyanString(mode) + " acccount")
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", name)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", email)
+}
+
+// GetConfigFilePath returns env config file path, if there isn't one it returns 'data/config.json'
+func GetConfigFilePath() (string, error) {
+	if err := checkFile(configFilePath); err != nil {
+		return "", err
+	}
+
+	return configFilePath, nil
+}
+
+// checkFile makes sure a files exists
+func checkFile(filename string) error {
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		_, err := os.Create(filename)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

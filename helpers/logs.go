@@ -30,15 +30,23 @@ func PrintErrorReadingInput() {
 	fmt.Fprintf(os.Stderr, color.RedString("Error: ")+"%v \n", errReadingInput)
 }
 
+// PrintError is used to handle error logs
+func PrintError(err error) {
+	fmt.Fprintf(os.Stderr, color.RedString("Error: ")+"%v \n", err)
+}
+
 // PrintWarningReadingAccount is used to handle warning logs reading accounts
 func PrintWarningReadingAccount(mode string) {
 	fmt.Println("")
-	fmt.Fprintf(os.Stderr, color.YellowString("Warning: ")+"%v \n", "You have no "+ mode +" account 🧐")
+	fmt.Fprintf(os.Stderr, color.YellowString("Warning: ")+"%v \n", "You have no "+mode+" account 🧐")
 	fmt.Println("")
-	color.Cyan("Additional info:")
-	fmt.Printf("To add a %v account you need to add it to data/config.json \n", mode)
-	fmt.Println("Then recompile your program:")
-	fmt.Println("Step 1 : Go to the source directory for this project")
-	fmt.Println("Step 2 : Once there please run go build -o gituser")
+	color.Cyan("Tips:")
+	fmt.Printf("To add a %v account try to run gituser config \n", mode)
 	fmt.Println("")
+}
+
+// PrintRemeberToActiveMode is used to remember user to active the mode after config
+func PrintRemeberToActiveMode(mode string) {
+	info := color.New(color.Bold).PrintfFunc()
+	info(color.BlueString("Remember to run <gituser %v> to activate this mode \n"), mode)
 }

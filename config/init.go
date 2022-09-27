@@ -6,17 +6,10 @@ import (
 	"go-gituser/helpers"
 	"go-gituser/models"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
 	"github.com/manifoldco/promptui"
-)
-
-const (
-	work     = "💻 Work Account"
-	school   = "📚 School Account"
-	personal = "🏠 Personal Account"
 )
 
 var (
@@ -35,7 +28,12 @@ func InitSetData() {
 	for {
 		prompt := promptui.Select{
 			Label: "Please choose an account to configure",
-			Items: []string{work, school, personal},
+			Items: []string{
+				helpers.WorkSelectLabel,
+				helpers.SchoolSelectLabel,
+				helpers.PersonalSelectLabel,
+				helpers.CancelSelectLabel,
+			},
 		}
 
 		_, choice, err := prompt.Run()
@@ -45,12 +43,17 @@ func InitSetData() {
 		}
 
 		switch choice {
-		case work:
-			getUserAccount("work")
-		case school:
-			getUserAccount("school")
-		case personal:
-			getUserAccount("personal")
+		case helpers.WorkSelectLabel:
+			getUserAccount(helpers.WorkMode)
+			helpers.PrintRemeberToActiveMode(helpers.WorkMode)
+		case helpers.SchoolSelectLabel:
+			getUserAccount(helpers.SchoolMode)
+			helpers.PrintRemeberToActiveMode(helpers.PersonalMode)
+		case helpers.PersonalSelectLabel:
+			getUserAccount(helpers.PersonalMode)
+			helpers.PrintRemeberToActiveMode(helpers.PersonalMode)
+		case helpers.CancelSelectLabel:
+			os.Exit(1)
 		}
 
 		fmt.Println("Would you like to configure another account ? (y/n)")
@@ -74,7 +77,7 @@ func InitSetData() {
 
 func getUserAccount(mode string) {
 	switch mode {
-	case "work":
+	case helpers.WorkMode:
 		fmt.Println("What is your work username ?")
 		_, errUsername := fmt.Scanln(&wUsername)
 		if errUsername != nil {
@@ -88,7 +91,8 @@ func getUserAccount(mode string) {
 			helpers.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-	case "school":
+
+	case helpers.SchoolMode:
 		fmt.Println("What is your school username ?")
 		_, errUsername := fmt.Scanln(&sUsername)
 		if errUsername != nil {
@@ -102,7 +106,7 @@ func getUserAccount(mode string) {
 			helpers.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-	case "personal":
+	case helpers.PersonalMode:
 		fmt.Println("What is your personal username ?")
 		_, errUsername := fmt.Scanln(&pUsername)
 		if errUsername != nil {
@@ -116,16 +120,18 @@ func getUserAccount(mode string) {
 			helpers.PrintErrorReadingInput()
 			os.Exit(1)
 		}
+
+	case helpers.CancelSelectLabel:
+		os.Exit(1)
 	}
 
 }
 
 // WriteAccountData writes data to json file
 func writeAccountData() {
-	filename := os.Getenv("PATH_TO_GITUSER_CONFIG")
-	err := checkFile(filename)
+	configFile, err := helpers.GetConfigFilePath()
 	if err != nil {
-		log.Fatal(err)
+		helpers.PrintError(err)
 	}
 
 	data := models.Account{
@@ -139,7 +145,7 @@ func writeAccountData() {
 
 	file, _ := json.MarshalIndent(data, "", " ")
 
-	ioutil.WriteFile(filename, file, 666)
+	ioutil.WriteFile(configFile, file, 666)
 
 }
 
@@ -147,7 +153,10 @@ func writeAccountData() {
 func checkForEmptyAccountData() {
 	currAccount := models.Account{}
 
-	configFilePath := os.Getenv("PATH_TO_GITUSER_CONFIG")
+	configFilePath, err := helpers.GetConfigFilePath()
+	if err != nil {
+		helpers.PrintError(err)
+	}
 
 	data, _ := helpers.GetDataFromJSON(configFilePath)
 	_ = json.Unmarshal(data, &currAccount)
@@ -167,16 +176,4 @@ func checkForEmptyAccountData() {
 		sUsername = currAccount.SchoolUsername
 	}
 
-}
-
-// checkFile makes sure a files exists
-func checkFile(filename string) error {
-	_, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		_, err := os.Create(filename)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }

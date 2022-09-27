@@ -5,13 +5,13 @@ import (
 	"os/exec"
 )
 
-// RunModeConfig sets git mode configuration
-func RunModeConfig(name string, email string) {
-	execGitConfigName(name)
-	execGitConfigEmail(email)
+// RunExecSetAccount execs command to set git account
+func RunExecSetAccount(name string, email string) {
+	execSetGitConfigName(name)
+	execSetGitConfigEmail(email)
 }
 
-func execGitConfigName(name string) {
+func execSetGitConfigName(name string) {
 	cmdStr := "git config --global user.name " + name
 	cmd := exec.Command("/bin/sh", "-c", cmdStr)
 	_, err := cmd.CombinedOutput()
@@ -21,7 +21,7 @@ func execGitConfigName(name string) {
 	fmt.Println("👤 " + name + " was set as username")
 }
 
-func execGitConfigEmail(email string) {
+func execSetGitConfigEmail(email string) {
 	cmdStr := "git config --global user.email " + email
 	cmd := exec.Command("/bin/sh", "-c", cmdStr)
 	_, err := cmd.CombinedOutput()

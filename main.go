@@ -22,17 +22,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	argValue := strings.ToUpper(os.Args[1])
+	argValue := strings.ToLower(os.Args[1])
 
 	gitAccount := models.Account{}
 
-	configFilePath := os.Getenv("PATH_TO_GITUSER_CONFIG")
-	if configFilePath == "" {
-		configFilePath = "data/config.json"
+	configFilePath, err := helpers.GetConfigFilePath()
+	if err != nil {
+		helpers.PrintError(err)
 	}
 
-	data, _ := helpers.GetDataFromJSON(configFilePath)
-	_ = json.Unmarshal(data, &gitAccount)
+	data, err := helpers.GetDataFromJSON(configFilePath)
+	if err != nil {
+		helpers.PrintError(err)
+	}
+
+	err = json.Unmarshal(data, &gitAccount)
+	if err != nil {
+		helpers.PrintError(err)
+	}
 
 	// Flags
 	manual := flag.Bool("manual", false, "Print informations about the program")
@@ -72,25 +79,25 @@ func main() {
 	}
 
 	switch argValue {
-	case "WORK":
+	case helpers.WorkMode:
 		if gitAccount.WorkUsername == "" {
-			helpers.PrintWarningReadingAccount("work")
+			helpers.PrintWarningReadingAccount(helpers.WorkMode)
 			os.Exit(1)
 		}
-		helpers.RunModeConfig(gitAccount.WorkUsername, gitAccount.WorkEmail)
-	case "SCHOOL":
+		helpers.RunExecSetAccount(gitAccount.WorkUsername, gitAccount.WorkEmail)
+	case helpers.SchoolMode:
 		if gitAccount.SchoolUsername == "" {
-			helpers.PrintWarningReadingAccount("school")
+			helpers.PrintWarningReadingAccount(helpers.SchoolMode)
 			os.Exit(1)
 		}
-		helpers.RunModeConfig(gitAccount.SchoolUsername, gitAccount.SchoolEmail)
-	case "PERSONAL":
+		helpers.RunExecSetAccount(gitAccount.SchoolUsername, gitAccount.SchoolEmail)
+	case helpers.PersonalMode:
 		if gitAccount.PersonalUsername == "" {
-			helpers.PrintWarningReadingAccount("personal")
+			helpers.PrintWarningReadingAccount(helpers.PersonalMode)
 			os.Exit(1)
 		}
-		helpers.RunModeConfig(gitAccount.PersonalUsername, gitAccount.PersonalEmail)
-	case "CONFIG":
+		helpers.RunExecSetAccount(gitAccount.PersonalUsername, gitAccount.PersonalEmail)
+	case helpers.ConfigMode:
 		config.InitSetData()
 	}
 

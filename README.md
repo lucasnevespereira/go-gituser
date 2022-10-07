@@ -67,7 +67,6 @@ gituser config
 
 ## Usage
 
-<small><b>Reminder:</b> To compile run `go build -o gituser` </small> <br>
 
 Call executable with mode
 

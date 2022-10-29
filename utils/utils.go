@@ -1,25 +1,23 @@
-package helpers
+package utils
 
 import (
 	"fmt"
-	"go-gituser/models"
-	"io/ioutil"
-	"os"
-
 	"github.com/fatih/color"
+	"github.com/pkg/errors"
+	"go-gituser/internal/models"
+	"go-gituser/state"
+	"os"
 )
 
-// GetDataFromJSON is a func that returns the data from a JSON File
-func GetDataFromJSON(filename string) ([]byte, error) {
-	data, err := ioutil.ReadFile(filename)
+func ReadFileData(filename string) ([]byte, error) {
+	data, err := os.ReadFile(filename)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, errors.Wrap(err, "ReadFileData")
 	}
 	return data, nil
 }
 
-// ReadAccountsData prints accounts infos to the user
-func ReadAccountsData(account models.Account) {
+func ReadAccountsData(account models.Accounts) {
 	fmt.Println("Hello, this is your accounts data 🧑🏻‍💻")
 	fmt.Println("")
 	if account.PersonalUsername == "" {
@@ -49,30 +47,51 @@ func ReadAccountsData(account models.Account) {
 
 }
 
-// ReadCurrentAccountData prints current account data
 func ReadCurrentAccountData(name string, email string, mode string) {
 	fmt.Println("You are on the " + color.CyanString(mode) + " acccount")
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", name)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", email)
 }
 
-// GetConfigFilePath returns env config file path, if there isn't one it returns 'data/config.json'
-func GetConfigFilePath() (string, error) {
-	if err := checkFile(configFilePath); err != nil {
-		return "", err
-	}
+func ReadUnsavedGitAccount(name string, email string) {
+	fmt.Println("You are using the following account")
+	fmt.Printf(color.BlueString("=>")+" Username: %v\n", name)
+	fmt.Printf(color.BlueString("=>")+" Email: %v\n", email)
 
-	return configFilePath, nil
+	fmt.Println("This account is " + color.YellowString("unsaved") + ". Run <gituser config> to save it to a " + color.CyanString("mode"))
 }
 
-// checkFile makes sure a files exists
+func GetAccountsDataFile() (string, error) {
+	if err := checkFile(accountsDataFilePath); err != nil {
+		return "", errors.Wrap(err, "GetAccountsDataFile")
+	}
+
+	return accountsDataFilePath, nil
+}
+
 func checkFile(filename string) error {
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
-		_, err := os.Create(filename)
+		createdFile, err := os.Create(filename)
 		if err != nil {
 			return err
 		}
+
+		_, err = createdFile.Write([]byte("{}"))
+		if err != nil {
+			return err
+		}
+
 	}
 	return nil
+}
+
+func GitUsernameIsUnsaved(name string) bool {
+	return state.SavedAccounts.PersonalUsername != name ||
+				state.SavedAccounts.WorkUsername != name || state.SavedAccounts.SchoolUsername != name
+}
+
+func GitEmailIsUnsaved(email string) bool {
+	return state.SavedAccounts.PersonalEmail != email ||
+		state.SavedAccounts.WorkEmail != email || state.SavedAccounts.SchoolEmail != email
 }

@@ -46,6 +46,13 @@ or visit https://golang.org/doc/install
 
 ### Setup Globally
 
+Make sur your bin path is in your `$PATH`, you can check in your `.zshrc` or `.bash` file.
+
+_e.g_
+```shell
+export PATH="$HOME/bin:$PATH"
+```
+
 Run the following command from the root of the project:
 
 ```
@@ -90,13 +97,13 @@ gituser personal
 
 #### Flags
 
-The flag `--help` or `-help` is a default flag in go that prints existing flags.
+The flag `help` is a default flag that prints existing flags.
 
-The flag `--manual` or `-manual` will print some information about the program.
+The flag `manual` will print some information about the program.
 
-The flag `--info` or `-info` that will print some information about the accounts.
+The flag `info` that will print some information about the accounts.
 
-The flag `--now` or `-now` that will print what git account is currently active.
+The flag `now` that will print what git account is currently active.
 
 ```
 gituser <flag>

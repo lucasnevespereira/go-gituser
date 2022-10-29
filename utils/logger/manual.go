@@ -1,12 +1,10 @@
-package helpers
+package logger
 
 import (
 	"fmt"
-
 	"github.com/fatih/color"
 )
 
-// PrintManual prints manual
 func PrintManual() {
 	fmt.Println("Hi there 👋🏼")
 	fmt.Println("Welcome to the manual 📘")
@@ -25,9 +23,9 @@ func PrintManual() {
 	fmt.Println(" gituser <mode>")
 	fmt.Println("")
 	color.Cyan("Flags:")
-	fmt.Println(" gituser --help (Flags Usages)")
-	fmt.Println(" gituser --manual (Prints Manual)")
-	fmt.Println(" gituser --info (Prints Accounts)")
-	fmt.Println(" gituser --now (Prints Current Account)")
+	fmt.Println(" gituser help (Flags Usages)")
+	fmt.Println(" gituser manual (Prints Manual)")
+	fmt.Println(" gituser info (Prints Accounts)")
+	fmt.Println(" gituser now (Prints Current Account)")
 	fmt.Println("")
 }

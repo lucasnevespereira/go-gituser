@@ -1,7 +1,13 @@
-.PHONY: build install clean
+.PHONY: build install clean fmt lint
 
 APP_NAME=gituser
 BIN_PATH=$(HOME)/bin
+
+fmt:
+	gofmt -s -l .
+
+lint: fmt
+	golangci-lint run
 
 build:
 	go build -o $(APP_NAME)
@@ -11,3 +17,4 @@ install: build
 	
 clean: $(APP_NAME)
 	rm $(APP_NAME)
+

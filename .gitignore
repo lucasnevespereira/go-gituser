@@ -1,3 +1,11 @@
 .DS_Store
+.vscode
+.idea
+
+bin/
+dist/
+
 gituser
-data/config.json
+go-gituser
+
+.accounts.json

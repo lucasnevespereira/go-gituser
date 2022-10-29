@@ -1,7 +1,6 @@
 package models
 
-// Account is the account structure
-type Account struct {
+type Accounts struct {
 	PersonalUsername string `json:"personalUsername"`
 	PersonalEmail    string `json:"personalEmail"`
 	WorkUsername     string `json:"workUsername"`

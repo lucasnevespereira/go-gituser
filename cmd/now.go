@@ -7,7 +7,6 @@ import (
 	"go-gituser/state"
 	"go-gituser/utils"
 	"go-gituser/utils/logger"
-	"os"
 	"strings"
 )
 
@@ -24,25 +23,28 @@ var nowCmd = &cobra.Command{
 
 		if state.SavedAccounts.PersonalUsername == (currName) && state.SavedAccounts.PersonalEmail == (currEmail) {
 			utils.ReadCurrentAccountData(currName, currEmail, "personal")
+			return
 		}
 
 		if state.SavedAccounts.SchoolUsername == (currName) && state.SavedAccounts.SchoolEmail == (currEmail) {
 			utils.ReadCurrentAccountData(currName, currEmail, "school")
+			return
 		}
 
 		if state.SavedAccounts.WorkUsername == (currName) && state.SavedAccounts.WorkEmail == (currEmail) {
 			utils.ReadCurrentAccountData(currName, currEmail, "work")
+			return
 		}
 
 		if utils.GitUsernameIsUnsaved(currName) || utils.GitEmailIsUnsaved(currEmail) {
 			utils.ReadUnsavedGitAccount(currName, currEmail)
+			return
 		}
 
 		if currName == "" || currEmail == "" {
 			logger.PrintNoActiveMode()
+			return
 		}
-
-		os.Exit(1)
 	},
 }
 

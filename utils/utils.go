@@ -18,7 +18,7 @@ func ReadFileData(filename string) ([]byte, error) {
 }
 
 func ReadAccountsData(account models.Accounts) {
-	fmt.Println("Hello, this is your accounts data 🧑🏻‍💻")
+	fmt.Println("Hello, this is your accounts data")
 	fmt.Println("")
 	if account.PersonalUsername == "" {
 		fmt.Println("🏠 | You have no personal account defined")

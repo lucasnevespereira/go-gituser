@@ -34,7 +34,7 @@ brews:
     tap:
       owner: lucasnevespereira
       name: homebrew-tools
-      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+      token: "{{ .Env.GH_TAP }}"
 
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json

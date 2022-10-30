@@ -1,5 +1,10 @@
 <img src="assets/inline-logo.png" alt="logo" width="320" />
 
+<p>
+    <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/lucasnevespereira/go-gituser.svg?logo=github&style=flat-square"></a>
+    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/goreleaser.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/goreleaser.yml/badge.svg"></a> 
+</p>
+
 ## Overview
 
 User of multiple git accounts, in order to meet my need to switch regularly between these accounts (student, professional, personal), I developed an open source cli (a command line interface) in Golang.

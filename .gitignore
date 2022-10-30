@@ -6,3 +6,5 @@ gituser
 .vscode
 .idea
 dist/
+
+.accounts.json

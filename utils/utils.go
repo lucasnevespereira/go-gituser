@@ -74,12 +74,12 @@ func checkFile(filename string) error {
 	if os.IsNotExist(err) {
 		createdFile, err := os.Create(filename)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "checkFile - create")
 		}
 
 		_, err = createdFile.Write([]byte("{}"))
 		if err != nil {
-			return err
+			return errors.Wrap(err, "checkFile - write")
 		}
 
 	}

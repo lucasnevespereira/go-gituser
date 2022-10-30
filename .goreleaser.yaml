@@ -29,7 +29,7 @@ changelog:
       - '^docs:'
       - '^test:'
 brews:
-  - name: go-gituser
+  - name: gituser
     homepage: https://github.com/lucasnevespereira/homebrew-tools
     tap:
       owner: lucasnevespereira

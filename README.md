@@ -28,23 +28,23 @@ There is currently 3 modes in this script:
 
 ## How to install
 
-### Prerequesites
-
-At this moment to use this program you need to have `go`.
-
-Install with Homebrew
+### Install with Homebrew
 
 ```
-brew update
+brew tap lucasnevespereira/tools
 ```
 
 ```
-brew install go
+brew install gituser
 ```
 
-or visit https://golang.org/doc/install
+or 
+```
+brew install lucasnevespereira/tools/gituser
+```
 
-### Setup Globally
+
+### Install manually
 
 Make sur your bin path is in your `$PATH`, you can check in your `.zshrc` or `.bash` file.
 

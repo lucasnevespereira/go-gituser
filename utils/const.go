@@ -15,4 +15,4 @@ const (
 	PersonalMode = "personal"
 )
 
-const accountsDataFilePath = "internal/data/accounts.json"
+const accountsDataFilePath = "data/accounts.json"

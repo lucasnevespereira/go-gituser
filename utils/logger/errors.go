@@ -8,15 +8,9 @@ import (
 )
 
 var (
-	errInvalidArguments = errors.New("invalid arguments 🙁")
 	errExecutingMode    = errors.New("something went wrong executing this mode 😭")
 	errReadingInput     = errors.New("couldn't understand your input 🤯")
 )
-
-func PrintErrorInvalidArguments() {
-	fmt.Fprintf(os.Stderr, color.RedString("error: ")+"%v \n", errInvalidArguments)
-	fmt.Println("For further information see 'gituser --help'")
-}
 
 func PrintErrorExecutingMode() {
 	fmt.Fprintf(os.Stderr, color.RedString("error: ")+"%v \n", errExecutingMode)

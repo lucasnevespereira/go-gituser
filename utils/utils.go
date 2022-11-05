@@ -88,7 +88,7 @@ func checkFile(filename string) error {
 
 func GitUsernameIsUnsaved(name string) bool {
 	return state.SavedAccounts.PersonalUsername != name ||
-				state.SavedAccounts.WorkUsername != name || state.SavedAccounts.SchoolUsername != name
+		state.SavedAccounts.WorkUsername != name || state.SavedAccounts.SchoolUsername != name
 }
 
 func GitEmailIsUnsaved(email string) bool {

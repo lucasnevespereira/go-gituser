@@ -5,8 +5,8 @@ const (
 	SchoolSelectLabel   = "📚 School Account"
 	PersonalSelectLabel = "🏠 Personal Account"
 	CancelSelectLabel   = "Cancel"
-	Yes = "Y"
-	No = "N"
+	Yes                 = "Y"
+	No                  = "N"
 )
 
 const (
@@ -15,6 +15,7 @@ const (
 	PersonalMode = "personal"
 )
 
-const accountsDataFilePath = ".accounts.json"
+const accountsDataFilePath = ".gituser/accounts.json"
+const localAppDir = ".gituser"
 
-const AppVersion = "v1.3.0"
+const AppVersion = "v1.3.1"

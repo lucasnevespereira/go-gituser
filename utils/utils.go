@@ -70,7 +70,11 @@ func GetAccountsDataFile() (string, error) {
 }
 
 func checkFile(filename string) error {
-	_, err := os.Stat(filename)
+	err := ensureLocalDirectory(localAppDir)
+	if err != nil {
+		return errors.Wrap(err, "checkFile - ensureLocalDirectory")
+	}
+	_, err = os.Stat(filename)
 	if os.IsNotExist(err) {
 		createdFile, err := os.Create(filename)
 		if err != nil {
@@ -86,9 +90,19 @@ func checkFile(filename string) error {
 	return nil
 }
 
+func ensureLocalDirectory(dir string) error {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err := os.Mkdir(dir, 0755)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func GitUsernameIsUnsaved(name string) bool {
 	return state.SavedAccounts.PersonalUsername != name ||
-				state.SavedAccounts.WorkUsername != name || state.SavedAccounts.SchoolUsername != name
+		state.SavedAccounts.WorkUsername != name || state.SavedAccounts.SchoolUsername != name
 }
 
 func GitEmailIsUnsaved(email string) bool {

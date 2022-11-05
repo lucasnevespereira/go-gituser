@@ -8,4 +8,4 @@ dist/
 gituser
 go-gituser
 
-.accounts.json
+.gituser/accounts.json

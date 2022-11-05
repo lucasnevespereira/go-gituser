@@ -25,6 +25,7 @@ archives:
     files:
       - LICENSE
       - README.md
+      - .gituser
 checksum:
   name_template: 'checksums.txt'
 snapshot:

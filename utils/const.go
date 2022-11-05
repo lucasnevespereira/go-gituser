@@ -17,4 +17,4 @@ const (
 
 const accountsDataFilePath = "data/accounts.json"
 
-const AppVersion = "v1.3.1"
+const AppVersion = "v1.3.2"

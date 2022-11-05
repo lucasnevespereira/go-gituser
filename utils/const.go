@@ -15,6 +15,6 @@ const (
 	PersonalMode = "personal"
 )
 
-const accountsDataFilePath = "data/accounts.json"
+const accountsDataFileName = ".gituser-accounts.json"
 
-const AppVersion = "v1.3.2"
+const AppVersion = "v1.3.3"

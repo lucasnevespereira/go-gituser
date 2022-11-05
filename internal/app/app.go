@@ -15,13 +15,13 @@ func Sync() {
 
 	data, err := utils.ReadFileData(accountsFile)
 	if err != nil {
-		logger.PrintErrorWithMessage(err, "utils.ReadFileData")
+		logger.PrintErrorWithMessage(err, "Sync.ReadFileData")
 	}
 
 
 	err = json.Unmarshal(data, state.SavedAccounts)
 	if err != nil {
-		logger.PrintErrorWithMessage(err, "json.Unmarshal")
+		logger.PrintErrorWithMessage(err, "Sync.Unmarshal")
 	}
 }
 

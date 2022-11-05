@@ -62,28 +62,34 @@ func ReadUnsavedGitAccount(name string, email string) {
 }
 
 func GetAccountsDataFile() (string, error) {
-	if err := checkFile(accountsDataFilePath); err != nil {
+	dataFile, err := getLocalFile(accountsDataFileName)
+	if err != nil {
 		return "", errors.Wrap(err, "GetAccountsDataFile")
 	}
 
-	return accountsDataFilePath, nil
+	return dataFile, nil
 }
 
-func checkFile(filename string) error {
-	_, err := os.Stat(filename)
+func getLocalFile(filename string) (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", errors.Wrap(err, "checkFile - UserHomeDir")
+	}
+	localDataFile := homeDir + "/" + filename
+	_, err = os.Stat(localDataFile)
 	if os.IsNotExist(err) {
-		createdFile, err := os.Create(filename)
+		createdFile, err := os.Create(localDataFile)
 		if err != nil {
-			return errors.Wrap(err, "checkFile - create")
+			return "", errors.Wrap(err, "checkFile - create")
 		}
 
 		_, err = createdFile.Write([]byte("{}"))
 		if err != nil {
-			return errors.Wrap(err, "checkFile - write")
+			return "", errors.Wrap(err, "checkFile - write")
 		}
 
 	}
-	return nil
+	return localDataFile, nil
 }
 
 func GitUsernameIsUnsaved(name string) bool {

@@ -70,12 +70,29 @@ func GetAccountsDataFile() (string, error) {
 	return dataFile, nil
 }
 
-func getLocalFile(filename string) (string, error) {
+func ensureLocalConfigDir() (string, error) {
 	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	configDir := homeDir + "/.config/gituser/"
+	if _, err := os.Stat(configDir); errors.Is(err, os.ErrNotExist) {
+		err := os.MkdirAll(configDir, os.ModePerm)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return configDir, nil
+}
+
+func getLocalFile(filename string) (string, error) {
+	localConfigDir, err := ensureLocalConfigDir()
 	if err != nil {
 		return "", errors.Wrap(err, "checkFile - UserHomeDir")
 	}
-	localDataFile := homeDir + "/" + filename
+
+	localDataFile := localConfigDir + filename
 	_, err = os.Stat(localDataFile)
 	if os.IsNotExist(err) {
 		createdFile, err := os.Create(localDataFile)

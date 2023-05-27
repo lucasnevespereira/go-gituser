@@ -2,42 +2,55 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"go-gituser/internal/app"
-	"go-gituser/internal/services/git"
-	"go-gituser/state"
-	"go-gituser/utils"
-	"go-gituser/utils/logger"
+	"go-gituser/internal/pkg/external/git"
+	"go-gituser/internal/pkg/external/repository"
+	"go-gituser/internal/pkg/external/repository/database"
+	"go-gituser/internal/pkg/logger"
+	"go-gituser/internal/pkg/services/account"
 	"strings"
 )
 
 var nowCmd = &cobra.Command{
 	Use:   "now",
-	Short: "Print the current git account",
-	Long:  "Print the current git account you are using",
+	Short: "Print the current account account",
+	Long:  "Print the current account account you are using",
 	Run: func(cmd *cobra.Command, args []string) {
-		app.Sync()
 
-		currEmail, currName := git.CurrentAccount()
+		db, err := database.Open(database.AccountsDBPath)
+		if err != nil {
+			logger.PrintError(err)
+		}
+		accountRepo := repository.NewAccountRepository(db)
+		savedAccounts, err := accountRepo.GetAccounts()
+		if err != nil {
+			logger.PrintError(err)
+
+		}
+
+		gitService := git.NewService()
+		accountService := account.NewAccountService(gitService)
+
+		currEmail, currName := accountService.CurrentAccount()
 		currName = strings.TrimSuffix(currName, "\n")
 		currEmail = strings.TrimSuffix(currEmail, "\n")
 
-		if state.SavedAccounts.PersonalUsername == (currName) && state.SavedAccounts.PersonalEmail == (currEmail) {
-			utils.ReadCurrentAccountData(currName, currEmail, "personal")
+		if savedAccounts.PersonalUsername == (currName) && savedAccounts.PersonalEmail == (currEmail) {
+			logger.ReadCurrentAccountData(currName, currEmail, "personal")
 			return
 		}
 
-		if state.SavedAccounts.SchoolUsername == (currName) && state.SavedAccounts.SchoolEmail == (currEmail) {
-			utils.ReadCurrentAccountData(currName, currEmail, "school")
+		if savedAccounts.SchoolUsername == (currName) && savedAccounts.SchoolEmail == (currEmail) {
+			logger.ReadCurrentAccountData(currName, currEmail, "school")
 			return
 		}
 
-		if state.SavedAccounts.WorkUsername == (currName) && state.SavedAccounts.WorkEmail == (currEmail) {
-			utils.ReadCurrentAccountData(currName, currEmail, "work")
+		if savedAccounts.WorkUsername == (currName) && savedAccounts.WorkEmail == (currEmail) {
+			logger.ReadCurrentAccountData(currName, currEmail, "work")
 			return
 		}
 
-		if utils.GitUsernameIsUnsaved(currName) || utils.GitEmailIsUnsaved(currEmail) {
-			utils.ReadUnsavedGitAccount(currName, currEmail)
+		if accountService.UsernameIsUnsaved(savedAccounts, currName) || accountService.EmailIsUnsaved(savedAccounts, currEmail) {
+			logger.ReadUnsavedGitAccount(currName, currEmail)
 			return
 		}
 

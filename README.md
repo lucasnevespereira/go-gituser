@@ -72,7 +72,7 @@ Now you can call `gituser` globally 😀
 Run the following command :
 
 ```
-gituser config
+gituser setup
 ```
 
 <em>This command will help you setup your different git accounts. </em>

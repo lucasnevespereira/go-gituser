@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"go-gituser/internal/app"
-	"go-gituser/internal/services/git"
-	"go-gituser/state"
-	"go-gituser/utils"
-	"go-gituser/utils/logger"
-	"os"
+	"go-gituser/internal/pkg/external/git"
+	"go-gituser/internal/pkg/external/repository"
+	"go-gituser/internal/pkg/external/repository/database"
+	"go-gituser/internal/pkg/logger"
+	"go-gituser/internal/pkg/services/account"
 )
 
 var personalCmd = &cobra.Command{
@@ -15,12 +14,19 @@ var personalCmd = &cobra.Command{
 	Short: "Switch to the personal account",
 	Long:  "Switch from your current account to the personal account",
 	Run: func(cmd *cobra.Command, args []string) {
-		app.Sync()
-		if state.SavedAccounts.PersonalUsername == "" {
-			logger.PrintWarningReadingAccount(utils.PersonalMode)
-			os.Exit(1)
+		db, err := database.Open(database.AccountsDBPath)
+		if err != nil {
+			logger.PrintError(err)
 		}
-		git.SetAccount(state.SavedAccounts.PersonalUsername, state.SavedAccounts.PersonalEmail)
+		accountRepo := repository.NewAccountRepository(db)
+		accounts, err := accountRepo.GetAccounts()
+		if err != nil {
+			logger.PrintError(err)
+		}
+
+		gitService := git.NewService()
+		accountService := account.NewAccountService(gitService)
+		accountService.SetAccount(accounts.PersonalUsername, accounts.PersonalEmail)
 	},
 }
 

@@ -10,7 +10,7 @@ func PrintManual() {
 	fmt.Println("Welcome to the manual 📘")
 	fmt.Println("")
 	color.Cyan("Description:")
-	fmt.Println(" This program helps switch between different git user accounts easily")
+	fmt.Println(" This program helps switch between different account user accounts easily")
 	fmt.Println(" There is 3 modes for this program")
 	fmt.Println(" 🏠 | <personal> for a personal account \n 📚 | <school> for a school account \n 💻 | <work> for a professional account ")
 	fmt.Println("")

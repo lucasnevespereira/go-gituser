@@ -5,32 +5,25 @@ import (
 	"go-gituser/internal/pkg/external/repository"
 	"go-gituser/internal/pkg/external/repository/database"
 	"go-gituser/internal/pkg/logger"
-	"os"
+	"go-gituser/internal/pkg/services/setup"
 )
 
-var infoCmd = &cobra.Command{
-	Use:   "info",
-	Short: "Print information about the accounts",
-	Long:  "Print information about the accounts that you have configured",
+var setupCmd = &cobra.Command{
+	Use:   "setup",
+	Short: "Setup your different account accounts",
+	Long:  "Modify or init the configuration (email,username) of your different account accounts (work,school,personal)",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		db, err := database.Open(database.AccountsDBPath)
 		if err != nil {
 			logger.PrintError(err)
 		}
 		accountRepo := repository.NewAccountRepository(db)
+		setupService := setup.NewSetupService(accountRepo)
 
-		currentAccounts, err := accountRepo.GetAccounts()
-		if err != nil {
-			logger.PrintError(err)
-
-		}
-
-		logger.ReadAccountsData(currentAccounts)
-		os.Exit(1)
+		setupService.SetupAccounts()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(infoCmd)
+	rootCmd.AddCommand(setupCmd)
 }

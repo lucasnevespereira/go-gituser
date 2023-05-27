@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/manifoldco/promptui"
 	"go-gituser/internal/pkg/external/repository"
-	logger2 "go-gituser/internal/pkg/logger"
+	"go-gituser/internal/pkg/logger"
 	"go-gituser/internal/pkg/models"
-	"go-gituser/state"
 	"os"
 	"strings"
 )
@@ -44,29 +43,26 @@ func (s *Service) SetupAccounts() {
 	for {
 		choice, err := s.getAccountChoice()
 		if err != nil {
-			logger2.PrintErrorReadingInput()
+			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
 
 		switch choice {
 		case workSelectLabel:
 			s.getUserAccount(models.WorkMode)
-			logger2.PrintRemeberToActiveMode(models.WorkMode)
 		case schoolSelectLabel:
 			s.getUserAccount(models.SchoolMode)
-			logger2.PrintRemeberToActiveMode(models.SchoolMode)
 		case personalSelectLabel:
 			s.getUserAccount(models.PersonalMode)
-			logger2.PrintRemeberToActiveMode(models.PersonalMode)
 		case cancelSelectLabel:
 			os.Exit(1)
 		}
 
-		fmt.Println("Would you like to setup another account? (y/n)")
+		fmt.Println("Would you like to setup your accounts again? (y/N)")
 		shouldConfigureAgain := readInput()
 		shouldConfigureAgain = strings.ToUpper(strings.TrimSpace(shouldConfigureAgain))
 
-		if shouldConfigureAgain != yes {
+		if shouldConfigureAgain != strings.ToLower(yes) || shouldConfigureAgain != strings.ToUpper(yes) {
 			fmt.Println("Okay. Bye there!")
 			break
 		}
@@ -103,42 +99,24 @@ func (s *Service) getUserAccount(mode string) {
 	switch mode {
 	case models.WorkMode:
 		fmt.Println("What is your work username?")
-		inputWorkUsername := readInput()
-		if inputWorkUsername != "" {
-			state.SavedAccounts.WorkUsername = inputWorkUsername
-		}
+		inputWorkUsername = readInput()
 
 		fmt.Println("What is your work email?")
-		inputWorkEmail := readInput()
-		if inputWorkEmail != "" {
-			state.SavedAccounts.WorkEmail = inputWorkEmail
-		}
+		inputWorkEmail = readInput()
 
 	case models.SchoolMode:
 		fmt.Println("What is your school username?")
-		inputSchoolUsername := readInput()
-		if inputSchoolUsername != "" {
-			state.SavedAccounts.SchoolUsername = inputSchoolUsername
-		}
+		inputSchoolUsername = readInput()
 
 		fmt.Println("What is your school email?")
-		inputSchoolEmail := readInput()
-		if inputSchoolEmail != "" {
-			state.SavedAccounts.SchoolEmail = inputSchoolEmail
-		}
+		inputSchoolEmail = readInput()
 
 	case models.PersonalMode:
 		fmt.Println("What is your personal username?")
-		inputPersonalUsername := readInput()
-		if inputPersonalUsername != "" {
-			state.SavedAccounts.PersonalUsername = inputPersonalUsername
-		}
+		inputPersonalUsername = readInput()
 
 		fmt.Println("What is your personal email?")
-		inputPersonalEmail := readInput()
-		if inputPersonalEmail != "" {
-			state.SavedAccounts.PersonalEmail = inputPersonalEmail
-		}
+		inputPersonalEmail = readInput()
 	}
 }
 
@@ -146,7 +124,7 @@ func (s *Service) writeAccountData(account models.Accounts) {
 
 	err := s.saveNonEmptyFields(account)
 	if err != nil {
-		logger2.PrintErrorWithMessage(err, "failed to save account data")
+		logger.PrintErrorWithMessage(err, "failed to save account data")
 	}
 }
 
@@ -200,7 +178,7 @@ func readInput() string {
 	var input string
 	_, err := fmt.Scanln(&input)
 	if err != nil {
-		logger2.PrintErrorReadingInput()
+		logger.PrintErrorReadingInput()
 		os.Exit(1)
 	}
 	return strings.TrimSpace(input)

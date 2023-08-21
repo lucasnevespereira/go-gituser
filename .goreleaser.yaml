@@ -1,12 +1,5 @@
 project_name: gituser
 
-replacements:
-  darwin: Darwin
-  linux: Linux
-  windows: Windows
-  386: i386
-  amd64: x86_64
-
 before:
   hooks:
     - go mod tidy
@@ -24,6 +17,8 @@ archives:
   - files:
       - LICENSE
       - README.md
+  # If you want to use replacements in the archive name:
+  # name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
   name_template: 'checksums.txt'

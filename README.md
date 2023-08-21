@@ -2,7 +2,7 @@
 
 <p>
     <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/lucasnevespereira/go-gituser.svg?logo=github&style=flat-square"></a>
-    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/goreleaser.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/goreleaser.yml/badge.svg"></a> 
+    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml/badge.svg"></a> 
 </p>
 
 ## Overview

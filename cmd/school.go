@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"go-gituser/internal/app"
 	"go-gituser/internal/services/git"
 	"go-gituser/state"
 	"go-gituser/utils"
@@ -14,6 +15,7 @@ var schoolCmd = &cobra.Command{
 	Short: "Switch to the school account",
 	Long:  "Switch from your current account to the school account",
 	Run: func(cmd *cobra.Command, args []string) {
+		app.Sync()
 		if state.SavedAccounts.SchoolUsername == "" {
 			logger.PrintWarningReadingAccount(utils.SchoolMode)
 			os.Exit(1)

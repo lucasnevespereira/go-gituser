@@ -2,6 +2,9 @@
 .vscode
 .idea
 
+tmp
+accounts.db
+
 bin/
 dist/
 

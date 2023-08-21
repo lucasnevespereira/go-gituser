@@ -1,9 +1,7 @@
 project_name: gituser
-
 before:
   hooks:
     - go mod tidy
-
 builds:
   - binary: gituser
     env:
@@ -12,27 +10,24 @@ builds:
       - linux
       - windows
       - darwin
-
+release:
+  prerelease: auto
+universal_binaries:
+  - replace: true
 archives:
   - files:
       - LICENSE
       - README.md
-  # If you want to use replacements in the archive name:
-  # name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
-
-checksum:
-  name_template: 'checksums.txt'
-
 snapshot:
   name_template: "{{ incpatch .Version }}-snapshot"
-
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
-
+checksum:
+  name_template: 'checksums.txt'
 brews:
   - name: gituser
     homepage: https://github.com/lucasnevespereira/homebrew-tools
@@ -40,6 +35,9 @@ brews:
       owner: lucasnevespereira
       name: homebrew-tools
       branch: main
+    commit_author:
+      name: lucasnevespereira
+      email: pereiraneveslucas@gmail.com
 
 # modelines
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json

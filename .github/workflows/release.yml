@@ -1,4 +1,4 @@
-name: Release
+name: goreleaser
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
-          version: latest
+          version: ${{ env.GITHUB_REF_NAME }}
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}

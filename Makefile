@@ -4,7 +4,7 @@ APP_NAME=gituser
 BIN_PATH=$(HOME)/bin
 
 fmt:
-	gofmt -s -l .
+	gofmt -s -l -w .
 
 lint: fmt
 	golangci-lint run
@@ -14,7 +14,7 @@ build:
 
 install: build
 	mkdir -p $(BIN_PATH) && mv $(APP_NAME) $(BIN_PATH)
-	
+
 clean: $(APP_NAME)
 	rm $(APP_NAME)
 

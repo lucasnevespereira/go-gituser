@@ -2,7 +2,7 @@
 
 <p>
     <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/lucasnevespereira/go-gituser.svg?logo=github&style=flat-square"></a>
-    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml/badge.svg"></a> 
+    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml/badge.svg"></a>
 </p>
 
 ## Overview
@@ -43,7 +43,7 @@ brew tap lucasnevespereira/tools
 brew install gituser
 ```
 
-or 
+or
 ```
 brew install lucasnevespereira/tools/gituser
 ```
@@ -72,7 +72,7 @@ Now you can call `gituser` globally 😀
 Run the following command :
 
 ```
-gituser config
+gituser setup
 ```
 
 <em>This command will help you setup your different git accounts. </em>

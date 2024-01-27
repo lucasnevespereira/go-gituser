@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"go-gituser/internal/app"
-	"go-gituser/internal/models"
-	"go-gituser/state"
-	"go-gituser/utils"
+	"go-gituser/internal/connectors/git"
+	"go-gituser/internal/logger"
+	"go-gituser/internal/services"
+	"go-gituser/internal/storage"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 var infoCmd = &cobra.Command{
@@ -14,15 +15,15 @@ var infoCmd = &cobra.Command{
 	Short: "Print information about the accounts",
 	Long:  "Print information about the accounts that you have configured",
 	Run: func(cmd *cobra.Command, args []string) {
-
-		app.Sync()
-
-		var currentAccounts models.Accounts
-		if state.SavedAccounts != nil {
-			currentAccounts = *state.SavedAccounts
+		accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
+		gitConnector := git.NewGitConnector()
+		accountService := services.NewAccountService(accountStorage, gitConnector)
+		savedAccounts, err := accountService.ReadSavedAccounts()
+		if err != nil {
+			logger.PrintErrorExecutingMode()
+			os.Exit(1)
 		}
-
-		utils.ReadAccountsData(currentAccounts)
+		logger.ReadAccountsData(savedAccounts)
 		os.Exit(1)
 	},
 }

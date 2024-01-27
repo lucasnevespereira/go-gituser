@@ -24,7 +24,6 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - dupl
@@ -34,7 +33,6 @@ linters:
     - goconst
     - gocritic
     - gofmt
-    - goimports
     - gomnd
     - gocyclo
     - gosec
@@ -48,16 +46,12 @@ linters:
     - predeclared
     - revive
     - staticcheck
-    - structcheck
     - stylecheck
     - thelper
     - tparallel
     - typecheck
     - unconvert
     - unparam
-    - varcheck
-    - whitespace
-    - wsl
 
 run:
   issues-exit-code: 1

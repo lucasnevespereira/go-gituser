@@ -1,17 +1,28 @@
-package app
+package services
 
 import (
-	"encoding/json"
 	"fmt"
+	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
-	"go-gituser/state"
-	"go-gituser/utils"
-	"go-gituser/utils/logger"
 	"os"
 	"strings"
 
 	"github.com/manifoldco/promptui"
 )
+
+type ISetupService interface {
+	SetupAccounts() error
+}
+
+type SetupService struct {
+	accountService IAccountService
+}
+
+func NewSetupService(accountService IAccountService) ISetupService {
+	return &SetupService{
+		accountService: accountService,
+	}
+}
 
 var (
 	inputPersonalUsername string
@@ -23,16 +34,23 @@ var (
 	shouldConfigureAgain  string
 )
 
-func SetupAccounts() {
+const (
+	workSelectLabel     = "💻 Work Account"
+	schoolSelectLabel   = "📚 School Account"
+	personalSelectLabel = "🏠 Personal Account"
+	cancelSelectLabel   = "Cancel"
+	yes                 = "Y"
+)
 
+func (s *SetupService) SetupAccounts() error {
 	for {
 		prompt := promptui.Select{
 			Label: "Please choose an account to configure",
 			Items: []string{
-				utils.WorkSelectLabel,
-				utils.SchoolSelectLabel,
-				utils.PersonalSelectLabel,
-				utils.CancelSelectLabel,
+				workSelectLabel,
+				schoolSelectLabel,
+				personalSelectLabel,
+				cancelSelectLabel,
 			},
 		}
 
@@ -43,16 +61,16 @@ func SetupAccounts() {
 		}
 
 		switch choice {
-		case utils.WorkSelectLabel:
-			getUserAccount(utils.WorkMode)
-			logger.PrintRemeberToActiveMode(utils.WorkMode)
-		case utils.SchoolSelectLabel:
-			getUserAccount(utils.SchoolMode)
-			logger.PrintRemeberToActiveMode(utils.SchoolMode)
-		case utils.PersonalSelectLabel:
-			getUserAccount(utils.PersonalMode)
-			logger.PrintRemeberToActiveMode(utils.PersonalMode)
-		case utils.CancelSelectLabel:
+		case workSelectLabel:
+			selectUserAccount(models.WorkMode)
+			logger.PrintRemeberToActiveMode(models.WorkMode)
+		case schoolSelectLabel:
+			selectUserAccount(models.SchoolMode)
+			logger.PrintRemeberToActiveMode(models.SchoolMode)
+		case personalSelectLabel:
+			selectUserAccount(models.PersonalMode)
+			logger.PrintRemeberToActiveMode(models.PersonalMode)
+		case cancelSelectLabel:
 			os.Exit(1)
 		}
 
@@ -64,19 +82,34 @@ func SetupAccounts() {
 
 		shouldConfigureAgain = strings.ToUpper(strings.TrimSpace(shouldConfigureAgain))
 
-		if shouldConfigureAgain != utils.Yes {
+		if shouldConfigureAgain != yes {
 			fmt.Println("Okay. Bye there!")
 			break
 		}
 	}
+	savedAccounts, err := s.accountService.ReadSavedAccounts()
+	if err != nil {
+		return models.ErrSetupAccounts
+	}
 
-	checkForEmptyAccountData()
-	writeAccountData()
+	checkForEmptyAccountData(savedAccounts)
+	if err = s.accountService.SaveAccounts(&models.Accounts{
+		PersonalUsername: inputPersonalUsername,
+		PersonalEmail:    inputPersonalEmail,
+		WorkUsername:     inputWorkUsername,
+		WorkEmail:        inputWorkEmail,
+		SchoolUsername:   inputSchoolUsername,
+		SchoolEmail:      inputSchoolEmail,
+	}); err != nil {
+		return models.ErrSetupAccounts
+	}
+
+	return nil
 }
 
-func getUserAccount(mode string) {
+func selectUserAccount(mode string) {
 	switch mode {
-	case utils.WorkMode:
+	case models.WorkMode:
 		fmt.Println("What is your work username ?")
 		_, errUsername := fmt.Scanln(&inputWorkUsername)
 		if errUsername != nil {
@@ -91,7 +124,7 @@ func getUserAccount(mode string) {
 			os.Exit(1)
 		}
 
-	case utils.SchoolMode:
+	case models.SchoolMode:
 		fmt.Println("What is your school username ?")
 		_, errUsername := fmt.Scanln(&inputSchoolUsername)
 		if errUsername != nil {
@@ -105,7 +138,7 @@ func getUserAccount(mode string) {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-	case utils.PersonalMode:
+	case models.PersonalMode:
 		fmt.Println("What is your personal username ?")
 		_, errUsername := fmt.Scanln(&inputPersonalUsername)
 		if errUsername != nil {
@@ -120,54 +153,27 @@ func getUserAccount(mode string) {
 			os.Exit(1)
 		}
 
-	case utils.CancelSelectLabel:
+	case cancelSelectLabel:
 		os.Exit(1)
 	}
 
 }
 
-func writeAccountData() {
-	accountsFile, err := utils.GetAccountsDataFile()
-	if err != nil {
-		logger.PrintError(err)
-	}
-
-	accounts := models.Accounts{
-		PersonalUsername: inputPersonalUsername,
-		PersonalEmail:    inputPersonalEmail,
-		WorkUsername:     inputWorkUsername,
-		WorkEmail:        inputWorkEmail,
-		SchoolUsername:   inputSchoolUsername,
-		SchoolEmail:      inputSchoolEmail,
-	}
-
-	file, err := json.MarshalIndent(accounts, "", " ")
-	if err != nil {
-		logger.PrintErrorWithMessage(err, "json.MarshalIndent")
-	}
-
-	os.WriteFile(accountsFile, file, 666)
-
-	state.SavedAccounts = &accounts
-}
-
 // checkForEmptyAccountData checks if there is no overrides with empty accounts.
-func checkForEmptyAccountData() {
-	Sync()
+func checkForEmptyAccountData(savedAccounts *models.Accounts) {
 
 	if inputPersonalEmail == "" || inputPersonalUsername == "" {
-		inputPersonalEmail = state.SavedAccounts.PersonalEmail
-		inputPersonalUsername = state.SavedAccounts.PersonalUsername
+		inputPersonalEmail = savedAccounts.PersonalEmail
+		inputPersonalUsername = savedAccounts.PersonalUsername
 	}
 
 	if inputWorkEmail == "" || inputWorkUsername == "" {
-		inputWorkEmail = state.SavedAccounts.WorkEmail
-		inputWorkUsername = state.SavedAccounts.WorkUsername
+		inputWorkEmail = savedAccounts.WorkEmail
+		inputWorkUsername = savedAccounts.WorkUsername
 	}
 
 	if inputSchoolEmail == "" || inputSchoolUsername == "" {
-		inputSchoolEmail = state.SavedAccounts.SchoolEmail
-		inputSchoolUsername = state.SavedAccounts.SchoolUsername
+		inputSchoolEmail = savedAccounts.SchoolEmail
+		inputSchoolUsername = savedAccounts.SchoolUsername
 	}
-
 }

@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"errors"
 	"go-gituser/internal/connectors/git"
 	"go-gituser/internal/logger"
-	"go-gituser/internal/models"
 	"go-gituser/internal/services"
 	"go-gituser/internal/storage"
 	"os"
@@ -12,25 +10,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var workCmd = &cobra.Command{
-	Use:   "work",
-	Short: "Switch to the work account",
-	Long:  "Switch from your current account to the work account",
+var configCmd = &cobra.Command{
+	Use:   "setup",
+	Short: "Setup your different git accounts",
+	Long:  "Modify or init the configuration (email,username) of your different git accounts (work,school,personal)",
 	Run: func(cmd *cobra.Command, args []string) {
 		accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
 		gitConnector := git.NewGitConnector()
 		accountService := services.NewAccountService(accountStorage, gitConnector)
-		err := accountService.Switch(models.WorkMode)
-		if err != nil && errors.Is(err, models.ErrNoAccountFound) {
-			logger.PrintWarningReadingAccount(models.WorkMode)
-			os.Exit(1)
-		} else if err != nil {
-			logger.PrintErrorExecutingMode()
+		setupService := services.NewSetupService(accountService)
+		if err := setupService.SetupAccounts(); err != nil {
+			logger.PrintError(err)
 			os.Exit(1)
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(workCmd)
+	rootCmd.AddCommand(configCmd)
 }

@@ -11,7 +11,7 @@ func PrintWarningReadingAccount(mode string) {
 	fmt.Fprintf(os.Stderr, color.YellowString("Warning: ")+"%v \n", "You have no "+mode+" account 🧐")
 	fmt.Println("")
 	color.Cyan("Tips:")
-	fmt.Printf("To add a %v account try to run gituser config \n", mode)
+	fmt.Printf("To add a %v account try to run gituser setup \n", mode)
 	fmt.Println("")
 }
 
@@ -24,7 +24,7 @@ func PrintNoActiveMode() {
 	fmt.Fprint(os.Stderr, color.YellowString("Active account not found \n"))
 	fmt.Println("")
 	info := color.New(color.Bold).PrintfFunc()
-	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "config")
+	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "setup")
 	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,pesonal,school)")
 }
 
@@ -32,6 +32,6 @@ func PrintUnsavedActiveMode() {
 	fmt.Fprint(os.Stderr, color.YellowString("Active account not found \n"))
 	fmt.Println("")
 	info := color.New(color.Bold).PrintfFunc()
-	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "config")
+	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "setup")
 	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,pesonal,school)")
 }

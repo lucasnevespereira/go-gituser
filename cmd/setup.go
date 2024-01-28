@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configCmd = &cobra.Command{
+var setupCmd = &cobra.Command{
 	Use:   "setup",
 	Short: "Setup your different git accounts",
 	Long:  "Modify or init the configuration (email,username) of your different git accounts (work,school,personal)",
@@ -27,5 +27,5 @@ var configCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(configCmd)
+	rootCmd.AddCommand(setupCmd)
 }

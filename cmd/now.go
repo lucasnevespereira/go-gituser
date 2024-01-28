@@ -26,35 +26,35 @@ var nowCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		currGitUsername, currGitEmail := accountService.ReadCurrentGitAccount()
-		if currGitUsername == "" || currGitEmail == "" {
+		currGitAccount := accountService.ReadCurrentGitAccount()
+		if currGitAccount.Username == "" || currGitAccount.Email == "" {
 			logger.PrintNoActiveMode()
 			return
 		}
 
-		if savedAccounts.PersonalUsername == (currGitUsername) && savedAccounts.PersonalEmail == (currGitEmail) {
-			logger.ReadCurrentAccountData(currGitUsername, currGitEmail, models.PersonalMode)
+		if savedAccounts.Personal.Username == (currGitAccount.Username) && savedAccounts.Personal.Email == (currGitAccount.Email) {
+			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
 			return
 		}
 
-		if savedAccounts.SchoolUsername == (currGitUsername) && savedAccounts.SchoolEmail == (currGitEmail) {
-			logger.ReadCurrentAccountData(currGitUsername, currGitEmail, models.SchoolMode)
+		if savedAccounts.School.Username == (currGitAccount.Username) && savedAccounts.School.Email == (currGitAccount.Email) {
+			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
 			return
 		}
 
-		if savedAccounts.WorkUsername == (currGitUsername) && savedAccounts.WorkEmail == (currGitEmail) {
-			logger.ReadCurrentAccountData(currGitUsername, currGitEmail, models.WorkMode)
+		if savedAccounts.Work.Username == (currGitAccount.Username) && savedAccounts.Work.Email == (currGitAccount.Email) {
+			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
 			return
 		}
 
-		isAccountSaved, err := accountService.CheckSavedAccount(currGitUsername, currGitEmail)
+		isAccountSaved, err := accountService.CheckSavedAccount(currGitAccount)
 		if err != nil {
 			logger.PrintErrorExecutingMode()
 			return
 		}
 
 		if !isAccountSaved {
-			logger.ReadUnsavedGitAccount(currGitUsername, currGitEmail)
+			logger.ReadUnsavedGitAccount(currGitAccount)
 			return
 		}
 	},

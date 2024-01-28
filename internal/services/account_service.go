@@ -1,9 +1,7 @@
 package services
 
 import (
-	"encoding/json"
 	"go-gituser/internal/connectors/git"
-	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
 	"go-gituser/internal/storage"
 	"strings"
@@ -12,8 +10,8 @@ import (
 type IAccountService interface {
 	Switch(mode string) error
 	ReadSavedAccounts() (*models.Accounts, error)
-	ReadCurrentGitAccount() (name, email string)
-	CheckSavedAccount(username, email string) (bool, error)
+	ReadCurrentGitAccount() *models.Account
+	CheckSavedAccount(account *models.Account) (bool, error)
 	SaveAccounts(accounts *models.Accounts) error
 }
 
@@ -34,39 +32,27 @@ func (s *AccountService) Switch(mode string) error {
 
 	switch mode {
 	case models.WorkMode:
-		if savedAccounts.WorkUsername == "" {
+		if savedAccounts.Work.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(savedAccounts.WorkUsername, savedAccounts.WorkEmail)
+		s.git.SetConfig(&savedAccounts.Work)
 	case models.SchoolMode:
-		if savedAccounts.SchoolUsername == "" {
+		if savedAccounts.School.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(savedAccounts.SchoolUsername, savedAccounts.SchoolEmail)
+		s.git.SetConfig(&savedAccounts.School)
 	case models.PersonalMode:
-		if savedAccounts.PersonalUsername == "" {
+		if savedAccounts.Personal.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(savedAccounts.PersonalUsername, savedAccounts.PersonalEmail)
+		s.git.SetConfig(&savedAccounts.Personal)
 	}
 
 	return nil
 }
 
 func (s *AccountService) ReadSavedAccounts() (*models.Accounts, error) {
-	accountsFile, err := s.storage.ReadAccountsFile()
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := logger.ReadFileData(accountsFile)
-	if err != nil {
-		return nil, err
-	}
-
-	var savedAccounts *models.Accounts
-
-	err = json.Unmarshal(data, &savedAccounts)
+	savedAccounts, err := s.storage.GetAccounts()
 	if err != nil {
 		return nil, err
 	}
@@ -74,23 +60,23 @@ func (s *AccountService) ReadSavedAccounts() (*models.Accounts, error) {
 	return savedAccounts, nil
 }
 
-func (s *AccountService) ReadCurrentGitAccount() (name, email string) {
-	currEmail, currName := s.git.ReadConfig()
-	currName = strings.TrimSuffix(currName, "\n")
-	currEmail = strings.TrimSuffix(currEmail, "\n")
-	return currName, currEmail
+func (s *AccountService) ReadCurrentGitAccount() *models.Account {
+	currGitAccount := s.git.ReadConfig()
+	currGitAccount.Username = strings.TrimSuffix(currGitAccount.Username, "\n")
+	currGitAccount.Email = strings.TrimSuffix(currGitAccount.Email, "\n")
+	return currGitAccount
 }
 
-func (s *AccountService) CheckSavedAccount(username, email string) (bool, error) {
+func (s *AccountService) CheckSavedAccount(account *models.Account) (bool, error) {
 	savedAccounts, err := s.ReadSavedAccounts()
 	if err != nil {
 		return false, err
 	}
-	return usernameIsSaved(savedAccounts, username) && emailIsSaved(savedAccounts, email), nil
+	return usernameIsSaved(savedAccounts, account.Username) && emailIsSaved(savedAccounts, account.Email), nil
 }
 
 func (s *AccountService) SaveAccounts(accounts *models.Accounts) error {
-	err := s.storage.WriteAccountsFile(accounts)
+	err := s.storage.SaveAccounts(accounts)
 	if err != nil {
 		return err
 	}
@@ -99,11 +85,11 @@ func (s *AccountService) SaveAccounts(accounts *models.Accounts) error {
 }
 
 func usernameIsSaved(savedAccounts *models.Accounts, username string) bool {
-	return savedAccounts.PersonalUsername == username ||
-		savedAccounts.WorkUsername == username || savedAccounts.SchoolUsername == username
+	return savedAccounts.Personal.Username == username ||
+		savedAccounts.Work.Username == username || savedAccounts.School.Username == username
 }
 
 func emailIsSaved(savedAccounts *models.Accounts, email string) bool {
-	return savedAccounts.PersonalEmail == email ||
-		savedAccounts.WorkEmail == email || savedAccounts.SchoolEmail == email
+	return savedAccounts.Personal.Email == email ||
+		savedAccounts.Work.Email == email || savedAccounts.School.Email == email
 }

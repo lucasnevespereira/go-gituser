@@ -94,12 +94,18 @@ func (s *SetupService) SetupAccounts() error {
 
 	checkForEmptyAccountData(savedAccounts)
 	if err = s.accountService.SaveAccounts(&models.Accounts{
-		PersonalUsername: inputPersonalUsername,
-		PersonalEmail:    inputPersonalEmail,
-		WorkUsername:     inputWorkUsername,
-		WorkEmail:        inputWorkEmail,
-		SchoolUsername:   inputSchoolUsername,
-		SchoolEmail:      inputSchoolEmail,
+		Personal: models.Account{
+			Username: inputPersonalUsername,
+			Email:    inputPersonalEmail,
+		},
+		Work: models.Account{
+			Username: inputWorkUsername,
+			Email:    inputWorkEmail,
+		},
+		School: models.Account{
+			Username: inputSchoolUsername,
+			Email:    inputSchoolEmail,
+		},
 	}); err != nil {
 		return models.ErrSetupAccounts
 	}
@@ -161,19 +167,18 @@ func selectUserAccount(mode string) {
 
 // checkForEmptyAccountData checks if there is no overrides with empty accounts.
 func checkForEmptyAccountData(savedAccounts *models.Accounts) {
-
 	if inputPersonalEmail == "" || inputPersonalUsername == "" {
-		inputPersonalEmail = savedAccounts.PersonalEmail
-		inputPersonalUsername = savedAccounts.PersonalUsername
+		inputPersonalEmail = savedAccounts.Personal.Email
+		inputPersonalUsername = savedAccounts.Personal.Username
 	}
 
 	if inputWorkEmail == "" || inputWorkUsername == "" {
-		inputWorkEmail = savedAccounts.WorkEmail
-		inputWorkUsername = savedAccounts.WorkUsername
+		inputWorkEmail = savedAccounts.Work.Email
+		inputWorkUsername = savedAccounts.Work.Username
 	}
 
 	if inputSchoolEmail == "" || inputSchoolUsername == "" {
-		inputSchoolEmail = savedAccounts.SchoolEmail
-		inputSchoolUsername = savedAccounts.SchoolUsername
+		inputSchoolEmail = savedAccounts.School.Email
+		inputSchoolUsername = savedAccounts.School.Username
 	}
 }

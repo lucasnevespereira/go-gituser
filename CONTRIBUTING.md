@@ -27,7 +27,12 @@ git clone <forked repo url>
 ### Install program
 
 - Run `make install` to install it in your `$HOME/bin`.
-- Run `gituser config` to setup your git data.
+- Run `gituser setup` to setup your git data.
+
+or
+
+- Run `make build` to build project in your local project.
+- Run `./gituser setup` to setup your git data.
 
 ## Create a new branch
 
@@ -39,7 +44,7 @@ Please use the following convention for your branch name:
 - **doc**: Documentation or assets changes.
 - **feat**: Adding a new feature.
 - **fix**: Fixing a bug.
-- **refactor**: A code change that neither fixes a bug nor adds a feature.
+- **refacto**: A code change that neither fixes a bug nor adds a feature.
 - **test**: Adding missing tests or correcting existing tests.
 
 Tour branch name should be :

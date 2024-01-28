@@ -15,8 +15,8 @@ const (
 )
 
 type IAccountJSONStorage interface {
-	ReadAccountsFile() (string, error)
-	WriteAccountsFile(accounts *models.Accounts) error
+	GetAccounts() (*models.Accounts, error)
+	SaveAccounts(accounts *models.Accounts) error
 }
 
 type AccountJSONStorage struct {
@@ -27,17 +27,28 @@ func NewAccountJSONStorage(file string) IAccountJSONStorage {
 	return &AccountJSONStorage{file: file}
 }
 
-func (s *AccountJSONStorage) ReadAccountsFile() (string, error) {
-	dataFile, err := getLocalFile(s.file)
+func (s *AccountJSONStorage) GetAccounts() (*models.Accounts, error) {
+	accountsFile, err := s.readAccountsFile()
 	if err != nil {
-		return "", errors.Wrap(err, "storage.GetAccountsDataFile")
+		return nil, err
 	}
 
-	return dataFile, nil
+	data, err := readFileData(accountsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var rowAccounts *models.Accounts
+	err = json.Unmarshal(data, &rowAccounts)
+	if err != nil {
+		return nil, err
+	}
+
+	return rowAccounts, nil
 }
 
-func (s *AccountJSONStorage) WriteAccountsFile(accounts *models.Accounts) error {
-	accountsFile, err := s.ReadAccountsFile()
+func (s *AccountJSONStorage) SaveAccounts(accounts *models.Accounts) error {
+	accountsFile, err := s.readAccountsFile()
 	if err != nil {
 		return errors.Wrap(err, "storage.WriteAccountsData.GetAccountsDataFile")
 	}
@@ -54,6 +65,15 @@ func (s *AccountJSONStorage) WriteAccountsFile(accounts *models.Accounts) error 
 	}
 
 	return nil
+}
+
+func (s *AccountJSONStorage) readAccountsFile() (string, error) {
+	dataFile, err := getLocalFile(s.file)
+	if err != nil {
+		return "", errors.Wrap(err, "storage.readAccountsFile.getLocalFile")
+	}
+
+	return dataFile, nil
 }
 
 func ensureLocalConfigDir() (string, error) {
@@ -92,4 +112,12 @@ func getLocalFile(filename string) (string, error) {
 		}
 	}
 	return localDataFile, nil
+}
+
+func readFileData(filename string) ([]byte, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "storage.ReadFileData")
+	}
+	return data, nil
 }

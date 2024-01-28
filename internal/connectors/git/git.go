@@ -3,12 +3,13 @@ package git
 import (
 	"fmt"
 	"go-gituser/internal/logger"
+	"go-gituser/internal/models"
 	"os/exec"
 )
 
 type IConnector interface {
-	ReadConfig() (name string, email string)
-	SetConfig(name string, email string)
+	ReadConfig() *models.Account
+	SetConfig(account *models.Account)
 }
 
 type Connector struct{}
@@ -17,7 +18,7 @@ func NewGitConnector() IConnector {
 	return &Connector{}
 }
 
-func (c *Connector) ReadConfig() (name, email string) {
+func (c *Connector) ReadConfig() *models.Account {
 	cmdName := exec.Command("/bin/sh", "-c", "git config --global user.name")
 	cmdEmail := exec.Command("/bin/sh", "-c", "git config --global user.email")
 
@@ -30,12 +31,15 @@ func (c *Connector) ReadConfig() (name, email string) {
 		logger.PrintErrorExecutingMode()
 	}
 
-	return string(emailBytes), string(nameBytes)
+	return &models.Account{
+		Username: string(nameBytes),
+		Email:    string(emailBytes),
+	}
 }
 
-func (c *Connector) SetConfig(name, email string) {
-	c.setConfigName(name)
-	c.setConfigEmail(email)
+func (c *Connector) SetConfig(account *models.Account) {
+	c.setConfigName(account.Username)
+	c.setConfigEmail(account.Email)
 }
 
 func (c *Connector) setConfigName(name string) {

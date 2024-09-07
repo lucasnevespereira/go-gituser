@@ -5,6 +5,8 @@ import (
 	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
 	"os/exec"
+	"runtime"
+	"strings"
 )
 
 type IConnector interface {
@@ -19,8 +21,15 @@ func NewGitConnector() IConnector {
 }
 
 func (c *Connector) ReadConfig() *models.Account {
-	cmdName := exec.Command("/bin/sh", "-c", "git config --global user.name")
-	cmdEmail := exec.Command("/bin/sh", "-c", "git config --global user.email")
+	var cmdName, cmdEmail *exec.Cmd
+
+	if runtime.GOOS == "windows" {
+		cmdName = exec.Command("cmd", "/C", "git config --global user.name")
+		cmdEmail = exec.Command("cmd", "/C", "git config --global user.email")
+	} else {
+		cmdName = exec.Command("/bin/sh", "-c", "git config --global user.name")
+		cmdEmail = exec.Command("/bin/sh", "-c", "git config --global user.email")
+	}
 
 	emailBytes, emailBytesErr := cmdEmail.CombinedOutput()
 	if emailBytesErr != nil {
@@ -32,8 +41,8 @@ func (c *Connector) ReadConfig() *models.Account {
 	}
 
 	return &models.Account{
-		Username: string(nameBytes),
-		Email:    string(emailBytes),
+		Username: strings.TrimSpace(string(nameBytes)),
+		Email:    strings.TrimSpace(string(emailBytes)),
 	}
 }
 
@@ -43,8 +52,13 @@ func (c *Connector) SetConfig(account *models.Account) {
 }
 
 func (c *Connector) setConfigName(name string) {
-	cmdStr := "git config --global user.name " + name
-	cmd := exec.Command("/bin/sh", "-c", cmdStr)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/C", "git config --global user.name "+name)
+	} else {
+		cmdStr := "git config --global user.name " + name
+		cmd = exec.Command("/bin/sh", "-c", cmdStr)
+	}
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		logger.PrintErrorExecutingMode()
@@ -53,8 +67,13 @@ func (c *Connector) setConfigName(name string) {
 }
 
 func (c *Connector) setConfigEmail(email string) {
-	cmdStr := "git config --global user.email " + email
-	cmd := exec.Command("/bin/sh", "-c", cmdStr)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/C", "git config --global user.email "+email)
+	} else {
+		cmdStr := "git config --global user.email " + email
+		cmd = exec.Command("/bin/sh", "-c", cmdStr)
+	}
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		logger.PrintErrorExecutingMode()

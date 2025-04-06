@@ -23,6 +23,14 @@ git config --global user.name "yourUsername"
 git config --global user.email "yourEmail"
 ```
 
+```
+git config --global user.signingkey "yourSigningKeyID"
+```
+
+```
+git config --global commit.gpgsign true
+```
+
 #### Modes
 
 There is currently 3 modes in this script:
@@ -30,6 +38,10 @@ There is currently 3 modes in this script:
 - 💻 <b>work</b> : for a work related git account.
 - 📚 <b>school</b> : for a school related git account.
 - 🏠 <b>personal</b> : for a personal related git account.
+
+#### Handle gpg key
+
+Gituser also handles GPG key switching, allowing you to set up a different GPG key for each account profile and enable signed commits.
 
 ## How to install
 

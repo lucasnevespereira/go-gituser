@@ -13,3 +13,5 @@ gituser
 go-gituser
 
 data/accounts.json
+
+.history/

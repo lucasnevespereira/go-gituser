@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
-const AppVersion = "v1.4.1"
+const AppVersion = "v1.4.2"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",

@@ -30,12 +30,8 @@ changelog:
 checksum:
   name_template: 'checksums.txt'
 brews:
-  - name: gituser
+  - name: homebrew-tools/gituser
     homepage: https://github.com/lucasnevespereira/homebrew-tools
-    tap:
-      owner: lucasnevespereira
-      name: homebrew-tools
-      branch: main
     commit_author:
       name: lucasnevespereira
       email: pereiraneveslucas@gmail.com

@@ -25,13 +25,16 @@ func NewSetupService(accountService IAccountService) ISetupService {
 }
 
 var (
-	inputPersonalUsername string
-	inputPersonalEmail    string
-	inputWorkUsername     string
-	inputWorkEmail        string
-	inputSchoolUsername   string
-	inputSchoolEmail      string
-	shouldConfigureAgain  string
+	inputPersonalUsername       string
+	inputPersonalEmail          string
+	inputPersonalSigningKeyID   string
+	inputWorkUsername           string
+	inputWorkEmail              string
+	inputWorkSigningKeyID       string
+	inputSchoolUsername         string
+	inputSchoolEmail            string
+	inputSchoolSigningKeyID     string
+	shouldConfigureAgain        string
 )
 
 const (
@@ -97,20 +100,35 @@ func (s *SetupService) SetupAccounts() error {
 		Personal: models.Account{
 			Username: inputPersonalUsername,
 			Email:    inputPersonalEmail,
+			SigningKeyID : inputPersonalSigningKeyID,
 		},
 		Work: models.Account{
 			Username: inputWorkUsername,
 			Email:    inputWorkEmail,
+			SigningKeyID : inputWorkSigningKeyID,
 		},
 		School: models.Account{
 			Username: inputSchoolUsername,
 			Email:    inputSchoolEmail,
+			SigningKeyID : inputSchoolSigningKeyID,
+
 		},
 	}); err != nil {
 		return models.ErrSetupAccounts
 	}
 
 	return nil
+}
+
+func askForGPGKey() bool {
+	var useGPG string
+	fmt.Println("Would you like to use GPG signing for this account? (y/n)")
+	_, err := fmt.Scanln(&useGPG)
+	if err != nil {
+		logger.PrintErrorReadingInput()
+		os.Exit(1)
+	}
+	return strings.ToUpper(strings.TrimSpace(useGPG)) == yes
 }
 
 func selectUserAccount(mode string) {
@@ -130,6 +148,14 @@ func selectUserAccount(mode string) {
 			os.Exit(1)
 		}
 
+		if askForGPGKey() {
+			fmt.Println("What is your work gpg signing key id ?")
+			_, errSigningKeyID := fmt.Scanln(&inputWorkSigningKeyID)
+			if errSigningKeyID != nil {
+				logger.PrintErrorReadingInput()
+				os.Exit(1)
+			}
+		}
 	case models.SchoolMode:
 		fmt.Println("What is your school username ?")
 		_, errUsername := fmt.Scanln(&inputSchoolUsername)
@@ -143,6 +169,15 @@ func selectUserAccount(mode string) {
 		if errEmail != nil {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
+		}
+
+		if askForGPGKey() {
+			fmt.Println("What is your school gpg signing key id ?")
+			_, errSigningKeyID := fmt.Scanln(&inputSchoolSigningKeyID)
+			if errSigningKeyID != nil {
+				logger.PrintErrorReadingInput()
+				os.Exit(1)
+			}
 		}
 	case models.PersonalMode:
 		fmt.Println("What is your personal username ?")
@@ -158,6 +193,15 @@ func selectUserAccount(mode string) {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
+		
+		if askForGPGKey() {
+			fmt.Println("What is your personal gpg signing key id ?")
+			_, errSigningKeyID := fmt.Scanln(&inputPersonalSigningKeyID)
+			if errSigningKeyID != nil {
+				logger.PrintErrorReadingInput()
+				os.Exit(1)
+			}
+		}
 
 	case cancelSelectLabel:
 		os.Exit(1)
@@ -165,20 +209,28 @@ func selectUserAccount(mode string) {
 
 }
 
-// checkForEmptyAccountData checks if there is no overrides with empty accounts.
 func checkForEmptyAccountData(savedAccounts *models.Accounts) {
 	if inputPersonalEmail == "" || inputPersonalUsername == "" {
 		inputPersonalEmail = savedAccounts.Personal.Email
 		inputPersonalUsername = savedAccounts.Personal.Username
+		if inputPersonalSigningKeyID == "" {
+			inputPersonalSigningKeyID = savedAccounts.Personal.SigningKeyID
+		}
 	}
 
 	if inputWorkEmail == "" || inputWorkUsername == "" {
 		inputWorkEmail = savedAccounts.Work.Email
 		inputWorkUsername = savedAccounts.Work.Username
+		if inputWorkSigningKeyID == "" {
+			inputWorkSigningKeyID = savedAccounts.Work.SigningKeyID
+		}
 	}
 
 	if inputSchoolEmail == "" || inputSchoolUsername == "" {
 		inputSchoolEmail = savedAccounts.School.Email
 		inputSchoolUsername = savedAccounts.School.Username
+		if inputSchoolSigningKeyID == "" {
+			inputSchoolSigningKeyID = savedAccounts.School.SigningKeyID
+		}
 	}
 }

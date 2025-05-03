@@ -32,17 +32,23 @@ var nowCmd = &cobra.Command{
 			return
 		}
 
-		if savedAccounts.Personal.Username == (currGitAccount.Username) && savedAccounts.Personal.Email == (currGitAccount.Email) {
+		if savedAccounts.Personal.Username == currGitAccount.Username && 
+		   savedAccounts.Personal.Email == currGitAccount.Email && 
+		   (currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
 			return
 		}
 
-		if savedAccounts.School.Username == (currGitAccount.Username) && savedAccounts.School.Email == (currGitAccount.Email) {
+		if savedAccounts.School.Username == currGitAccount.Username && 
+		   savedAccounts.School.Email == currGitAccount.Email && 
+		   (currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
 			return
 		}
 
-		if savedAccounts.Work.Username == (currGitAccount.Username) && savedAccounts.Work.Email == (currGitAccount.Email) {
+		if savedAccounts.Work.Username == currGitAccount.Username && 
+		   savedAccounts.Work.Email == currGitAccount.Email && 
+		   (currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
 			return
 		}

@@ -64,6 +64,7 @@ func (s *AccountService) ReadCurrentGitAccount() *models.Account {
 	currGitAccount := s.git.ReadConfig()
 	currGitAccount.Username = strings.TrimSuffix(currGitAccount.Username, "\n")
 	currGitAccount.Email = strings.TrimSuffix(currGitAccount.Email, "\n")
+	currGitAccount.SigningKeyID = strings.TrimSuffix(currGitAccount.SigningKeyID, "\n")
 	return currGitAccount
 }
 
@@ -72,7 +73,16 @@ func (s *AccountService) CheckSavedAccount(account *models.Account) (bool, error
 	if err != nil {
 		return false, err
 	}
-	return usernameIsSaved(savedAccounts, account.Username) && emailIsSaved(savedAccounts, account.Email), nil
+
+	if !usernameIsSaved(savedAccounts, account.Username) || !emailIsSaved(savedAccounts, account.Email) {
+		return false, nil
+	}
+
+	if account.SigningKeyID != "" && !SigningKeyIDIsSaved(savedAccounts, account.SigningKeyID) {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (s *AccountService) SaveAccounts(accounts *models.Accounts) error {
@@ -92,4 +102,12 @@ func usernameIsSaved(savedAccounts *models.Accounts, username string) bool {
 func emailIsSaved(savedAccounts *models.Accounts, email string) bool {
 	return savedAccounts.Personal.Email == email ||
 		savedAccounts.Work.Email == email || savedAccounts.School.Email == email
+}
+
+func SigningKeyIDIsSaved(savedAccounts *models.Accounts, signingkeyid string) bool {
+	if signingkeyid == "" {
+		return true
+	}
+	return savedAccounts.Personal.SigningKeyID == signingkeyid ||
+		savedAccounts.Work.SigningKeyID == signingkeyid || savedAccounts.School.SigningKeyID == signingkeyid
 }

@@ -11,8 +11,19 @@ import (
 
 var sshCmd = &cobra.Command{
 	Use:   "ssh",
-	Short: "Manage SSH keys",
-	Long:  "Manage SSH keys loaded in the SSH agent",
+	Short: "Manage SSH keys and configuration",
+	Long: `Manage SSH keys and configuration for GitUser accounts.
+
+This command provides tools to:
+• List SSH keys currently loaded in the SSH agent
+• Clear all SSH keys from the agent
+• Discover existing SSH keys on your system
+• Get help with SSH setup and configuration
+• Test SSH connections to GitHub and GitLab`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// Show help when no subcommand is provided
+		cmd.Help()
+	},
 }
 
 var sshListCmd = &cobra.Command{
@@ -28,13 +39,14 @@ var sshListCmd = &cobra.Command{
 		}
 
 		if len(keys) == 0 {
-			fmt.Println("No SSH keys loaded in agent")
+			fmt.Println("ℹ️  No SSH keys loaded in agent")
+			fmt.Println("💡 Tip: Switch to an account to load its SSH key: gituser work")
 			return
 		}
 
-		fmt.Println("SSH keys in agent:")
-		for _, key := range keys {
-			fmt.Printf("  🔑 %s\n", key)
+		fmt.Println("🔑 SSH keys currently loaded in agent:")
+		for i, key := range keys {
+			fmt.Printf("   %d. %s\n", i+1, key)
 		}
 	},
 }
@@ -54,6 +66,10 @@ var sshClearCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sshCmd)
+
 	sshCmd.AddCommand(sshListCmd)
 	sshCmd.AddCommand(sshClearCmd)
+	sshCmd.AddCommand(sshGuideCmd)
+	sshCmd.AddCommand(sshDiscoverCmd)
+	sshCmd.AddCommand(sshTestCmd)
 }

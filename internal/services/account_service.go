@@ -41,22 +41,32 @@ func (s *AccountService) Switch(mode string) error {
 		fmt.Printf("⚠️  Warning: Could not clear SSH keys: %v\n", err)
 	}
 
+	var targetAccount *models.Account
+
 	switch mode {
 	case models.WorkMode:
 		if savedAccounts.Work.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(&savedAccounts.Work)
+		targetAccount = &savedAccounts.Work
 	case models.SchoolMode:
 		if savedAccounts.School.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(&savedAccounts.School)
+		targetAccount = &savedAccounts.School
 	case models.PersonalMode:
 		if savedAccounts.Personal.Username == "" {
 			return models.ErrNoAccountFound
 		}
-		s.git.SetConfig(&savedAccounts.Personal)
+		targetAccount = &savedAccounts.Personal
+	}
+
+	// Set git configuration
+	s.git.SetConfig(targetAccount)
+
+	// Set SSH key
+	if err := s.SwitchSSHKey(targetAccount); err != nil {
+		fmt.Printf("⚠️  Warning: Could not configure SSH key: %v\n", err)
 	}
 
 	return nil

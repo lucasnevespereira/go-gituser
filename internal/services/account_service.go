@@ -11,8 +11,8 @@ import (
 
 type IAccountService interface {
 	Switch(mode string) error
-	ReadSavedAccounts() (*models.Accounts, error)
-	ReadCurrentGitAccount() *models.Account
+	GetSavedAccounts() (*models.Accounts, error)
+	GetCurrentGitAccount() *models.Account
 	CheckSavedAccount(account *models.Account) (bool, error)
 	SaveAccounts(accounts *models.Accounts) error
 	SwitchSSHKey(account *models.Account) error
@@ -30,7 +30,7 @@ func NewAccountService(accountStorage storage.IAccountJSONStorage, gitConnector 
 }
 
 func (s *AccountService) Switch(mode string) error {
-	savedAccounts, err := s.ReadSavedAccounts()
+	savedAccounts, err := s.GetSavedAccounts()
 	if err != nil {
 		return models.ErrNoAccountFound
 	}
@@ -72,7 +72,7 @@ func (s *AccountService) Switch(mode string) error {
 	return nil
 }
 
-func (s *AccountService) ReadSavedAccounts() (*models.Accounts, error) {
+func (s *AccountService) GetSavedAccounts() (*models.Accounts, error) {
 	savedAccounts, err := s.storage.GetAccounts()
 	if err != nil {
 		return nil, err
@@ -81,25 +81,23 @@ func (s *AccountService) ReadSavedAccounts() (*models.Accounts, error) {
 	return savedAccounts, nil
 }
 
-func (s *AccountService) ReadCurrentGitAccount() *models.Account {
+func (s *AccountService) GetCurrentGitAccount() *models.Account {
 	currGitAccount := s.git.ReadConfig()
 	currGitAccount.Username = strings.TrimSuffix(currGitAccount.Username, "\n")
 	currGitAccount.Email = strings.TrimSuffix(currGitAccount.Email, "\n")
 	currGitAccount.SigningKeyID = strings.TrimSuffix(currGitAccount.SigningKeyID, "\n")
+	currGitAccount.SSHKeyPath = strings.TrimSuffix(currGitAccount.SSHKeyPath, "\n")
 	return currGitAccount
 }
 
 func (s *AccountService) CheckSavedAccount(account *models.Account) (bool, error) {
-	savedAccounts, err := s.ReadSavedAccounts()
+	savedAccounts, err := s.GetSavedAccounts()
 	if err != nil {
+		fmt.Println("Error getting saved accounts:", err)
 		return false, err
 	}
 
 	if !usernameIsSaved(savedAccounts, account.Username) || !emailIsSaved(savedAccounts, account.Email) {
-		return false, nil
-	}
-
-	if account.SigningKeyID != "" && !SigningKeyIDIsSaved(savedAccounts, account.SigningKeyID) {
 		return false, nil
 	}
 
@@ -131,6 +129,14 @@ func SigningKeyIDIsSaved(savedAccounts *models.Accounts, signingkeyid string) bo
 	}
 	return savedAccounts.Personal.SigningKeyID == signingkeyid ||
 		savedAccounts.Work.SigningKeyID == signingkeyid || savedAccounts.School.SigningKeyID == signingkeyid
+}
+
+func SSHKeyPathIsSaved(savedAccounts *models.Accounts, sshkeypath string) bool {
+	if sshkeypath == "" {
+		return true
+	}
+	return savedAccounts.Personal.SSHKeyPath == sshkeypath ||
+		savedAccounts.Work.SSHKeyPath == sshkeypath || savedAccounts.School.SSHKeyPath == sshkeypath
 }
 
 func (s *AccountService) SwitchSSHKey(account *models.Account) error {

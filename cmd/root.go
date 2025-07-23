@@ -10,28 +10,19 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "gituser",
 	Short: "GitUser - Switch between git accounts easily",
-	Long: `🔄 GitUser - Your Complete Git Account Manager
+	Long: `GitUser - Switch between your Git accounts with one command
 
-GitUser helps you seamlessly switch between multiple Git accounts by managing:
-• Git username and email configuration
-• GPG signing keys for verified commits
-• SSH keys for secure authentication
-• Account switching with a single command
-
-Perfect for developers who work with multiple accounts (work, personal, school)
-and need to switch between them frequently without manual configuration.
+Perfect for developers with multiple Git accounts (work, personal, school).
+Automatically manages Git config, GPG keys, and SSH keys.
 
 Quick Start:
-  gituser setup          # Interactive setup wizard
-  gituser work           # Switch to work account
-  gituser personal       # Switch to personal account
-  gituser now            # Show current active account
-  gituser ssh discover   # Find your SSH keys
+  gituser setup     # Configure your accounts
+  gituser work      # Switch to work account
+  gituser personal  # Switch to personal account
+  gituser school    # Switch to student account
+  gituser now       # Check current account
 
-Get Help:
-  gituser help           # Show all commands
-  gituser ssh help       # SSH-specific commands
-  gituser manual         # Detailed manual`,
+Need help? Run: gituser help`,
 	Version: AppVersion,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.PrintManual()

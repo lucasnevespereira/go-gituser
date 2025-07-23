@@ -98,7 +98,7 @@ func (s *SetupService) SetupAccounts() error {
 		}
 	}
 
-	savedAccounts, err := s.accountService.ReadSavedAccounts()
+	savedAccounts, err := s.accountService.GetSavedAccounts()
 	if err != nil {
 		return models.ErrSetupAccounts
 	}
@@ -145,15 +145,15 @@ func (s *SetupService) selectUserAccount(mode string) {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-
+		fmt.Println()
 		fmt.Println("What is your work email?")
 		_, errEmail := fmt.Scanln(&inputWorkEmail)
 		if errEmail != nil {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-
-		if s.askForGPGKey() {
+		fmt.Println()
+		if s.askForGPGKey(mode) {
 			fmt.Println("What is your work GPG signing key ID?")
 			_, errSigningKeyID := fmt.Scanln(&inputWorkSigningKeyID)
 			if errSigningKeyID != nil {
@@ -161,9 +161,10 @@ func (s *SetupService) selectUserAccount(mode string) {
 				os.Exit(1)
 			}
 		}
-
 		// SSH setup
+		fmt.Println()
 		inputWorkSSHKeyPath = s.setupSSHKeyForAccount("work", inputWorkEmail, sshDiscovery)
+		fmt.Println()
 
 	case models.SchoolMode:
 		fmt.Println("\n=== 📚 School Account Setup ===")
@@ -174,6 +175,7 @@ func (s *SetupService) selectUserAccount(mode string) {
 			os.Exit(1)
 		}
 
+		fmt.Println()
 		fmt.Println("What is your school email?")
 		_, errEmail := fmt.Scanln(&inputSchoolEmail)
 		if errEmail != nil {
@@ -181,7 +183,8 @@ func (s *SetupService) selectUserAccount(mode string) {
 			os.Exit(1)
 		}
 
-		if s.askForGPGKey() {
+		fmt.Println()
+		if s.askForGPGKey(mode) {
 			fmt.Println("What is your school GPG signing key ID?")
 			_, errSigningKeyID := fmt.Scanln(&inputSchoolSigningKeyID)
 			if errSigningKeyID != nil {
@@ -191,7 +194,9 @@ func (s *SetupService) selectUserAccount(mode string) {
 		}
 
 		// SSH setup
+		fmt.Println()
 		inputSchoolSSHKeyPath = s.setupSSHKeyForAccount("school", inputSchoolEmail, sshDiscovery)
+		fmt.Println()
 
 	case models.PersonalMode:
 		fmt.Println("\n=== 🏠 Personal Account Setup ===")
@@ -201,7 +206,7 @@ func (s *SetupService) selectUserAccount(mode string) {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-
+		fmt.Println()
 		fmt.Println("What is your personal email?")
 		_, errEmail := fmt.Scanln(&inputPersonalEmail)
 		if errEmail != nil {
@@ -209,7 +214,8 @@ func (s *SetupService) selectUserAccount(mode string) {
 			os.Exit(1)
 		}
 
-		if s.askForGPGKey() {
+		fmt.Println()
+		if s.askForGPGKey(mode) {
 			fmt.Println("What is your personal GPG signing key ID?")
 			_, errSigningKeyID := fmt.Scanln(&inputPersonalSigningKeyID)
 			if errSigningKeyID != nil {
@@ -219,14 +225,19 @@ func (s *SetupService) selectUserAccount(mode string) {
 		}
 
 		// SSH setup
+		fmt.Println()
 		inputPersonalSSHKeyPath = s.setupSSHKeyForAccount("personal", inputPersonalEmail, sshDiscovery)
+		fmt.Println()
 
 	case cancelSelectLabel:
 		os.Exit(1)
 	}
 }
 
-func (s *SetupService) askForGPGKey() bool {
+func (s *SetupService) askForGPGKey(mode string) bool {
+	fmt.Printf("\n🔑 GPG Key Setup for %s Account\n", strings.Title(mode))
+	fmt.Println("=====================================")
+
 	var useGPG string
 	fmt.Println("Would you like to use GPG signing for this account? (y/n)")
 	_, err := fmt.Scanln(&useGPG)
@@ -352,12 +363,12 @@ func (s *SetupService) selectExistingSSHKey(keys []SSHKeyInfo, sshDiscovery ISSH
 
 	// Show public key if available
 	if keyInfo.HasPublic {
-		fmt.Println("\n📋 Your public key (add this to GitHub/GitLab):")
+		fmt.Println("\n📋 Your public key:")
 		if content, err := sshDiscovery.GetPublicKeyContent(selectedKey.Path); err == nil {
 			fmt.Printf("   %s\n", content)
 		}
 
-		sshDiscovery.ShowGitHubSetupGuide(selectedKey.Path + ".pub")
+		sshDiscovery.ShowGitHubSetupGuide(selectedKey.Path)
 	}
 
 	return selectedKey.Path

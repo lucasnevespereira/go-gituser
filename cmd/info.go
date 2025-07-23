@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"go-gituser/internal/connectors/git"
 	"go-gituser/internal/connectors/ssh"
 	"go-gituser/internal/logger"
@@ -20,8 +21,9 @@ var infoCmd = &cobra.Command{
 		gitConnector := git.NewGitConnector()
 		sshConnector := ssh.NewSSHConnector()
 		accountService := services.NewAccountService(accountStorage, gitConnector, sshConnector)
-		savedAccounts, err := accountService.ReadSavedAccounts()
+		savedAccounts, err := accountService.GetSavedAccounts()
 		if err != nil {
+			fmt.Println(err)
 			logger.PrintErrorExecutingMode()
 			os.Exit(1)
 		}

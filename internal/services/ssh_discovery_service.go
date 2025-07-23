@@ -25,7 +25,7 @@ type ISSHDiscoveryService interface {
 	DiscoverSSHKeys() ([]SSHKeyInfo, error)
 	GenerateSSHKey(email, keyType, filename string) error
 	ShowSSHSetupGuide()
-	ShowGitHubSetupGuide(publicKeyPath string)
+	ShowGitHubSetupGuide(keyPath string)
 	GetPublicKeyContent(privateKeyPath string) (string, error)
 	ValidateAndShowKeyInfo(keyPath string) (*SSHKeyInfo, error)
 }
@@ -202,204 +202,94 @@ func (s *SSHDiscoveryService) GenerateSSHKey(email, keyType, filename string) er
 	return nil
 }
 
-//	func (s *SSHDiscoveryService) ShowSSHSetupGuide() {
-//		fmt.Println()
-//		fmt.Println("🔑 SSH Key Setup Guide")
-//		fmt.Println("======================")
-//		fmt.Println()
-//		fmt.Println("SSH keys allow you to authenticate with Git repositories securely.")
-//		fmt.Println("You'll need separate SSH keys for each account (work, personal, school).")
-//		fmt.Println()
-//		fmt.Println("📍 Where SSH keys are stored:")
-//		homeDir, _ := os.UserHomeDir()
-//		fmt.Printf("   %s/.ssh/\n", homeDir)
-//		fmt.Println()
-//		fmt.Println("🔍 Common SSH key files:")
-//		fmt.Println("   id_ed25519     - Private key (recommended for new keys)")
-//		fmt.Println("   id_ed25519.pub - Public key (share this with GitHub/GitLab)")
-//		fmt.Println("   id_rsa         - Private RSA key (widely compatible)")
-//		fmt.Println("   id_rsa.pub     - Public RSA key")
-//		fmt.Println()
-//		fmt.Println("💡 Pro tip: Name your keys descriptively!")
-//		fmt.Println("   Examples: id_ed25519_work, id_rsa_personal, id_ed25519_school")
-//		fmt.Println()
-//	}
-
 func (s *SSHDiscoveryService) ShowSSHSetupGuide() {
 	fmt.Println()
-	fmt.Println("🔑 SSH Key Setup Guide")
-	fmt.Println("═══════════════════════════════════════════════════════════════")
+	fmt.Println("🔑 SSH Keys - Simple Guide")
+	fmt.Println("═══════════════════════════")
 	fmt.Println()
 
-	fmt.Println("📖 WHAT ARE SSH KEYS?")
-	fmt.Println("─────────────────────")
-	fmt.Println("SSH keys allow you to authenticate with Git repositories securely without")
-	fmt.Println("entering your password every time. They consist of two parts:")
-	fmt.Println("  • Private key (keep secret) - stays on your computer")
-	fmt.Println("  • Public key (share freely) - upload to GitHub/GitLab")
+	fmt.Println("What are SSH keys?")
+	fmt.Println("SSH keys let you connect to GitHub/GitLab without typing passwords.")
 	fmt.Println()
 
-	fmt.Println("🏗️  GITUSER WORKFLOW")
-	fmt.Println("───────────────────")
-	fmt.Println("GitUser helps you manage separate SSH keys for each account:")
-	fmt.Println("  • Work account    → work SSH key")
-	fmt.Println("  • Personal account → personal SSH key")
-	fmt.Println("  • School account  → school SSH key")
-	fmt.Println()
-	fmt.Println("When you switch accounts, GitUser automatically loads the correct SSH key!")
+	fmt.Println("How GitUser uses them:")
+	fmt.Println("• Work account → work SSH key")
+	fmt.Println("• Personal account → personal SSH key")
+	fmt.Println("• School account → school SSH key")
 	fmt.Println()
 
-	fmt.Println("📍 WHERE SSH KEYS LIVE")
-	fmt.Println("─────────────────────")
 	homeDir, _ := os.UserHomeDir()
-	fmt.Printf("All SSH keys are stored in: %s/.ssh/\n", homeDir)
+	fmt.Printf("Where they live: %s/.ssh/\n", homeDir)
 	fmt.Println()
 
-	fmt.Println("Common SSH key files:")
-	fmt.Println("┌──────────────────┬─────────────────────────────────────────────┐")
-	fmt.Println("│ File             │ Description                                 │")
-	fmt.Println("├──────────────────┼─────────────────────────────────────────────┤")
-	fmt.Println("│ id_ed25519       │ Private Ed25519 key (recommended)          │")
-	fmt.Println("│ id_ed25519.pub   │ Public Ed25519 key (upload to GitHub)      │")
-	fmt.Println("│ id_rsa           │ Private RSA key (widely compatible)        │")
-	fmt.Println("│ id_rsa.pub       │ Public RSA key (upload to GitHub)          │")
-	fmt.Println("└──────────────────┴─────────────────────────────────────────────┘")
+	fmt.Println("Getting started:")
+	fmt.Println("1. gituser setup       # Set up accounts & SSH keys")
+	fmt.Println("2. gituser ssh test    # Test connections")
+	fmt.Println("3. gituser work        # Switch accounts (SSH key switches too!)")
 	fmt.Println()
 
-	fmt.Println("💡 NAMING RECOMMENDATIONS")
-	fmt.Println("─────────────────────────")
-	fmt.Println("Use descriptive names for multiple accounts:")
-	fmt.Println("  • id_ed25519_work      ← for work projects")
-	fmt.Println("  • id_ed25519_personal  ← for personal projects")
-	fmt.Println("  • id_rsa_school        ← for school projects")
-	fmt.Println()
-
-	fmt.Println("🚀 GETTING STARTED")
-	fmt.Println("─────────────────")
-	fmt.Println("1. Check what you have:    gituser ssh discover")
-	fmt.Println("2. Set up your accounts:   gituser setup")
-	fmt.Println("3. Test connections:       gituser ssh test")
-	fmt.Println("4. Switch between accounts: gituser work")
-	fmt.Println()
-
-	fmt.Println("🆘 NEED HELP?")
-	fmt.Println("────────────")
-	fmt.Println("  • gituser ssh discover  - Find existing keys")
-	fmt.Println("  • gituser ssh test      - Test GitHub/GitLab connections")
-	fmt.Println("  • gituser setup         - Interactive setup wizard")
+	fmt.Println("Need help?")
+	fmt.Println("• gituser ssh discover # Find existing keys")
+	fmt.Println("• gituser ssh test     # Test GitHub/GitLab")
 	fmt.Println()
 }
 
-// func (s *SSHDiscoveryService) ShowGitHubSetupGuide(publicKeyPath string) {
-// 	fmt.Println()
-// 	fmt.Println("🐙 Adding SSH Key to GitHub/GitLab")
-// 	fmt.Println("===================================")
-// 	fmt.Println()
-
-// 	if publicKeyPath != "" {
-// 		fmt.Println("1. Copy your public key:")
-// 		content, err := s.GetPublicKeyContent(publicKeyPath)
-// 		if err == nil {
-// 			fmt.Printf("   %s\n", content)
-// 		} else {
-// 			fmt.Printf("   cat %s\n", publicKeyPath)
-// 		}
-// 		fmt.Println()
-// 	}
-
-// 	fmt.Println("2. Add to GitHub:")
-// 	fmt.Println("   • Go to GitHub.com → Settings → SSH and GPG keys")
-// 	fmt.Println("   • Click 'New SSH key'")
-// 	fmt.Println("   • Give it a descriptive title (e.g., 'Work Laptop')")
-// 	fmt.Println("   • Paste your public key")
-// 	fmt.Println()
-// 	fmt.Println("3. Add to GitLab:")
-// 	fmt.Println("   • Go to GitLab.com → Preferences → SSH Keys")
-// 	fmt.Println("   • Paste your public key")
-// 	fmt.Println("   • Add a descriptive title")
-// 	fmt.Println()
-// 	fmt.Println("4. Test your connection:")
-// 	fmt.Println("   ssh -T git@github.com")
-// 	fmt.Println("   ssh -T git@gitlab.com")
-// 	fmt.Println()
-// }
-
-func (s *SSHDiscoveryService) ShowGitHubSetupGuide(publicKeyPath string) {
+func (s *SSHDiscoveryService) ShowGitHubSetupGuide(keyPath string) {
 	fmt.Println()
-	fmt.Println("🐙 Adding SSH Key to GitHub/GitLab")
+	fmt.Println()
+	fmt.Println("🔗 Add SSH Key to GitHub/GitLab")
 	fmt.Println("═══════════════════════════════════════════════════════════════")
 	fmt.Println()
-
+	publicKeyPath := keyPath + ".pub"
 	if publicKeyPath != "" {
 		fmt.Println("📋 STEP 1: COPY YOUR PUBLIC KEY")
 		fmt.Println("──────────────────────────────────")
-		fmt.Println("Your public key (copy this entire text):")
 		fmt.Println()
-
-		content, err := s.GetPublicKeyContent(publicKeyPath)
+		content, err := s.GetPublicKeyContent(keyPath)
 		if err == nil {
-			fmt.Printf("┌─────────────────────────────────────────────────────────────┐\n")
-			fmt.Printf("│ %-59s │\n", content[:min(59, len(content))])
-			if len(content) > 59 {
-				// Handle long keys by wrapping
-				remaining := content[59:]
-				for len(remaining) > 0 {
-					line := remaining[:min(59, len(remaining))]
-					fmt.Printf("│ %-59s │\n", line)
-					if len(remaining) <= 59 {
-						break
-					}
-					remaining = remaining[59:]
-				}
-			}
-			fmt.Printf("└─────────────────────────────────────────────────────────────┘\n")
+			fmt.Println("Copy this key (select all):")
+			fmt.Println()
+			fmt.Printf("  %s\n", content)
 		} else {
-			fmt.Printf("💻 Or copy with command: cat %s\n", publicKeyPath)
+			fmt.Printf("Run this command to see your key:\n")
+			fmt.Printf("  cat %s\n", publicKeyPath)
 		}
 		fmt.Println()
 	}
 
-	fmt.Println("🐙 STEP 2: ADD TO GITHUB")
+	fmt.Println("🐙 STEP 2: Add to GitHub")
 	fmt.Println("────────────────────────")
 	fmt.Println("1. Go to: https://github.com/settings/keys")
 	fmt.Println("2. Click the green 'New SSH key' button")
-	fmt.Println("3. Fill in the form:")
-	fmt.Println("   • Title: Give it a name (e.g., 'Work Laptop - GitUser')")
-	fmt.Println("   • Key type: Authentication Key")
+	fmt.Println("3. Fill out the form:")
+	fmt.Println("   • Title: Something like 'GitUser - Work Laptop'")
 	fmt.Println("   • Key: Paste your public key from above")
 	fmt.Println("4. Click 'Add SSH key'")
 	fmt.Println()
 
-	fmt.Println("🦊 STEP 3: ADD TO GITLAB")
+	fmt.Println("🦊 STEP 3: Add to GitLab")
 	fmt.Println("────────────────────────")
 	fmt.Println("1. Go to: https://gitlab.com/-/profile/keys")
-	fmt.Println("2. Fill in the form:")
-	fmt.Println("   • Title: Give it a name (e.g., 'Work Laptop - GitUser')")
+	fmt.Println("2. Fill out the form:")
+	fmt.Println("   • Title: Something like 'GitUser - Work Laptop'")
 	fmt.Println("   • Key: Paste your public key from above")
-	fmt.Println("   • Usage type: Authentication & Signing (recommended)")
 	fmt.Println("3. Click 'Add key'")
 	fmt.Println()
 
-	fmt.Println("🧪 STEP 4: TEST YOUR CONNECTION")
-	fmt.Println("──────────────────────────────")
-	fmt.Println("Run these commands to test:")
+	fmt.Println("✅ STEP 4: Test Your Setup")
+	fmt.Println("──────────────────────────")
+	fmt.Println("Test your connections with:")
 	fmt.Println("  gituser ssh test")
+	fmt.Println()
+	fmt.Println("Or test manually:")
 	fmt.Println("  ssh -T git@github.com")
 	fmt.Println("  ssh -T git@gitlab.com")
 	fmt.Println()
 
-	fmt.Println("✅ SUCCESS MESSAGES TO LOOK FOR:")
-	fmt.Println("GitHub: 'Hi username! You've successfully authenticated...'")
-	fmt.Println("GitLab: 'Welcome to GitLab, @username!'")
+	fmt.Println("🎉 Success messages to look for:")
+	fmt.Println("  GitHub: 'Hi username! You've successfully authenticated...'")
+	fmt.Println("  GitLab: 'Welcome to GitLab, @username!'")
 	fmt.Println()
-}
-
-// Helper function for string length
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 func (s *SSHDiscoveryService) GetPublicKeyContent(privateKeyPath string) (string, error) {

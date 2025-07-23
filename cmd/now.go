@@ -22,13 +22,13 @@ var nowCmd = &cobra.Command{
 		sshConnector := ssh.NewSSHConnector()
 		accountService := services.NewAccountService(accountStorage, gitConnector, sshConnector)
 
-		savedAccounts, err := accountService.ReadSavedAccounts()
+		savedAccounts, err := accountService.GetSavedAccounts()
 		if err != nil {
 			logger.PrintErrorExecutingMode()
 			os.Exit(1)
 		}
 
-		currGitAccount := accountService.ReadCurrentGitAccount()
+		currGitAccount := accountService.GetCurrentGitAccount()
 		if currGitAccount.Username == "" || currGitAccount.Email == "" {
 			logger.PrintNoActiveMode()
 			return
@@ -36,21 +36,24 @@ var nowCmd = &cobra.Command{
 
 		if savedAccounts.Personal.Username == currGitAccount.Username &&
 			savedAccounts.Personal.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) {
+			(currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) &&
+			(currGitAccount.SSHKeyPath == "" || savedAccounts.Personal.SSHKeyPath == currGitAccount.SSHKeyPath) {
 			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
 			return
 		}
 
 		if savedAccounts.School.Username == currGitAccount.Username &&
 			savedAccounts.School.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) {
+			(currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) &&
+			(currGitAccount.SSHKeyPath == "" || savedAccounts.School.SSHKeyPath == currGitAccount.SSHKeyPath) {
 			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
 			return
 		}
 
 		if savedAccounts.Work.Username == currGitAccount.Username &&
 			savedAccounts.Work.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) {
+			(currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) &&
+			(currGitAccount.SSHKeyPath == "" || savedAccounts.Work.SSHKeyPath == currGitAccount.SSHKeyPath) {
 			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
 			return
 		}

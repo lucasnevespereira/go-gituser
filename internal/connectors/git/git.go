@@ -42,10 +42,8 @@ func (c *Connector) ReadConfig() *models.Account {
 		logger.PrintErrorExecutingMode()
 	}
 
-	cmdSigningKeyIDBytes, cmdSigningKeyIDBytesErr := cmdSigningKeyID.CombinedOutput()
-	if cmdSigningKeyIDBytesErr != nil {
-		logger.PrintErrorExecutingMode()
-	}
+	// we ignore gpg signing key err, since it is optional
+	cmdSigningKeyIDBytes, _ := cmdSigningKeyID.CombinedOutput()
 
 	return &models.Account{
 		Username:     strings.TrimSpace(string(nameBytes)),

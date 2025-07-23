@@ -3,23 +3,21 @@
     <img src="assets/inline-logo.png" alt="logo" width="320" height="200" />
     <h1>GitUser CLI</h1>
     <h3><em>Switch between git accounts easily</em></h3>
-<p>
-    <img src="https://img.shields.io/github/contributors/lucasnevespereira/go-gituser?style=plastic" alt="Contributors">
-    <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/lucasnevespereira/go-gituser.svg?logo=github&style=flat-square"></a>
-    <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml/badge.svg"></a>
-    <a href="https://github.com/lucasnevespereira/go-gituser">
-          <img alt="Stars" src="https://img.shields.io/github/stars/lucasnevespereira/go-gituser?style=flat-square&logo=github">
-    </a>
-    <img src="https://img.shields.io/github/issues/lucasnevespereira/go-gituser" alt="Issues">
-    <a href="https://github.com/lucasnevespereira/go-gituser">
-          <img alt="Forks" src="https://img.shields.io/github/forks/lucasnevespereira/go-gituser?style=flat-square&logo=github">
-    </a>
-
-    <a href="LICENSE">
-      <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License">
-    </a>
-</p>
-
+    <p>
+        <img src="https://img.shields.io/github/contributors/lucasnevespereira/go-gituser?style=plastic" alt="Contributors">
+        <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/lucasnevespereira/go-gituser.svg?logo=github&style=flat-square"></a>
+        <a href="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml"><img alt="GitHub release" src="https://github.com/lucasnevespereira/go-gituser/actions/workflows/release.yml/badge.svg"></a>
+        <a href="https://github.com/lucasnevespereira/go-gituser">
+            <img alt="Stars" src="https://img.shields.io/github/stars/lucasnevespereira/go-gituser?style=flat-square&logo=github">
+        </a>
+        <img src="https://img.shields.io/github/issues/lucasnevespereira/go-gituser" alt="Issues">
+        <a href="https://github.com/lucasnevespereira/go-gituser">
+            <img alt="Forks" src="https://img.shields.io/github/forks/lucasnevespereira/go-gituser?style=flat-square&logo=github">
+        </a>
+        <a href="LICENSE">
+        <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License">
+        </a>
+    </p>
 </div>
 
 

@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 )
 
@@ -18,8 +19,11 @@ type ISSHConnector interface {
 	ClearAgent() error
 	IsKeyLoaded(keyPath string) bool
 	ValidateKeyPath(keyPath string) error
+
 	GetDefaultKeyPath() string
 	StartSSHAgent() error
+
+	GetPublicKeyContent(publicKeyPath string) (string, error)
 }
 
 type SSHConnector struct{}
@@ -75,7 +79,7 @@ func (s *SSHConnector) RemoveKeyFromAgent(keyPath string) error {
 
 func (s *SSHConnector) ListKeysInAgent() ([]string, error) {
 	var cmd *exec.Cmd
-	cmd = exec.Command("ssh-add", "-l")
+	cmd = exec.Command("ssh-add", "-L")
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -120,13 +124,13 @@ func (s *SSHConnector) IsKeyLoaded(keyPath string) bool {
 		return false
 	}
 
-	// Extract just the filename for comparison
-	keyFileName := filepath.Base(keyPath)
+	pubContent, err := s.GetPublicKeyContent(keyPath)
+	if err != nil {
+		return false
+	}
 
-	for _, key := range keys {
-		if strings.Contains(key, keyFileName) || strings.Contains(key, keyPath) {
-			return true
-		}
+	if slices.Contains(keys, pubContent) {
+		return true
 	}
 
 	return false
@@ -214,4 +218,12 @@ func (s *SSHConnector) StartSSHAgent() error {
 	}
 
 	return nil
+}
+
+func (s *SSHConnector) GetPublicKeyContent(publicKeyPath string) (string, error) {
+	content, err := os.ReadFile(publicKeyPath)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(content)), nil
 }

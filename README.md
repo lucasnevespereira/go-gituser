@@ -1,7 +1,6 @@
 
 <div align="center">
     <img src="assets/inline-logo.png" alt="logo" width="320" height="200" />
-    <h1>GitUser CLI</h1>
     <h3><em>Switch between git accounts easily</em></h3>
     <p>
         <img src="https://img.shields.io/github/contributors/lucasnevespereira/go-gituser?style=plastic" alt="Contributors">

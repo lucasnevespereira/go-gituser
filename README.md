@@ -43,6 +43,8 @@ GitUser helps you switch between different git accounts effortlessly, automating
 
 ## What It Automates
 
+Instead of manually running these commands every time you switch projects:
+
 ```bash
 git config --global user.name "yourUsername"
 git config --global user.email "yourEmail"
@@ -53,7 +55,7 @@ ssh-add ~/.ssh/your_ssh_key
 
 Just run: `gituser work` ✨
 
-#### Account Modes
+## Account Modes
 
 There is currently 3 modes available:
 
@@ -62,7 +64,7 @@ There is currently 3 modes available:
 - 🏠 <b>personal</b> : for a personal related git account.
 
 
-#### Features
+## Features
 
 - **🔄 Instant Account Switching** - Switch between work, school, and personal accounts
 - **🔧 Complete Git Configuration** - Manages username, email, and GPG signing
@@ -141,7 +143,7 @@ Check current account:
 gituser now
 ```
 
-### Commands
+## Commands
 
 
 | Command | Description |
@@ -165,7 +167,7 @@ gituser now
 | `gituser quickstart` | Show quick start guide |
 
 
-### Advanced Features
+## Advanced Features
 
 ### SSH Key Management
 

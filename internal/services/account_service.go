@@ -1,7 +1,9 @@
 package services
 
 import (
+	"fmt"
 	"go-gituser/internal/connectors/git"
+	"go-gituser/internal/connectors/ssh"
 	"go-gituser/internal/models"
 	"go-gituser/internal/storage"
 	"strings"
@@ -13,21 +15,30 @@ type IAccountService interface {
 	ReadCurrentGitAccount() *models.Account
 	CheckSavedAccount(account *models.Account) (bool, error)
 	SaveAccounts(accounts *models.Accounts) error
+	SwitchSSHKey(account *models.Account) error
+	ClearAllSSHKeys() error
 }
 
 type AccountService struct {
-	git     git.IConnector
 	storage storage.IAccountJSONStorage
+	git     git.IConnector
+	ssh     ssh.ISSHConnector
 }
 
-func NewAccountService(accountStorage storage.IAccountJSONStorage, gitConnector git.IConnector) IAccountService {
-	return &AccountService{storage: accountStorage, git: gitConnector}
+func NewAccountService(accountStorage storage.IAccountJSONStorage, gitConnector git.IConnector, sshConnector ssh.ISSHConnector) IAccountService {
+	return &AccountService{storage: accountStorage, git: gitConnector, ssh: sshConnector}
 }
 
 func (s *AccountService) Switch(mode string) error {
 	savedAccounts, err := s.ReadSavedAccounts()
 	if err != nil {
 		return models.ErrNoAccountFound
+	}
+
+	// Clear all SSH keys from agent before switching
+	if err := s.ClearAllSSHKeys(); err != nil {
+		// Don't fail the entire operation if SSH clearing fails
+		fmt.Printf("⚠️  Warning: Could not clear SSH keys: %v\n", err)
 	}
 
 	switch mode {
@@ -110,4 +121,17 @@ func SigningKeyIDIsSaved(savedAccounts *models.Accounts, signingkeyid string) bo
 	}
 	return savedAccounts.Personal.SigningKeyID == signingkeyid ||
 		savedAccounts.Work.SigningKeyID == signingkeyid || savedAccounts.School.SigningKeyID == signingkeyid
+}
+
+func (s *AccountService) SwitchSSHKey(account *models.Account) error {
+	if account.SSHKeyPath == "" {
+		fmt.Println("ℹ️ No SSH key configured for this account")
+		return nil
+	}
+
+	return s.ssh.AddKeyToAgent(account.SSHKeyPath)
+}
+
+func (s *AccountService) ClearAllSSHKeys() error {
+	return s.ssh.ClearAgent()
 }

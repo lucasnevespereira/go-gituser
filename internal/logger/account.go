@@ -2,8 +2,9 @@ package logger
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"go-gituser/internal/models"
+
+	"github.com/fatih/color"
 )
 
 func ReadAccountsData(accounts *models.Accounts) {
@@ -45,6 +46,9 @@ func ReadCurrentAccountData(account *models.Account, mode string) {
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
 	fmt.Printf(color.BlueString("=>")+" Signing Key: %v\n", account.SigningKeyID)
+	if account.SSHKeyPath != "" {
+		fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", account.SSHKeyPath)
+	}
 
 }
 
@@ -53,7 +57,6 @@ func ReadUnsavedGitAccount(account *models.Account) {
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
 	fmt.Printf(color.BlueString("=>")+" Signing Key: %v\n", account.SigningKeyID)
-
 
 	fmt.Println("This account is " + color.YellowString("unsaved") + ". Run <gituser setup> to save it to a " + color.CyanString("mode"))
 }

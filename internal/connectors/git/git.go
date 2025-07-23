@@ -21,7 +21,7 @@ func NewGitConnector() IConnector {
 }
 
 func (c *Connector) ReadConfig() *models.Account {
-	var cmdName, cmdEmail ,cmdSigningKeyID *exec.Cmd
+	var cmdName, cmdEmail, cmdSigningKeyID *exec.Cmd
 
 	if runtime.GOOS == "windows" {
 		cmdName = exec.Command("cmd", "/C", "git config --global user.name")
@@ -47,11 +47,10 @@ func (c *Connector) ReadConfig() *models.Account {
 		logger.PrintErrorExecutingMode()
 	}
 
-
 	return &models.Account{
-		Username: strings.TrimSpace(string(nameBytes)),
-		Email:    strings.TrimSpace(string(emailBytes)),
-		SigningKeyID:    strings.TrimSpace(string(cmdSigningKeyIDBytes)),
+		Username:     strings.TrimSpace(string(nameBytes)),
+		Email:        strings.TrimSpace(string(emailBytes)),
+		SigningKeyID: strings.TrimSpace(string(cmdSigningKeyIDBytes)),
 	}
 }
 
@@ -101,7 +100,7 @@ func (c *Connector) setConfigSigningKey(SigningKeyID string) {
 
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/C", "git config --global user.signingkey "+ SigningKeyID)
+		cmd = exec.Command("cmd", "/C", "git config --global user.signingkey "+SigningKeyID)
 	} else {
 		cmdStr := "git config --global user.signingkey " + SigningKeyID
 		cmd = exec.Command("/bin/sh", "-c", cmdStr)
@@ -111,7 +110,7 @@ func (c *Connector) setConfigSigningKey(SigningKeyID string) {
 		logger.PrintErrorExecutingMode()
 	}
 	fmt.Println("🔑 " + SigningKeyID + " was set as gpg signing key")
-	
+
 	// Enable commit signing when setting a signing key
 	c.setCommitSign(true)
 }

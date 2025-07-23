@@ -1,7 +1,9 @@
 package services
 
 import (
+	"bufio"
 	"fmt"
+	"go-gituser/internal/connectors/ssh"
 	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
 	"os"
@@ -25,16 +27,19 @@ func NewSetupService(accountService IAccountService) ISetupService {
 }
 
 var (
-	inputPersonalUsername       string
-	inputPersonalEmail          string
-	inputPersonalSigningKeyID   string
-	inputWorkUsername           string
-	inputWorkEmail              string
-	inputWorkSigningKeyID       string
-	inputSchoolUsername         string
-	inputSchoolEmail            string
-	inputSchoolSigningKeyID     string
-	shouldConfigureAgain        string
+	inputPersonalUsername     string
+	inputPersonalEmail        string
+	inputPersonalSigningKeyID string
+	inputPersonalSSHKeyPath   string
+	inputWorkUsername         string
+	inputWorkEmail            string
+	inputWorkSigningKeyID     string
+	inputWorkSSHKeyPath       string
+	inputSchoolUsername       string
+	inputSchoolEmail          string
+	inputSchoolSigningKeyID   string
+	inputSchoolSSHKeyPath     string
+	shouldConfigureAgain      string
 )
 
 const (
@@ -98,26 +103,61 @@ func (s *SetupService) SetupAccounts() error {
 	checkForEmptyAccountData(savedAccounts)
 	if err = s.accountService.SaveAccounts(&models.Accounts{
 		Personal: models.Account{
-			Username: inputPersonalUsername,
-			Email:    inputPersonalEmail,
-			SigningKeyID : inputPersonalSigningKeyID,
+			Username:     inputPersonalUsername,
+			Email:        inputPersonalEmail,
+			SigningKeyID: inputPersonalSigningKeyID,
 		},
 		Work: models.Account{
-			Username: inputWorkUsername,
-			Email:    inputWorkEmail,
-			SigningKeyID : inputWorkSigningKeyID,
+			Username:     inputWorkUsername,
+			Email:        inputWorkEmail,
+			SigningKeyID: inputWorkSigningKeyID,
 		},
 		School: models.Account{
-			Username: inputSchoolUsername,
-			Email:    inputSchoolEmail,
-			SigningKeyID : inputSchoolSigningKeyID,
-
+			Username:     inputSchoolUsername,
+			Email:        inputSchoolEmail,
+			SigningKeyID: inputSchoolSigningKeyID,
 		},
 	}); err != nil {
 		return models.ErrSetupAccounts
 	}
 
 	return nil
+}
+
+func askForSSHKey(sshConnector ssh.ISSHConnector) string {
+	var useSSH string
+	fmt.Println("Would you like to configure an SSH key for this account? (y/n)")
+	_, err := fmt.Scanln(&useSSH)
+	if err != nil {
+		logger.PrintErrorReadingInput()
+		os.Exit(1)
+	}
+
+	if strings.ToUpper(strings.TrimSpace(useSSH)) != yes {
+		return ""
+	}
+
+	var sshKeyPath string
+	defaultPath := sshConnector.GetDefaultKeyPath()
+	fmt.Printf("Enter the path to your SSH private key (default: %s): ", defaultPath)
+
+	// Read the full line to handle paths with spaces
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		sshKeyPath = strings.TrimSpace(scanner.Text())
+	}
+
+	if sshKeyPath == "" {
+		sshKeyPath = defaultPath
+	}
+
+	// Validate the SSH key
+	if err := sshConnector.ValidateKeyPath(sshKeyPath); err != nil {
+		fmt.Printf("⚠️  Warning: %v\n", err)
+		fmt.Println("You can update this later by running setup again.")
+	}
+
+	return sshKeyPath
 }
 
 func askForGPGKey() bool {
@@ -156,6 +196,7 @@ func selectUserAccount(mode string) {
 				os.Exit(1)
 			}
 		}
+
 	case models.SchoolMode:
 		fmt.Println("What is your school username ?")
 		_, errUsername := fmt.Scanln(&inputSchoolUsername)
@@ -193,7 +234,7 @@ func selectUserAccount(mode string) {
 			logger.PrintErrorReadingInput()
 			os.Exit(1)
 		}
-		
+
 		if askForGPGKey() {
 			fmt.Println("What is your personal gpg signing key id ?")
 			_, errSigningKeyID := fmt.Scanln(&inputPersonalSigningKeyID)

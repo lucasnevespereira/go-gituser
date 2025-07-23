@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"go-gituser/internal/connectors/git"
+	"go-gituser/internal/connectors/ssh"
 	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
 	"go-gituser/internal/services"
@@ -18,7 +19,8 @@ var nowCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
 		gitConnector := git.NewGitConnector()
-		accountService := services.NewAccountService(accountStorage, gitConnector)
+		sshConnector := ssh.NewSSHConnector()
+		accountService := services.NewAccountService(accountStorage, gitConnector, sshConnector)
 
 		savedAccounts, err := accountService.ReadSavedAccounts()
 		if err != nil {
@@ -32,23 +34,23 @@ var nowCmd = &cobra.Command{
 			return
 		}
 
-		if savedAccounts.Personal.Username == currGitAccount.Username && 
-		   savedAccounts.Personal.Email == currGitAccount.Email && 
-		   (currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) {
+		if savedAccounts.Personal.Username == currGitAccount.Username &&
+			savedAccounts.Personal.Email == currGitAccount.Email &&
+			(currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
 			return
 		}
 
-		if savedAccounts.School.Username == currGitAccount.Username && 
-		   savedAccounts.School.Email == currGitAccount.Email && 
-		   (currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) {
+		if savedAccounts.School.Username == currGitAccount.Username &&
+			savedAccounts.School.Email == currGitAccount.Email &&
+			(currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
 			return
 		}
 
-		if savedAccounts.Work.Username == currGitAccount.Username && 
-		   savedAccounts.Work.Email == currGitAccount.Email && 
-		   (currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) {
+		if savedAccounts.Work.Username == currGitAccount.Username &&
+			savedAccounts.Work.Email == currGitAccount.Email &&
+			(currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) {
 			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
 			return
 		}

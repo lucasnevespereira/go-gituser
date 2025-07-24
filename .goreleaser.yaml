@@ -34,7 +34,7 @@ homebrew_casks:
   - name: gituser
 
     url:
-      template: "https://github.com/yourusername/go-gituser/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+      template: "https://github.com/lucasnevespereira/go-gituser/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
       verified: "github.com/lucanevespereira/go-gituser"
       using: ":homebrew_curl"
 

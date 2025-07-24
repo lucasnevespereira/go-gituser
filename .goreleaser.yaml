@@ -1,4 +1,3 @@
-version: 2
 project_name: gituser
 before:
   hooks:
@@ -31,3 +30,21 @@ changelog:
       - "^test:"
 checksum:
   name_template: "checksums.txt"
+homebrew_casks:
+  - name: gituser
+
+    url:
+      template: "https://github.com/yourusername/go-gituser/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+      verified: "github.com/lucanevespereira/go-gituser"
+      using: ":homebrew_curl"
+
+    binary: gituser
+
+    commit_author:
+      name: lucasnevespereira
+      email: pereiraneveslucas@gmail.com
+
+    repository:
+      owner: lucasnevespereira
+      name: homebrew-tools
+      branch: main

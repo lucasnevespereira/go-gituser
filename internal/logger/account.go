@@ -2,8 +2,9 @@ package logger
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"go-gituser/internal/models"
+
+	"github.com/fatih/color"
 )
 
 func ReadAccountsData(accounts *models.Accounts) {
@@ -15,7 +16,12 @@ func ReadAccountsData(accounts *models.Accounts) {
 		fmt.Println("🏠 | Personal Git Account :")
 		fmt.Printf(color.BlueString("=>")+" Username: %v\n", accounts.Personal.Username)
 		fmt.Printf(color.BlueString("=>")+" Email: %v\n", accounts.Personal.Email)
-		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.Personal.SigningKeyID)
+		if accounts.Personal.SigningKeyID != "" {
+			fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.Personal.SigningKeyID)
+		}
+		if accounts.Personal.SSHKeyPath != "" {
+			fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", accounts.Personal.SSHKeyPath)
+		}
 	}
 	fmt.Println("")
 	if accounts.School.Username == "" {
@@ -24,7 +30,13 @@ func ReadAccountsData(accounts *models.Accounts) {
 		fmt.Println("📚 | School Git Account :")
 		fmt.Printf(color.BlueString("=>")+" Username: %v\n", accounts.School.Username)
 		fmt.Printf(color.BlueString("=>")+" Email: %v\n", accounts.School.Email)
-		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.School.SigningKeyID)
+		if accounts.School.SigningKeyID != "" {
+			fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.School.SigningKeyID)
+		}
+		if accounts.School.SSHKeyPath != "" {
+			fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", accounts.School.SSHKeyPath)
+		}
+
 	}
 	fmt.Println("")
 	if accounts.Work.Username == "" {
@@ -33,7 +45,12 @@ func ReadAccountsData(accounts *models.Accounts) {
 		fmt.Println("💻 | Work Git Account :")
 		fmt.Printf(color.BlueString("=>")+" Username: %v\n", accounts.Work.Username)
 		fmt.Printf(color.BlueString("=>")+" Email: %v\n", accounts.Work.Email)
-		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.Work.SigningKeyID)
+		if accounts.Work.SigningKeyID != "" {
+			fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", accounts.Work.SigningKeyID)
+		}
+		if accounts.Work.SSHKeyPath != "" {
+			fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", accounts.Work.SSHKeyPath)
+		}
 
 	}
 	fmt.Println("")
@@ -44,16 +61,24 @@ func ReadCurrentAccountData(account *models.Account, mode string) {
 	fmt.Println("You are on the " + color.CyanString(mode) + " acccount")
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
-	fmt.Printf(color.BlueString("=>")+" Signing Key: %v\n", account.SigningKeyID)
-
+	if account.SigningKeyID != "" {
+		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", account.SigningKeyID)
+	}
+	if account.SSHKeyPath != "" {
+		fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", account.SSHKeyPath)
+	}
 }
 
 func ReadUnsavedGitAccount(account *models.Account) {
 	fmt.Println("You are using the following account")
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
-	fmt.Printf(color.BlueString("=>")+" Signing Key: %v\n", account.SigningKeyID)
-
+	if account.SigningKeyID != "" {
+		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", account.SigningKeyID)
+	}
+	if account.SSHKeyPath != "" {
+		fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", account.SSHKeyPath)
+	}
 
 	fmt.Println("This account is " + color.YellowString("unsaved") + ". Run <gituser setup> to save it to a " + color.CyanString("mode"))
 }

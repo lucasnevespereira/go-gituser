@@ -7,7 +7,8 @@ type Accounts struct {
 }
 
 type Account struct {
-	Username        string `json:"username"`
-	Email           string `json:"email"`
-	SigningKeyID    string `json:"signingkeyid"`
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	SigningKeyID string `json:"signingkeyid"`
+	SSHKeyPath   string `json:"sshkeypath"`
 }

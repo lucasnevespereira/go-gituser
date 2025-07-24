@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"go-gituser/internal/connectors/git"
+	"go-gituser/internal/connectors/ssh"
 	"go-gituser/internal/logger"
 	"go-gituser/internal/services"
 	"go-gituser/internal/storage"
@@ -17,9 +19,11 @@ var infoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
 		gitConnector := git.NewGitConnector()
-		accountService := services.NewAccountService(accountStorage, gitConnector)
-		savedAccounts, err := accountService.ReadSavedAccounts()
+		sshConnector := ssh.NewSSHConnector()
+		accountService := services.NewAccountService(accountStorage, gitConnector, sshConnector)
+		savedAccounts, err := accountService.GetSavedAccounts()
 		if err != nil {
+			fmt.Println(err)
 			logger.PrintErrorExecutingMode()
 			os.Exit(1)
 		}

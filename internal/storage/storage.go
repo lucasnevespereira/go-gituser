@@ -16,6 +16,7 @@ const (
 
 type IAccountJSONStorage interface {
 	GetAccounts() (*models.Accounts, error)
+	GetAccountByUsername(username string) (*models.Account, error)
 	SaveAccounts(accounts *models.Accounts) error
 }
 
@@ -45,6 +46,25 @@ func (s *AccountJSONStorage) GetAccounts() (*models.Accounts, error) {
 	}
 
 	return rowAccounts, nil
+}
+
+func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Account, error) {
+	accounts, err := s.GetAccounts()
+	if err != nil {
+		return nil, err
+	}
+
+	if accounts.Personal.Username == username {
+		return &accounts.Personal, nil
+	}
+	if accounts.Work.Username == username {
+		return &accounts.Work, nil
+	}
+	if accounts.School.Username == username {
+		return &accounts.School, nil
+	}
+
+	return nil, errors.New("account not found")
 }
 
 func (s *AccountJSONStorage) SaveAccounts(accounts *models.Accounts) error {

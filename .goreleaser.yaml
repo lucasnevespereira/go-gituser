@@ -31,9 +31,19 @@ changelog:
       - "^test:"
 checksum:
   name_template: "checksums.txt"
-brews:
-  - name: homebrew-tools/gituser
-    homepage: https://github.com/lucasnevespereira/homebrew-tools
+homebrew_casks:
+  - name: gituser
+    homepage: https://github.com/lucasnevespereira/go-gituser
+    description: "Gituser is a CLI tool to manage git accounts"
+    conflicts:
+      - formula: gituser
+    directory: Casks
+    hooks:
+      post:
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/gituser"]
+          end
     commit_author:
       name: lucasnevespereira
       email: pereiraneveslucas@gmail.com

@@ -170,11 +170,6 @@ GitUser automatically handles SSH keys for each account:
 
 Configure different GPG keys for each account to enable signed commits with proper identity verification.
 
-When you run `gituser setup`, you can:
-- Use existing SSH keys
-- Generate new SSH keys with guided setup
-- Configure different keys for each account
-- Skip SSH setup if you prefer manual management
 
 ## Contributing
 
@@ -186,6 +181,7 @@ If you want to contribute to this project please read the [Contribution Guide](C
 
 This project is under [MIT LICENSE](LICENSE)
 
+<br />
 <div align="center">
   <strong>⭐ If GitUser helps you, please consider giving it a star!</strong>
 </div>

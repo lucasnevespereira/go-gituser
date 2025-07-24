@@ -12,7 +12,7 @@ builds:
       - windows
       - darwin
     ldflags:
-      - "-X 'cmd.AppVersion={{.Version}}'"
+      - "-X go-gituser/cmd.AppVersion={{.Version}}"
 release:
   prerelease: auto
 universal_binaries:

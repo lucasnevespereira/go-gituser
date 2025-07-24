@@ -53,7 +53,7 @@ git config --global commit.gpgsign true
 ssh-add ~/.ssh/your_ssh_key
 ```
 
-Just run: `gituser work` ✨
+Just run `gituser work` ✨
 
 ## Account Modes
 
@@ -87,6 +87,11 @@ brew tap lucasnevespereira/homebrew-tools
 brew install --cask gituser
 ```
 
+or
+
+```
+brew install --cask lucasnevespereira/homebrew-tools/gituser
+```
 
 ### Manual Installation
 

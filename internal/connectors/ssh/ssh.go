@@ -109,8 +109,6 @@ func (s *SSHConnector) ClearAgent() error {
 	if err != nil {
 		return fmt.Errorf("failed to clear SSH agent: %s", string(output))
 	}
-
-	fmt.Println("🧹 All SSH keys removed from agent")
 	return nil
 }
 

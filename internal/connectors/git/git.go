@@ -133,7 +133,5 @@ func (c *Connector) setCommitSign(enable bool) {
 
 	if enable {
 		fmt.Println("✅ Commit signing enabled")
-	} else {
-		fmt.Println("❌ Commit signing disabled")
 	}
 }

@@ -234,18 +234,17 @@ func (s *SSHDiscoveryService) ShowSSHSetupGuide() {
 	fmt.Println()
 }
 
-func (s *SSHDiscoveryService) ShowGitHubSetupGuide(keyPath string) {
+func (s *SSHDiscoveryService) ShowGitHubSetupGuide(publicKeyPath string) {
 	fmt.Println()
 	fmt.Println()
 	fmt.Println("🔗 Add SSH Key to GitHub/GitLab")
 	fmt.Println("═══════════════════════════════════════════════════════════════")
 	fmt.Println()
-	publicKeyPath := keyPath + ".pub"
 	if publicKeyPath != "" {
 		fmt.Println("📋 STEP 1: COPY YOUR PUBLIC KEY")
 		fmt.Println("──────────────────────────────────")
 		fmt.Println()
-		content, err := s.GetPublicKeyContent(keyPath)
+		content, err := s.GetPublicKeyContent(publicKeyPath)
 		if err == nil {
 			fmt.Println("Copy this key (select all):")
 			fmt.Println()
@@ -292,8 +291,7 @@ func (s *SSHDiscoveryService) ShowGitHubSetupGuide(keyPath string) {
 	fmt.Println()
 }
 
-func (s *SSHDiscoveryService) GetPublicKeyContent(privateKeyPath string) (string, error) {
-	publicKeyPath := privateKeyPath + ".pub"
+func (s *SSHDiscoveryService) GetPublicKeyContent(publicKeyPath string) (string, error) {
 	content, err := os.ReadFile(publicKeyPath)
 	if err != nil {
 		return "", err

@@ -38,7 +38,7 @@ func (s *AccountService) Switch(mode string) error {
 	// Clear all SSH keys from agent before switching
 	if err := s.ClearAllSSHKeys(); err != nil {
 		// Don't fail the entire operation if SSH clearing fails
-		fmt.Printf("⚠️  Warning: Could not clear SSH keys: %v\n", err)
+		fmt.Printf("⚠️ Warning: Could not clear SSH keys: %v\n", err)
 	}
 
 	var targetAccount *models.Account

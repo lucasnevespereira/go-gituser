@@ -109,18 +109,6 @@ make install
 ```
 <em>This will build gituser and move it to your `$HOME/bin`</em>
 
-Now you can call `gituser` globally 😀
-
-### Add your git account data
-
-Run the following command :
-
-```
-gituser setup
-```
-
-<em>This command will help you setup your different git accounts. </em>
-
 ## Quick Start
 
 Setup your accounts:

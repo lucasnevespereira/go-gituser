@@ -33,6 +33,17 @@ checksum:
   name_template: "checksums.txt"
 homebrew_casks:
   - name: gituser
+    directory: Casks
+
+    conflicts:
+      - formula: gituser
+
+    hooks:
+      post:
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/gituser"]
+          end
 
     url:
       template: "https://github.com/lucasnevespereira/go-gituser/releases/download/{{ .Tag }}/{{ .ArtifactName }}"

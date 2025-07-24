@@ -80,16 +80,11 @@ There is currently 3 modes available:
 ### Homebrew (Recommended)
 
 ```
-brew tap lucasnevespereira/tools
+brew tap lucasnevespereira/homebrew-tools
 ```
 
 ```
-brew install gituser
-```
-
-or
-```
-brew install lucasnevespereira/tools/gituser
+brew install --cask gituser
 ```
 
 

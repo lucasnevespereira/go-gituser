@@ -1,3 +1,4 @@
+version: 2
 project_name: gituser
 before:
   hooks:
@@ -48,3 +49,4 @@ homebrew_casks:
       owner: lucasnevespereira
       name: homebrew-tools
       branch: main
+      token: "{{ .Env.BREW_TOKEN }}"

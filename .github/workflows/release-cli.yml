@@ -72,7 +72,7 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           echo "Updating Homebrew formula to version $VERSION..."
 
-          git clone "${{ env.FORMULA_REPO }}"
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/lucasnevespereira/homebrew-tools.git"
           cd "${{ env.HOMEBREW_TAP_DIR }}"
 
           if [ ! -f "${{ env.FORMULA_FILE }}" ]; then

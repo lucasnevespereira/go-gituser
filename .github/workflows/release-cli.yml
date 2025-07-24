@@ -25,34 +25,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout source
+      - name: Checkout source
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: 🛠 Set up Go
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "${{ env.GO_VERSION }}"
 
-      - name: ✅ Validate GoReleaser config
-        uses: goreleaser/goreleaser-action@v5
+      - name: Validate GoReleaser config
+        uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
-          version: "${{ env.GORELEASER_VERSION }}"
+          version: latest
           args: check
 
-      - name: 🚀 Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
-          version: "${{ env.GORELEASER_VERSION }}"
+          version: latest
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BREW_TOKEN: ${{ secrets.BREW_TOKEN }}
 
-      - name: 🧩 Determine version
+      - name: Determine version
         id: version
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
@@ -67,7 +67,7 @@ jobs:
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: 🧪 Update Homebrew formula and push to main
+      - name: Update Homebrew formula and push to main
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           echo "Updating Homebrew formula to version $VERSION..."

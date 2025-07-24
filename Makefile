@@ -17,6 +17,3 @@ install: build
 
 clean: $(APP_NAME)
 	rm $(APP_NAME)
-
-test-release:
-	 goreleaser release --snapshot --skip-publish --rm-dist

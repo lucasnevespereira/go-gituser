@@ -44,8 +44,7 @@ func (s *SSHConnector) AddKeyToAgent(keyPath string) error {
 		return fmt.Errorf("failed to start SSH agent: %w", err)
 	}
 
-	var cmd *exec.Cmd
-	cmd = exec.Command("ssh-add", keyPath)
+	cmd := exec.Command("ssh-add", keyPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -61,8 +60,7 @@ func (s *SSHConnector) RemoveKeyFromAgent(keyPath string) error {
 		return nil
 	}
 
-	var cmd *exec.Cmd
-	cmd = exec.Command("ssh-add", "-d", keyPath)
+	cmd := exec.Command("ssh-add", "-d", keyPath)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -78,8 +76,7 @@ func (s *SSHConnector) RemoveKeyFromAgent(keyPath string) error {
 }
 
 func (s *SSHConnector) ListKeysInAgent() ([]string, error) {
-	var cmd *exec.Cmd
-	cmd = exec.Command("ssh-add", "-L")
+	cmd := exec.Command("ssh-add", "-L")
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -102,8 +99,7 @@ func (s *SSHConnector) ListKeysInAgent() ([]string, error) {
 }
 
 func (s *SSHConnector) ClearAgent() error {
-	var cmd *exec.Cmd
-	cmd = exec.Command("ssh-add", "-D")
+	cmd := exec.Command("ssh-add", "-D")
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -158,7 +154,11 @@ func (s *SSHConnector) ValidateKeyPath(keyPath string) error {
 	if err != nil {
 		return fmt.Errorf("cannot open SSH key file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Warning: failed to close file: %v\n", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	if scanner.Scan() {

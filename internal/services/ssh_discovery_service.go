@@ -146,7 +146,11 @@ func (s *SSHDiscoveryService) looksLikePrivateKey(filePath string) bool {
 	if err != nil {
 		return false
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Warning: failed to close file: %v\n", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	if scanner.Scan() {

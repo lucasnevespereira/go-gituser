@@ -90,20 +90,24 @@ jobs:
           for PLATFORM in darwin_all linux_arm64 linux_amd64; do
             FILE="gituser_${VERSION}_${PLATFORM}.tar.gz"
             URL="https://github.com/lucasnevespereira/go-gituser/releases/download/v${VERSION}/${FILE}"
-            SHA256=$(curl -sL "$URL" | shasum -a 256 | awk '{print $1}')
+
+            # Download the file, calculate its sha256, then delete the file
+            curl -sL -o "$FILE" "$URL"
+            SHA256=$(shasum -a 256 "$FILE" | awk '{print $1}')
+            rm "$FILE"
 
             case "$PLATFORM" in
               darwin_all)
                 sed -i.bak "s|url \".*darwin_all\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*darwin_all.*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
               linux_arm64)
                 sed -i.bak "s|url \".*linux_arm64\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*linux_arm64.*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
               linux_amd64)
                 sed -i.bak "s|url \".*linux_amd64\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*linux_amd64.*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
             esac
           done

@@ -11,6 +11,8 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - "-X 'cmd.AppVersion={{.Version}}'"
 release:
   prerelease: auto
 universal_binaries:
@@ -25,17 +27,13 @@ changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 brews:
   - name: homebrew-tools/gituser
     homepage: https://github.com/lucasnevespereira/homebrew-tools
     commit_author:
       name: lucasnevespereira
       email: pereiraneveslucas@gmail.com
-
-# modelines
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj

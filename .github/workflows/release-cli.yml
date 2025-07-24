@@ -11,39 +11,48 @@ on:
         description: "Version to release (e.g. 1.5.0)"
         required: false
 
+env:
+  GORELEASER_VERSION: latest
+  GO_VERSION: 1.24.3
+  FORMULA_REPO: https://github.com/lucasnevespereira/homebrew-tools.git
+  FORMULA_FILE: gituser.rb
+  HOMEBREW_TAP_DIR: homebrew-tools
+  GIT_AUTHOR_NAME: lucasnevespereira
+  GIT_AUTHOR_EMAIL: pereiraneveslucas@gmail.com
+
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: 📥 Checkout source
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set up Go
+      - name: 🛠 Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.24.3"
+          go-version: "${{ env.GO_VERSION }}"
 
-      - name: Validate GoReleaser config
+      - name: ✅ Validate GoReleaser config
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: latest
+          version: "${{ env.GORELEASER_VERSION }}"
           args: check
 
-      - name: Run GoReleaser
+      - name: 🚀 Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: latest
+          version: "${{ env.GORELEASER_VERSION }}"
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BREW_TOKEN: ${{ secrets.BREW_TOKEN }}
 
-      - name: Determine version
+      - name: 🧩 Determine version
         id: version
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
@@ -58,22 +67,23 @@ jobs:
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Update Homebrew formula
+      - name: 🧪 Update Homebrew formula and push to main
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          echo "Updating Homebrew formula for version $VERSION..."
+          echo "Updating Homebrew formula to version $VERSION..."
 
-          git clone https://github.com/lucasnevespereira/homebrew-tools.git
-          cd homebrew-tools
+          git clone "${{ env.FORMULA_REPO }}"
+          cd "${{ env.HOMEBREW_TAP_DIR }}"
 
-          FORMULA_PATH="gituser.rb"
-          if [ ! -f "$FORMULA_PATH" ]; then
+          if [ ! -f "${{ env.FORMULA_FILE }}" ]; then
             echo "Formula file not found!"
             exit 1
           fi
 
-          sed -i.bak "s/^  version \".*\"/  version \"$VERSION\"/" $FORMULA_PATH
+          # Update version in formula
+          sed -i.bak "s/^  version \".*\"/  version \"$VERSION\"/" "${{ env.FORMULA_FILE }}"
 
+          # Update download URLs and SHA256s
           for PLATFORM in darwin_all linux_arm64 linux_amd64; do
             FILE="gituser_${VERSION}_${PLATFORM}.tar.gz"
             URL="https://github.com/lucasnevespereira/go-gituser/releases/download/v${VERSION}/${FILE}"
@@ -81,34 +91,31 @@ jobs:
 
             case "$PLATFORM" in
               darwin_all)
-                sed -i.bak "s|url \".*darwin_all\.tar\.gz\"|url \"$URL\"|" $FORMULA_PATH
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
+                sed -i.bak "s|url \".*darwin_all\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
               linux_arm64)
-                sed -i.bak "s|url \".*linux_arm64\.tar\.gz\"|url \"$URL\"|" $FORMULA_PATH
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
+                sed -i.bak "s|url \".*linux_arm64\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
               linux_amd64)
-                sed -i.bak "s|url \".*linux_amd64\.tar\.gz\"|url \"$URL\"|" $FORMULA_PATH
-                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
+                sed -i.bak "s|url \".*linux_amd64\.tar\.gz\"|url \"$URL\"|" "${{ env.FORMULA_FILE }}"
+                sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" "${{ env.FORMULA_FILE }}"
                 ;;
             esac
           done
 
           rm *.bak
 
-          git config user.name "lucasnevespereira"
-          git config user.email "pereiraneveslucas@gmail.com"
+          git config user.name "${{ env.GIT_AUTHOR_NAME }}"
+          git config user.email "${{ env.GIT_AUTHOR_EMAIL }}"
           git checkout -b bump-gituser-v${VERSION}
-          git add "$FORMULA_PATH"
+          git add "${{ env.FORMULA_FILE }}"
           git commit -m "chore(gituser): bump to v${VERSION}"
           git push origin bump-gituser-v${VERSION}
-
-          gh pr create \
-            --title "Update gituser to v${VERSION}" \
-            --body "This PR updates the Homebrew formula for gituser to v${VERSION}." \
-            --head bump-gituser-v${VERSION} \
-            --base main
+          git checkout main
+          git merge bump-gituser-v${VERSION}
+          git push origin main
 
         env:
           GH_TOKEN: ${{ secrets.BREW_TOKEN }}

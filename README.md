@@ -81,7 +81,15 @@ There is currently 3 modes available:
 
 ```
 brew tap lucasnevespereira/tools
-brew install --cask gituser
+```
+
+```
+brew install gituser
+```
+
+or
+```
+brew install lucasnevespereira/tools/gituser
 ```
 
 
@@ -108,7 +116,6 @@ Setup your accounts:
 ```bash
 gituser setup
 ```
-
 
 Switch between accounts:
 

@@ -22,7 +22,10 @@ This command provides tools to:
 • Test SSH connections to GitHub and GitLab`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Show help when no subcommand is provided
-		cmd.Help()
+		if err := cmd.Help(); err != nil {
+			logger.PrintError(err)
+			os.Exit(1)
+		}
 	},
 }
 

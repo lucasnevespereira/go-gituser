@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"go-gituser/internal/connectors/ssh"
+	"go-gituser/internal/format"
 	"go-gituser/internal/logger"
 	"go-gituser/internal/models"
 	"os"
@@ -235,7 +236,7 @@ func (s *SetupService) selectUserAccount(mode string) {
 }
 
 func (s *SetupService) askForGPGKey(mode string) bool {
-	fmt.Printf("\n🔑 GPG Key Setup for %s Account\n", strings.Title(mode))
+	fmt.Printf("\n🔑 GPG Key Setup for %s Account\n", format.TitleCase(mode))
 	fmt.Println("=====================================")
 
 	var useGPG string
@@ -249,7 +250,7 @@ func (s *SetupService) askForGPGKey(mode string) bool {
 }
 
 func (s *SetupService) setupSSHKeyForAccount(mode, email string, sshDiscovery ISSHDiscoveryService) string {
-	fmt.Printf("\n🔑 SSH Key Setup for %s Account\n", strings.Title(mode))
+	fmt.Printf("\n🔑 SSH Key Setup for %s Account\n", format.TitleCase(mode))
 	fmt.Println("=====================================")
 
 	// Ask if user wants to setup SSH

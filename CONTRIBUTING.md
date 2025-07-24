@@ -40,11 +40,11 @@ Please use the following convention for your branch name:
 
 ### Types of branches
 
-- **core**: Changes in the core of the project.
+- **chore**: Changes in the chore of the project.
 - **doc**: Documentation or assets changes.
 - **feat**: Adding a new feature.
 - **fix**: Fixing a bug.
-- **refacto**: A code change that neither fixes a bug nor adds a feature.
+- **refactor**: A code change that neither fixes a bug nor adds a feature.
 - **test**: Adding missing tests or correcting existing tests.
 
 Tour branch name should be :
@@ -72,7 +72,7 @@ git checkout -b doc/improvedInstallationGuide
 ```
 
 ```
-git checkout -b core/addNewPackage
+git checkout -b chore/addNewPackage
 ```
 
 Create a branch using the `git checkout` command:
@@ -105,14 +105,14 @@ To optimize commit readability, I am trying to put in place the following conven
   │                │
   │                └─⫸ Description of the changes.
   │
-  └─⫸ Commit Type: core|doc|feat|fix|ui|refactor|test
+  └─⫸ Commit Type: chore|doc|feat|fix|ui|refactor|test
 ```
 
 <b>Types of commits </b>
 
 Must be one of the following:
 
-- **core**: Changes in the core of the project.
+- **chore**: Changes in the chore of the project.
 - **doc**: Documentation or assets changes.
 - **feat**: Adding a new feature.
 - **fix**: Fixing a bug.

@@ -50,7 +50,7 @@ As a user of multiple git accounts, I needed to switch regularly between my stud
 
 GitUser helps you switch between different git accounts effortlessly, automating all the configuration commands.
 
-![](assets/demo.gif)
+![GitUser Demo](assets/demo.gif)
 
 ## What It Automates
 

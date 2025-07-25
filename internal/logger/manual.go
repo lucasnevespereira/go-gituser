@@ -7,7 +7,7 @@ import (
 )
 
 func PrintManual() {
-	fmt.Println("🔄 GitUser - Switch Git Accounts Easily")
+	fmt.Println("🔄 GitUser - Switch Between Git Accounts Easily")
 	fmt.Println("═══════════════════════════════════════════════")
 	fmt.Println()
 

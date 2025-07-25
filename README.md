@@ -46,9 +46,13 @@
 
 ## Overview
 
-As a user of multiple git accounts, I needed to switch regularly between my student, professional, and personal accounts. To solve this, I build this open source CLI tool.
+As a user of multiple git accounts, I needed to switch regularly between my student, professional, and personal profiles. Manually updating configs, loading SSH keys, and keeping track of identities quickly became tedious.
 
-GitUser helps you switch between different git accounts effortlessly, automating all the configuration commands.
+So I built this open source CLI tool to streamline the whole process.
+
+GitUser helps you switch between different git accounts effortlessly. It automates all the necessary configuration commands: username, email, GPG signing, SSH key loading, so you can focus on coding instead of fiddling with your setup.
+
+Whether you're pushing to school projects, personal repos, or work-related codebases, GitUser makes sure you're always using the right identity with a single command.
 
 ![GitUser Demo](assets/demo.gif)
 

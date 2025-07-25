@@ -55,6 +55,9 @@ GitUser helps you switch between different git accounts effortlessly. It automat
 Whether you're pushing to school projects, personal repos, or work-related codebases, GitUser makes sure you're always using the right identity with a single command.
 
 
+<img src="assets/demo.png" alt="demo" width="600" height="400" />
+
+
 ## What It Automates
 
 Instead of manually running these commands every time you switch projects:

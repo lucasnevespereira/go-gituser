@@ -88,7 +88,7 @@ func (s *AccountService) GetCurrentGitAccount() *models.Account {
 	currGitAccount.SigningKeyID = strings.TrimSuffix(currGitAccount.SigningKeyID, "\n")
 
 	foundAccount, _ := s.storage.GetAccountByUsername(currGitAccount.Username)
-	if foundAccount.SSHKeyPath != "" {
+	if foundAccount != nil && foundAccount.SSHKeyPath != "" {
 		if loaded := s.ssh.IsKeyLoaded(foundAccount.SSHKeyPath + ".pub"); !loaded {
 			currGitAccount.SSHKeyPath = ""
 		} else {

@@ -3,6 +3,8 @@
 APP_NAME=gituser
 BIN_PATH=$(HOME)/bin
 
+.DEFAULT_GOAL = build
+
 fmt:
 	gofmt -s -l -w .
 

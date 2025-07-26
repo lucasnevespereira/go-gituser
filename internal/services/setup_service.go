@@ -369,7 +369,12 @@ func (s *SetupService) selectExistingSSHKey(keys []SSHKeyInfo, sshDiscovery ISSH
 			fmt.Printf("   %s\n", content)
 		}
 
-		sshDiscovery.ShowGitHubSetupGuide(selectedKey.Path)
+		publicKeyPath := selectedKey.Path
+		if !strings.HasSuffix(selectedKey.Path, ".pub") {
+			publicKeyPath = selectedKey.Path + ".pub"
+		}
+
+		sshDiscovery.ShowGitHubSetupGuide(publicKeyPath)
 	}
 
 	return selectedKey.Path

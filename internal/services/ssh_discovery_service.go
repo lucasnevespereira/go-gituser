@@ -26,7 +26,7 @@ type ISSHDiscoveryService interface {
 	GenerateSSHKey(email, keyType, filename string) error
 	ShowSSHSetupGuide()
 	ShowGitHubSetupGuide(keyPath string)
-	GetPublicKeyContent(privateKeyPath string) (string, error)
+	GetPublicKeyContent(keyPath string) (string, error)
 	ValidateAndShowKeyInfo(keyPath string) (*SSHKeyInfo, error)
 }
 
@@ -295,8 +295,8 @@ func (s *SSHDiscoveryService) ShowGitHubSetupGuide(publicKeyPath string) {
 	fmt.Println()
 }
 
-func (s *SSHDiscoveryService) GetPublicKeyContent(publicKeyPath string) (string, error) {
-	content, err := os.ReadFile(publicKeyPath)
+func (s *SSHDiscoveryService) GetPublicKeyContent(keyPath string) (string, error) {
+	content, err := os.ReadFile(keyPath)
 	if err != nil {
 		return "", err
 	}

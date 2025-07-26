@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="assets/inline-logo.png" alt="logo" width="320" height="200" />
+  <img src="assets/inline-logo.png" alt="logo" width="400" style="padding: 20px;" />
   <h3><em>Switch between git accounts easily</em></h3>
   <p>
     <a href="https://github.com/lucasnevespereira/go-gituser/releases/latest">
@@ -55,7 +55,9 @@ GitUser helps you switch between different git accounts effortlessly. It automat
 Whether you're pushing to school projects, personal repos, or work-related codebases, GitUser makes sure you're always using the right identity with a single command.
 
 
-<img src="assets/demo.png" alt="demo" width="600" heigth="400" />
+<div align="center">
+<img src="assets/demo.png" alt="demo" width="600" heigth="400" style="border-radius: 20px; padding: 10px;" />
+</div>
 
 
 ## What It Automates

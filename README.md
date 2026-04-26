@@ -103,13 +103,13 @@ brew tap lucasnevespereira/homebrew-tools
 ```
 
 ```
-brew install --cask gituser
+brew install gituser
 ```
 
 or
 
 ```
-brew install --cask lucasnevespereira/homebrew-tools/gituser
+brew install lucasnevespereira/homebrew-tools/gituser
 ```
 
 ### Go Install

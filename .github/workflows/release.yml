@@ -1,4 +1,4 @@
-name: Release
+name: release
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
           for pair in darwin/amd64 darwin/arm64 linux/amd64 linux/arm64; do
             os=${pair%/*}; arch=${pair#*/}
             echo "building gituser-$os-$arch"
-            GOOS=$os GOARCH=$arch go build -ldflags "$LDFLAGS" -o "bin/gituser-$os-$arch" ./cmd/gituser
+            GOOS=$os GOARCH=$arch go build -ldflags "$LDFLAGS" -o "bin/gituser-$os-$arch" .
           done
 
       - name: Package

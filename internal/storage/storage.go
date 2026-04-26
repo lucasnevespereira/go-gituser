@@ -2,8 +2,8 @@ package storage
 
 import (
 	"encoding/json"
-	"go-gituser/internal/logger"
-	"go-gituser/internal/models"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/models"
 	"os"
 
 	"github.com/pkg/errors"

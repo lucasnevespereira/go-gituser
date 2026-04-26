@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"go-gituser/internal/connectors/ssh"
-	"go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/connectors/ssh"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
 	"os"
 
 	"github.com/spf13/cobra"

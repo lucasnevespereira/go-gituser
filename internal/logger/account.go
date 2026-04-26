@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	"go-gituser/internal/models"
+	"github.com/lucasnevespereira/go-gituser/internal/models"
 
 	"github.com/fatih/color"
 )

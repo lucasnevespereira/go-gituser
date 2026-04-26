@@ -2,8 +2,8 @@ package git
 
 import (
 	"fmt"
-	"go-gituser/internal/logger"
-	"go-gituser/internal/models"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/models"
 	"os/exec"
 	"runtime"
 	"strings"

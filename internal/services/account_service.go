@@ -2,10 +2,10 @@ package services
 
 import (
 	"fmt"
-	"go-gituser/internal/connectors/git"
-	"go-gituser/internal/connectors/ssh"
-	"go-gituser/internal/models"
-	"go-gituser/internal/storage"
+	"github.com/lucasnevespereira/go-gituser/internal/connectors/git"
+	"github.com/lucasnevespereira/go-gituser/internal/connectors/ssh"
+	"github.com/lucasnevespereira/go-gituser/internal/models"
+	"github.com/lucasnevespereira/go-gituser/internal/storage"
 	"strings"
 )
 

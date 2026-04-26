@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
 	"os"
 
 	"github.com/spf13/cobra"

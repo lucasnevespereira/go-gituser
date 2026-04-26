@@ -1,4 +1,3 @@
-
 <div align="center">
   <img src="assets/inline-logo.png" alt="logo" width="400" style="padding: 20px;" />
   <h3><em>Switch between git accounts easily</em></h3>
@@ -30,7 +29,6 @@
   </p>
 </div>
 
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -54,11 +52,9 @@ GitUser helps you switch between different git accounts effortlessly. It automat
 
 Whether you're pushing to school projects, personal repos, or work-related codebases, GitUser makes sure you're always using the right identity with a single command.
 
-
 <div align="center">
 <img src="assets/demo.png" alt="demo" width="600" heigth="400" style="border-radius: 20px; padding: 10px;" />
 </div>
-
 
 ## What It Automates
 
@@ -82,7 +78,6 @@ There is currently 3 modes available:
 - 📚 <b>school</b> : for a school related git account.
 - 🏠 <b>personal</b> : for a personal related git account.
 
-
 ## Features
 
 - **🔄 Instant Account Switching** - Switch between work, school, and personal accounts
@@ -92,14 +87,12 @@ There is currently 3 modes available:
 - **🛡️ Secure** - Each account uses its own SSH key for isolation
 - **🚀 Zero Configuration After Setup** - One command switches everything
 
-
-
 ## Installation
 
 ### Homebrew (Recommended)
 
 ```
-brew tap lucasnevespereira/homebrew-tools
+brew tap lucasnevespereira/tools
 ```
 
 ```
@@ -109,7 +102,7 @@ brew install gituser
 or
 
 ```
-brew install lucasnevespereira/homebrew-tools/gituser
+brew install lucasnevespereira/tools/gituser
 ```
 
 ### Go Install
@@ -123,6 +116,7 @@ go install github.com/lucasnevespereira/go-gituser@latest
 Make sur your bin path is in your `$PATH`, you can check in your `.zshrc` or `.bash` file.
 
 _e.g_
+
 ```shell
 export PATH="$HOME/bin:$PATH"
 ```
@@ -132,6 +126,7 @@ Run the following command from the root of the project:
 ```
 make install
 ```
+
 <em>This will build gituser and move it to your `$HOME/bin`</em>
 
 ## Quick Start
@@ -158,27 +153,25 @@ gituser now
 
 ## Commands
 
-
-| Command | Description |
-|---------|-------------|
-| **Account Management** | |
-| `gituser setup` | Interactive setup for all accounts (username, email, GPG, SSH) |
-| `gituser work` | Switch to work account |
-| `gituser personal` | Switch to personal account |
-| `gituser school` | Switch to school account |
-| **Information** | |
-| `gituser now` | Show current active account |
-| `gituser info` | Display all configured accounts |
-| **SSH Management** | |
-| `gituser ssh list` | List SSH keys currently loaded |
-| `gituser ssh discover` | Find existing SSH keys on your system |
-| `gituser ssh test` | Test SSH connections to GitHub/GitLab |
-| `gituser ssh guide` | Show SSH setup guide |
-| **Help** | |
-| `gituser help` | Show help information |
-| `gituser manual` | Show detailed manual |
-| `gituser quickstart` | Show quick start guide |
-
+| Command                | Description                                                    |
+| ---------------------- | -------------------------------------------------------------- |
+| **Account Management** |                                                                |
+| `gituser setup`        | Interactive setup for all accounts (username, email, GPG, SSH) |
+| `gituser work`         | Switch to work account                                         |
+| `gituser personal`     | Switch to personal account                                     |
+| `gituser school`       | Switch to school account                                       |
+| **Information**        |                                                                |
+| `gituser now`          | Show current active account                                    |
+| `gituser info`         | Display all configured accounts                                |
+| **SSH Management**     |                                                                |
+| `gituser ssh list`     | List SSH keys currently loaded                                 |
+| `gituser ssh discover` | Find existing SSH keys on your system                          |
+| `gituser ssh test`     | Test SSH connections to GitHub/GitLab                          |
+| `gituser ssh guide`    | Show SSH setup guide                                           |
+| **Help**               |                                                                |
+| `gituser help`         | Show help information                                          |
+| `gituser manual`       | Show detailed manual                                           |
+| `gituser quickstart`   | Show quick start guide                                         |
 
 ## Advanced Features
 
@@ -194,7 +187,6 @@ GitUser automatically handles SSH keys for each account:
 ### GPG Signing
 
 Configure different GPG keys for each account to enable signed commits with proper identity verification.
-
 
 ## Contributing
 

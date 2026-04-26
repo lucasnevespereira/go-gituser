@@ -1,4 +1,4 @@
-module go-gituser
+module github.com/lucasnevespereira/go-gituser
 
 go 1.24.3
 

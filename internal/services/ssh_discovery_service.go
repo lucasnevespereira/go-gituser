@@ -3,7 +3,7 @@ package services
 import (
 	"bufio"
 	"fmt"
-	"go-gituser/internal/connectors/ssh"
+	"github.com/lucasnevespereira/go-gituser/internal/connectors/ssh"
 	"os"
 	"os/exec"
 	"path/filepath"

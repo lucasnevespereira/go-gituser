@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"go-gituser/internal/connectors/ssh"
-	"go-gituser/internal/services"
+	"github.com/lucasnevespereira/go-gituser/internal/connectors/ssh"
+	"github.com/lucasnevespereira/go-gituser/internal/services"
 	"os/exec"
 	"strings"
 

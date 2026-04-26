@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-gituser/cmd"
+	"github.com/lucasnevespereira/go-gituser/cmd"
 )
 
 func main() {

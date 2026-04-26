@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
 
 	"github.com/spf13/cobra"
 )

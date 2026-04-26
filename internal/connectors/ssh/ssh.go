@@ -3,7 +3,7 @@ package ssh
 import (
 	"bufio"
 	"fmt"
-	"go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/logger"
 	"os"
 	"os/exec"
 	"path/filepath"

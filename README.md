@@ -112,6 +112,12 @@ or
 brew install --cask lucasnevespereira/homebrew-tools/gituser
 ```
 
+### Go Install
+
+```bash
+go install github.com/lucasnevespereira/go-gituser@latest
+```
+
 ### Manual Installation
 
 Make sur your bin path is in your `$PATH`, you can check in your `.zshrc` or `.bash` file.

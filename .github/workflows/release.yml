@@ -3,7 +3,8 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
   workflow_dispatch:
 
 permissions:
@@ -81,4 +82,4 @@ jobs:
           tag-name: ${{ steps.version.outputs.tag }}
           commit-message: "gituser ${{ steps.version.outputs.tag }}"
         env:
-          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          COMMITTER_TOKEN: ${{ secrets.BREW_TOKEN }}

@@ -6,6 +6,11 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to update in Homebrew
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -13,6 +18,7 @@ permissions:
 jobs:
   release:
     name: Build & Publish
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -67,14 +73,22 @@ jobs:
   homebrew:
     name: Update Homebrew
     needs: release
+    if: ${{ always() && !cancelled() && (github.event_name == 'workflow_dispatch' || needs.release.result == 'success') }}
     runs-on: ubuntu-latest
     steps:
       - name: Extract tag
         id: version
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]]; then
+            echo "Invalid release tag: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Update tap formula
-        uses: mislav/bump-homebrew-formula-action@v3
+        uses: mislav/bump-homebrew-formula-action@v4.2
         with:
           formula-name: gituser
           formula-path: gituser.rb

@@ -89,6 +89,8 @@ gituser info
 
 Custom mode names start with a lowercase letter and may contain lowercase letters, numbers, and hyphens. Command names such as `setup` and `info` are reserved.
 
+If multiple saved modes have the same Git identity, `gituser now` lists each matching mode because Git configuration alone cannot identify which one was selected last.
+
 ## Features
 
 - **🔄 Instant Account Switching** - Switch between built-in or custom accounts

@@ -34,23 +34,30 @@ var nowCmd = &cobra.Command{
 			return
 		}
 
-		var activeMode string
-		savedAccounts.ForEachConfigured(func(mode string, account models.Account) bool {
-			if account.Username == currGitAccount.Username &&
-				account.Email == currGitAccount.Email &&
-				(currGitAccount.SigningKeyID == "" || account.SigningKeyID == currGitAccount.SigningKeyID) &&
-				(currGitAccount.SSHKeyPath == "" || account.SSHKeyPath == currGitAccount.SSHKeyPath) {
-				activeMode = mode
-				return false
-			}
-			return true
-		})
-		if activeMode != "" {
-			logger.ReadCurrentAccountData(currGitAccount, activeMode)
-			return
+		modes := matchingModes(savedAccounts, currGitAccount)
+		switch len(modes) {
+		case 0:
+			logger.ReadUnsavedGitAccount(currGitAccount)
+		case 1:
+			logger.ReadCurrentAccountData(currGitAccount, modes[0])
+		default:
+			logger.ReadMatchingAccountsData(currGitAccount, modes)
 		}
-		logger.ReadUnsavedGitAccount(currGitAccount)
 	},
+}
+
+func matchingModes(accounts *models.Accounts, current *models.Account) []string {
+	var modes []string
+	accounts.ForEachConfigured(func(mode string, account models.Account) bool {
+		if account.Username == current.Username &&
+			account.Email == current.Email &&
+			(current.SigningKeyID == "" || account.SigningKeyID == current.SigningKeyID) &&
+			(current.SSHKeyPath == "" || account.SSHKeyPath == current.SSHKeyPath) {
+			modes = append(modes, mode)
+		}
+		return true
+	})
+	return modes
 }
 
 func init() {

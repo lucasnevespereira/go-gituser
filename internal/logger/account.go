@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"github.com/lucasnevespereira/go-gituser/internal/models"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -74,6 +75,18 @@ func ReadAccountsData(accounts *models.Accounts) {
 
 func ReadCurrentAccountData(account *models.Account, mode string) {
 	fmt.Println("You are on the " + color.CyanString(mode) + " account")
+	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
+	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
+	if account.SigningKeyID != "" {
+		fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", account.SigningKeyID)
+	}
+	if account.SSHKeyPath != "" {
+		fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", account.SSHKeyPath)
+	}
+}
+
+func ReadMatchingAccountsData(account *models.Account, modes []string) {
+	fmt.Println("This Git account matches multiple saved modes: " + color.CyanString(strings.Join(modes, ", ")))
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
 	if account.SigningKeyID != "" {

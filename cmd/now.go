@@ -34,40 +34,22 @@ var nowCmd = &cobra.Command{
 			return
 		}
 
-		if savedAccounts.Personal.Username == currGitAccount.Username &&
-			savedAccounts.Personal.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.Personal.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
+		var activeMode string
+		savedAccounts.ForEachConfigured(func(mode string, account models.Account) bool {
+			if account.Username == currGitAccount.Username &&
+				account.Email == currGitAccount.Email &&
+				(currGitAccount.SigningKeyID == "" || account.SigningKeyID == currGitAccount.SigningKeyID) &&
+				(currGitAccount.SSHKeyPath == "" || account.SSHKeyPath == currGitAccount.SSHKeyPath) {
+				activeMode = mode
+				return false
+			}
+			return true
+		})
+		if activeMode != "" {
+			logger.ReadCurrentAccountData(currGitAccount, activeMode)
 			return
 		}
-
-		if savedAccounts.School.Username == currGitAccount.Username &&
-			savedAccounts.School.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.School.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
-			return
-		}
-
-		if savedAccounts.Work.Username == currGitAccount.Username &&
-			savedAccounts.Work.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.Work.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
-			return
-		}
-
-		isAccountSaved, err := accountService.CheckSavedAccount(currGitAccount)
-		if err != nil {
-			logger.PrintErrorExecutingMode()
-			return
-		}
-
-		if !isAccountSaved {
-			logger.ReadUnsavedGitAccount(currGitAccount)
-			return
-		}
+		logger.ReadUnsavedGitAccount(currGitAccount)
 	},
 }
 

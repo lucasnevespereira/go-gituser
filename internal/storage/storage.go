@@ -39,13 +39,13 @@ func (s *AccountJSONStorage) GetAccounts() (*models.Accounts, error) {
 		return nil, err
 	}
 
-	var rowAccounts *models.Accounts
-	err = json.Unmarshal(data, &rowAccounts)
+	var accounts models.Accounts
+	err = json.Unmarshal(data, &accounts)
 	if err != nil {
 		return nil, err
 	}
 
-	return rowAccounts, nil
+	return &accounts, nil
 }
 
 func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Account, error) {
@@ -54,14 +54,16 @@ func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Acco
 		return nil, err
 	}
 
-	if accounts.Personal.Username == username {
-		return &accounts.Personal, nil
-	}
-	if accounts.Work.Username == username {
-		return &accounts.Work, nil
-	}
-	if accounts.School.Username == username {
-		return &accounts.School, nil
+	var found *models.Account
+	accounts.ForEachConfigured(func(_ string, account models.Account) bool {
+		if account.Username == username {
+			found = &account
+			return false
+		}
+		return true
+	})
+	if found != nil {
+		return found, nil
 	}
 
 	return nil, errors.New("account not found")

@@ -54,11 +54,26 @@ func ReadAccountsData(accounts *models.Accounts) {
 
 	}
 	fmt.Println("")
-
+	accounts.ForEachConfigured(func(mode string, account models.Account) bool {
+		if mode == models.PersonalMode || mode == models.SchoolMode || mode == models.WorkMode {
+			return true
+		}
+		fmt.Printf("🔖 | %s Git Account :\n", mode)
+		fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
+		fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
+		if account.SigningKeyID != "" {
+			fmt.Printf(color.BlueString("=>")+" Signing Key ID: %v\n", account.SigningKeyID)
+		}
+		if account.SSHKeyPath != "" {
+			fmt.Printf(color.BlueString("=>")+" SSH Key: %v\n", account.SSHKeyPath)
+		}
+		fmt.Println("")
+		return true
+	})
 }
 
 func ReadCurrentAccountData(account *models.Account, mode string) {
-	fmt.Println("You are on the " + color.CyanString(mode) + " acccount")
+	fmt.Println("You are on the " + color.CyanString(mode) + " account")
 	fmt.Printf(color.BlueString("=>")+" Username: %v\n", account.Username)
 	fmt.Printf(color.BlueString("=>")+" Email: %v\n", account.Email)
 	if account.SigningKeyID != "" {

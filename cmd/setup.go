@@ -14,7 +14,7 @@ import (
 var setupCmd = &cobra.Command{
 	Use:   "setup",
 	Short: "Setup your different git accounts",
-	Long:  "Modify or init the configuration (email,username) of your different git accounts (work,school,personal)",
+	Long:  "Configure built-in or custom git accounts (email, username, GPG, SSH)",
 	Run: func(cmd *cobra.Command, args []string) {
 		accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
 		gitConnector := git.NewGitConnector()

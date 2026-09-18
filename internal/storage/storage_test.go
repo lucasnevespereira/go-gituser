@@ -43,3 +43,23 @@ func TestLegacyAccountsFileKeepsCustomModesOnSave(t *testing.T) {
 		t.Fatalf("lookup by custom username = %+v, %v", account, err)
 	}
 }
+
+func TestGetAccountByUsernameKeepsBuiltInPriority(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	storage := NewAccountJSONStorage(AccountsStorageFile)
+	accounts := &models.Accounts{
+		Work:   models.Account{Username: "shared", Email: "work@example.com"},
+		School: models.Account{Username: "shared", Email: "school@example.com"},
+	}
+	accounts.Set("freelance", models.Account{Username: "shared", Email: "freelance@example.com"})
+	if err := storage.SaveAccounts(accounts); err != nil {
+		t.Fatal(err)
+	}
+	account, err := storage.GetAccountByUsername("shared")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if account.Email != "work@example.com" {
+		t.Fatalf("lookup returned %q, want work account", account.Email)
+	}
+}

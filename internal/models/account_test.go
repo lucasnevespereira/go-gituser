@@ -8,7 +8,7 @@ import (
 
 func TestAccountsPreserveBuiltInModesAndListCustomModes(t *testing.T) {
 	var accounts Accounts
-	if err := json.Unmarshal([]byte(`{"personal":{"username":"alice","email":"alice@example.com"},"work":{"username":"bob","email":"bob@example.com"}}`), &accounts); err != nil {
+	if err := json.Unmarshal([]byte(`{"personal":{"username":"alice","email":"alice@example.com"},"work":{"username":"bob","email":"bob@example.com"},"school":{"username":"student","email":"student@example.com"}}`), &accounts); err != nil {
 		t.Fatal(err)
 	}
 	accounts.Set("freelance", Account{Username: "carol", Email: "carol@example.com"})
@@ -19,7 +19,7 @@ func TestAccountsPreserveBuiltInModesAndListCustomModes(t *testing.T) {
 		modes = append(modes, mode)
 		return true
 	})
-	if want := []string{"personal", "work", "freelance", "open-source"}; !reflect.DeepEqual(modes, want) {
+	if want := []string{"personal", "school", "work", "freelance", "open-source"}; !reflect.DeepEqual(modes, want) {
 		t.Fatalf("configured modes = %v, want %v", modes, want)
 	}
 	if account, ok := accounts.Get("freelance"); !ok || account.Email != "carol@example.com" {

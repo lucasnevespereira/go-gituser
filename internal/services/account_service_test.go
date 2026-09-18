@@ -18,9 +18,15 @@ func (s *testStorage) SaveAccounts(accounts *models.Accounts) error {
 	return nil
 }
 
-type testGit struct{ configured *models.Account }
+type testGit struct {
+	configured *models.Account
+	current    models.Account
+}
 
-func (g *testGit) ReadConfig() *models.Account { return &models.Account{} }
+func (g *testGit) ReadConfig() *models.Account {
+	copy := g.current
+	return &copy
+}
 func (g *testGit) SetConfig(account *models.Account) {
 	copy := *account
 	g.configured = &copy
@@ -29,13 +35,14 @@ func (g *testGit) SetConfig(account *models.Account) {
 type testSSH struct {
 	cleared int
 	added   string
+	loaded  map[string]bool
 }
 
 func (s *testSSH) AddKeyToAgent(path string) error            { s.added = path; return nil }
 func (s *testSSH) RemoveKeyFromAgent(string) error            { return nil }
 func (s *testSSH) ListKeysInAgent() ([]string, error)         { return nil, nil }
 func (s *testSSH) ClearAgent() error                          { s.cleared++; return nil }
-func (s *testSSH) IsKeyLoaded(string) bool                    { return false }
+func (s *testSSH) IsKeyLoaded(path string) bool               { return s.loaded[path] }
 func (s *testSSH) ValidateKeyPath(string) error               { return nil }
 func (s *testSSH) GetDefaultKeyPath() string                  { return "" }
 func (s *testSSH) StartSSHAgent() error                       { return nil }
@@ -62,5 +69,22 @@ func TestSwitchCustomMode(t *testing.T) {
 	}
 	if saved, err := service.CheckSavedAccount(&models.Account{Username: "freelancer", Email: "freelance@example.com"}); err != nil || !saved {
 		t.Fatalf("custom account not recognized as saved: saved=%v err=%v", saved, err)
+	}
+}
+
+func TestCurrentGitAccountUsesMatchingIdentityAndLoadedSSHKey(t *testing.T) {
+	accounts := &models.Accounts{Work: models.Account{
+		Username: "shared", Email: "work@example.com", SSHKeyPath: "/tmp/work-key",
+	}}
+	accounts.Set("freelance", models.Account{
+		Username: "shared", Email: "freelance@example.com", SSHKeyPath: "/tmp/freelance-key",
+	})
+	git := &testGit{current: models.Account{Username: "shared", Email: "freelance@example.com"}}
+	ssh := &testSSH{loaded: map[string]bool{"/tmp/freelance-key.pub": true}}
+	service := NewAccountService(&testStorage{accounts}, git, ssh)
+
+	current := service.GetCurrentGitAccount()
+	if current.SSHKeyPath != "/tmp/freelance-key" {
+		t.Fatalf("current SSH key = %q, want freelance key", current.SSHKeyPath)
 	}
 }

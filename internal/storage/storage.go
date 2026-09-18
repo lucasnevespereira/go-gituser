@@ -54,8 +54,22 @@ func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Acco
 		return nil, err
 	}
 
+	// Keep the lookup priority used by account files before custom modes existed.
+	if accounts.Personal.Username == username {
+		return &accounts.Personal, nil
+	}
+	if accounts.Work.Username == username {
+		return &accounts.Work, nil
+	}
+	if accounts.School.Username == username {
+		return &accounts.School, nil
+	}
+
 	var found *models.Account
-	accounts.ForEachConfigured(func(_ string, account models.Account) bool {
+	accounts.ForEachConfigured(func(mode string, account models.Account) bool {
+		if mode == models.PersonalMode || mode == models.WorkMode || mode == models.SchoolMode {
+			return true
+		}
 		if account.Username == username {
 			found = &account
 			return false

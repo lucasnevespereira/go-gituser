@@ -71,13 +71,18 @@ func (s *AccountService) GetCurrentGitAccount() *models.Account {
 	currGitAccount.Email = strings.TrimSuffix(currGitAccount.Email, "\n")
 	currGitAccount.SigningKeyID = strings.TrimSuffix(currGitAccount.SigningKeyID, "\n")
 
-	foundAccount, _ := s.storage.GetAccountByUsername(currGitAccount.Username)
-	if foundAccount != nil && foundAccount.SSHKeyPath != "" {
-		if loaded := s.ssh.IsKeyLoaded(foundAccount.SSHKeyPath + ".pub"); !loaded {
-			currGitAccount.SSHKeyPath = ""
-		} else {
-			currGitAccount.SSHKeyPath = foundAccount.SSHKeyPath
-		}
+	savedAccounts, err := s.GetSavedAccounts()
+	if err == nil {
+		savedAccounts.ForEachConfigured(func(_ string, saved models.Account) bool {
+			if saved.Username == currGitAccount.Username &&
+				saved.Email == currGitAccount.Email &&
+				saved.SSHKeyPath != "" &&
+				s.ssh.IsKeyLoaded(saved.SSHKeyPath+".pub") {
+				currGitAccount.SSHKeyPath = saved.SSHKeyPath
+				return false
+			}
+			return true
+		})
 	}
 
 	return currGitAccount

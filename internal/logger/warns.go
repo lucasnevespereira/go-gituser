@@ -25,7 +25,7 @@ func PrintNoActiveMode() {
 	fmt.Println("")
 	info := color.New(color.Bold).PrintfFunc()
 	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "setup")
-	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,pesonal,school)")
+	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,personal,school,or a custom mode)")
 }
 
 func PrintUnsavedActiveMode() {
@@ -33,5 +33,5 @@ func PrintUnsavedActiveMode() {
 	fmt.Println("")
 	info := color.New(color.Bold).PrintfFunc()
 	info(color.BlueString("Run <gituser %v> to setup accounts \n"), "setup")
-	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,pesonal,school)")
+	info(color.BlueString("Run <gituser %v> to activate a mode \n"), "(work,personal,school,or a custom mode)")
 }

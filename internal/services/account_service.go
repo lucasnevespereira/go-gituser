@@ -34,6 +34,10 @@ func (s *AccountService) Switch(mode string) error {
 	if err != nil {
 		return models.ErrNoAccountFound
 	}
+	targetAccount, ok := savedAccounts.Get(mode)
+	if !ok {
+		return models.ErrNoAccountFound
+	}
 
 	// Clear all SSH keys from agent before switching
 	if err := s.ClearAllSSHKeys(); err != nil {
@@ -41,31 +45,11 @@ func (s *AccountService) Switch(mode string) error {
 		fmt.Printf("⚠️ Warning: Could not clear SSH keys: %v\n", err)
 	}
 
-	var targetAccount *models.Account
-
-	switch mode {
-	case models.WorkMode:
-		if savedAccounts.Work.Username == "" {
-			return models.ErrNoAccountFound
-		}
-		targetAccount = &savedAccounts.Work
-	case models.SchoolMode:
-		if savedAccounts.School.Username == "" {
-			return models.ErrNoAccountFound
-		}
-		targetAccount = &savedAccounts.School
-	case models.PersonalMode:
-		if savedAccounts.Personal.Username == "" {
-			return models.ErrNoAccountFound
-		}
-		targetAccount = &savedAccounts.Personal
-	}
-
 	// Set git configuration
-	s.git.SetConfig(targetAccount)
+	s.git.SetConfig(&targetAccount)
 
 	// Set SSH key
-	if err := s.SwitchSSHKey(targetAccount); err != nil {
+	if err := s.SwitchSSHKey(&targetAccount); err != nil {
 		fmt.Printf("⚠️  Warning: Could not configure SSH key: %v\n", err)
 	}
 
@@ -87,13 +71,18 @@ func (s *AccountService) GetCurrentGitAccount() *models.Account {
 	currGitAccount.Email = strings.TrimSuffix(currGitAccount.Email, "\n")
 	currGitAccount.SigningKeyID = strings.TrimSuffix(currGitAccount.SigningKeyID, "\n")
 
-	foundAccount, _ := s.storage.GetAccountByUsername(currGitAccount.Username)
-	if foundAccount != nil && foundAccount.SSHKeyPath != "" {
-		if loaded := s.ssh.IsKeyLoaded(foundAccount.SSHKeyPath + ".pub"); !loaded {
-			currGitAccount.SSHKeyPath = ""
-		} else {
-			currGitAccount.SSHKeyPath = foundAccount.SSHKeyPath
-		}
+	savedAccounts, err := s.GetSavedAccounts()
+	if err == nil {
+		savedAccounts.ForEachConfigured(func(_ string, saved models.Account) bool {
+			if saved.Username == currGitAccount.Username &&
+				saved.Email == currGitAccount.Email &&
+				saved.SSHKeyPath != "" &&
+				s.ssh.IsKeyLoaded(saved.SSHKeyPath+".pub") {
+				currGitAccount.SSHKeyPath = saved.SSHKeyPath
+				return false
+			}
+			return true
+		})
 	}
 
 	return currGitAccount
@@ -106,11 +95,15 @@ func (s *AccountService) CheckSavedAccount(account *models.Account) (bool, error
 		return false, err
 	}
 
-	if !usernameIsSaved(savedAccounts, account.Username) || !emailIsSaved(savedAccounts, account.Email) {
-		return false, nil
-	}
-
-	return true, nil
+	found := false
+	savedAccounts.ForEachConfigured(func(_ string, saved models.Account) bool {
+		if saved.Username == account.Username && saved.Email == account.Email {
+			found = true
+			return false
+		}
+		return true
+	})
+	return found, nil
 }
 
 func (s *AccountService) SaveAccounts(accounts *models.Accounts) error {
@@ -120,32 +113,6 @@ func (s *AccountService) SaveAccounts(accounts *models.Accounts) error {
 	}
 
 	return nil
-}
-
-func usernameIsSaved(savedAccounts *models.Accounts, username string) bool {
-	return savedAccounts.Personal.Username == username ||
-		savedAccounts.Work.Username == username || savedAccounts.School.Username == username
-}
-
-func emailIsSaved(savedAccounts *models.Accounts, email string) bool {
-	return savedAccounts.Personal.Email == email ||
-		savedAccounts.Work.Email == email || savedAccounts.School.Email == email
-}
-
-func SigningKeyIDIsSaved(savedAccounts *models.Accounts, signingkeyid string) bool {
-	if signingkeyid == "" {
-		return true
-	}
-	return savedAccounts.Personal.SigningKeyID == signingkeyid ||
-		savedAccounts.Work.SigningKeyID == signingkeyid || savedAccounts.School.SigningKeyID == signingkeyid
-}
-
-func SSHKeyPathIsSaved(savedAccounts *models.Accounts, sshkeypath string) bool {
-	if sshkeypath == "" {
-		return true
-	}
-	return savedAccounts.Personal.SSHKeyPath == sshkeypath ||
-		savedAccounts.Work.SSHKeyPath == sshkeypath || savedAccounts.School.SSHKeyPath == sshkeypath
 }
 
 func (s *AccountService) SwitchSSHKey(account *models.Account) error {

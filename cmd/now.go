@@ -34,41 +34,30 @@ var nowCmd = &cobra.Command{
 			return
 		}
 
-		if savedAccounts.Personal.Username == currGitAccount.Username &&
-			savedAccounts.Personal.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Personal.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.Personal.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.PersonalMode)
-			return
-		}
-
-		if savedAccounts.School.Username == currGitAccount.Username &&
-			savedAccounts.School.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.School.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.School.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.SchoolMode)
-			return
-		}
-
-		if savedAccounts.Work.Username == currGitAccount.Username &&
-			savedAccounts.Work.Email == currGitAccount.Email &&
-			(currGitAccount.SigningKeyID == "" || savedAccounts.Work.SigningKeyID == currGitAccount.SigningKeyID) &&
-			(currGitAccount.SSHKeyPath == "" || savedAccounts.Work.SSHKeyPath == currGitAccount.SSHKeyPath) {
-			logger.ReadCurrentAccountData(currGitAccount, models.WorkMode)
-			return
-		}
-
-		isAccountSaved, err := accountService.CheckSavedAccount(currGitAccount)
-		if err != nil {
-			logger.PrintErrorExecutingMode()
-			return
-		}
-
-		if !isAccountSaved {
+		modes := matchingModes(savedAccounts, currGitAccount)
+		switch len(modes) {
+		case 0:
 			logger.ReadUnsavedGitAccount(currGitAccount)
-			return
+		case 1:
+			logger.ReadCurrentAccountData(currGitAccount, modes[0])
+		default:
+			logger.ReadMatchingAccountsData(currGitAccount, modes)
 		}
 	},
+}
+
+func matchingModes(accounts *models.Accounts, current *models.Account) []string {
+	var modes []string
+	accounts.ForEachConfigured(func(mode string, account models.Account) bool {
+		if account.Username == current.Username &&
+			account.Email == current.Email &&
+			(current.SigningKeyID == "" || account.SigningKeyID == current.SigningKeyID) &&
+			(current.SSHKeyPath == "" || account.SSHKeyPath == current.SSHKeyPath) {
+			modes = append(modes, mode)
+		}
+		return true
+	})
+	return modes
 }
 
 func init() {

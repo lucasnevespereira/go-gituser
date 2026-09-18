@@ -9,6 +9,7 @@ import (
 	"github.com/lucasnevespereira/go-gituser/internal/models"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -29,210 +30,112 @@ func NewSetupService(accountService IAccountService) ISetupService {
 	}
 }
 
-var (
-	inputPersonalUsername     string
-	inputPersonalEmail        string
-	inputPersonalSigningKeyID string
-	inputPersonalSSHKeyPath   string
-	inputWorkUsername         string
-	inputWorkEmail            string
-	inputWorkSigningKeyID     string
-	inputWorkSSHKeyPath       string
-	inputSchoolUsername       string
-	inputSchoolEmail          string
-	inputSchoolSigningKeyID   string
-	inputSchoolSSHKeyPath     string
-	shouldConfigureAgain      string
-)
-
 const (
 	workSelectLabel     = "💻 Work Account"
 	schoolSelectLabel   = "📚 School Account"
 	personalSelectLabel = "🏠 Personal Account"
+	customSelectLabel   = "➕ New custom mode"
 	cancelSelectLabel   = "Cancel"
 	yes                 = "Y"
 )
 
 func (s *SetupService) SetupAccounts() error {
-	for {
-		prompt := promptui.Select{
-			Label: "Please choose an account to configure",
-			Items: []string{
-				workSelectLabel,
-				schoolSelectLabel,
-				personalSelectLabel,
-				cancelSelectLabel,
-			},
-		}
-
-		_, choice, err := prompt.Run()
-		if err != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-
-		switch choice {
-		case workSelectLabel:
-			s.selectUserAccount(models.WorkMode)
-			logger.PrintRemeberToActiveMode(models.WorkMode)
-		case schoolSelectLabel:
-			s.selectUserAccount(models.SchoolMode)
-			logger.PrintRemeberToActiveMode(models.SchoolMode)
-		case personalSelectLabel:
-			s.selectUserAccount(models.PersonalMode)
-			logger.PrintRemeberToActiveMode(models.PersonalMode)
-		case cancelSelectLabel:
-			os.Exit(1)
-		}
-
-		fmt.Println("Would you like to configure another account ? (y/n)")
-		_, err = fmt.Scanln(&shouldConfigureAgain)
-		if err != nil {
-			logger.PrintErrorReadingInput()
-		}
-
-		shouldConfigureAgain = strings.ToUpper(strings.TrimSpace(shouldConfigureAgain))
-
-		if shouldConfigureAgain != yes {
-			fmt.Println("Okay. Bye there!")
-			break
-		}
-	}
-
 	savedAccounts, err := s.accountService.GetSavedAccounts()
 	if err != nil {
 		return models.ErrSetupAccounts
 	}
 
-	s.checkForEmptyAccountData(savedAccounts)
+	for {
+		items := []string{workSelectLabel, schoolSelectLabel, personalSelectLabel}
+		modes := []string{models.WorkMode, models.SchoolMode, models.PersonalMode}
+		customModes := make([]string, 0, len(savedAccounts.Custom))
+		for mode := range savedAccounts.Custom {
+			customModes = append(customModes, mode)
+		}
+		sort.Strings(customModes)
+		for _, mode := range customModes {
+			items = append(items, "🔖 "+mode)
+			modes = append(modes, mode)
+		}
+		items = append(items, customSelectLabel, cancelSelectLabel)
+		modes = append(modes, "", "")
 
-	if err = s.accountService.SaveAccounts(&models.Accounts{
-		Personal: models.Account{
-			Username:     inputPersonalUsername,
-			Email:        inputPersonalEmail,
-			SigningKeyID: inputPersonalSigningKeyID,
-			SSHKeyPath:   inputPersonalSSHKeyPath,
-		},
-		Work: models.Account{
-			Username:     inputWorkUsername,
-			Email:        inputWorkEmail,
-			SigningKeyID: inputWorkSigningKeyID,
-			SSHKeyPath:   inputWorkSSHKeyPath,
-		},
-		School: models.Account{
-			Username:     inputSchoolUsername,
-			Email:        inputSchoolEmail,
-			SigningKeyID: inputSchoolSigningKeyID,
-			SSHKeyPath:   inputSchoolSSHKeyPath,
-		},
-	}); err != nil {
-		return models.ErrSetupAccounts
+		prompt := promptui.Select{
+			Label: "Please choose an account to configure",
+			Items: items,
+		}
+
+		index, _, err := prompt.Run()
+		if err != nil {
+			return models.ErrReadingInput
+		}
+		if index == len(items)-1 {
+			return nil
+		}
+
+		mode := modes[index]
+		if index == len(items)-2 {
+			for {
+				fmt.Println("What should this mode be called? (e.g. freelance)")
+				if _, err := fmt.Scanln(&mode); err != nil {
+					return models.ErrReadingInput
+				}
+				if err := models.ValidateCustomMode(mode); err != nil {
+					fmt.Println(err)
+					continue
+				}
+				if _, exists := savedAccounts.Custom[mode]; exists {
+					fmt.Printf("%q already exists. Select it from the menu to update it.\n", mode)
+					continue
+				}
+				break
+			}
+		}
+
+		account, err := s.selectUserAccount(mode)
+		if err != nil {
+			return err
+		}
+		savedAccounts.Set(mode, account)
+		if err := s.accountService.SaveAccounts(savedAccounts); err != nil {
+			return models.ErrSetupAccounts
+		}
+		logger.PrintRemeberToActiveMode(mode)
+
+		fmt.Println("Would you like to configure another account ? (y/n)")
+		var shouldConfigureAgain string
+		if _, err := fmt.Scanln(&shouldConfigureAgain); err != nil {
+			return models.ErrReadingInput
+		}
+		if strings.ToUpper(strings.TrimSpace(shouldConfigureAgain)) != yes {
+			fmt.Println("Okay. Bye there!")
+			return nil
+		}
 	}
-
-	return nil
 }
 
-func (s *SetupService) selectUserAccount(mode string) {
-	// Create SSH connectors for this setup session
+func (s *SetupService) selectUserAccount(mode string) (models.Account, error) {
 	sshConnector := ssh.NewSSHConnector()
 	sshDiscovery := NewSSHDiscoveryService(sshConnector)
 
-	switch mode {
-	case models.WorkMode:
-		fmt.Println("\n=== 💻 Work Account Setup ===")
-		fmt.Println("What is your work username?")
-		_, errUsername := fmt.Scanln(&inputWorkUsername)
-		if errUsername != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-		fmt.Println()
-		fmt.Println("What is your work email?")
-		_, errEmail := fmt.Scanln(&inputWorkEmail)
-		if errEmail != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-		fmt.Println()
-		if s.askForGPGKey(mode) {
-			fmt.Println("What is your work GPG signing key ID?")
-			_, errSigningKeyID := fmt.Scanln(&inputWorkSigningKeyID)
-			if errSigningKeyID != nil {
-				logger.PrintErrorReadingInput()
-				os.Exit(1)
-			}
-		}
-		// SSH setup
-		fmt.Println()
-		inputWorkSSHKeyPath = s.setupSSHKeyForAccount("work", inputWorkEmail, sshDiscovery)
-		fmt.Println()
-
-	case models.SchoolMode:
-		fmt.Println("\n=== 📚 School Account Setup ===")
-		fmt.Println("What is your school username?")
-		_, errUsername := fmt.Scanln(&inputSchoolUsername)
-		if errUsername != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-
-		fmt.Println()
-		fmt.Println("What is your school email?")
-		_, errEmail := fmt.Scanln(&inputSchoolEmail)
-		if errEmail != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-
-		fmt.Println()
-		if s.askForGPGKey(mode) {
-			fmt.Println("What is your school GPG signing key ID?")
-			_, errSigningKeyID := fmt.Scanln(&inputSchoolSigningKeyID)
-			if errSigningKeyID != nil {
-				logger.PrintErrorReadingInput()
-				os.Exit(1)
-			}
-		}
-
-		// SSH setup
-		fmt.Println()
-		inputSchoolSSHKeyPath = s.setupSSHKeyForAccount("school", inputSchoolEmail, sshDiscovery)
-		fmt.Println()
-
-	case models.PersonalMode:
-		fmt.Println("\n=== 🏠 Personal Account Setup ===")
-		fmt.Println("What is your personal username?")
-		_, errUsername := fmt.Scanln(&inputPersonalUsername)
-		if errUsername != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-		fmt.Println()
-		fmt.Println("What is your personal email?")
-		_, errEmail := fmt.Scanln(&inputPersonalEmail)
-		if errEmail != nil {
-			logger.PrintErrorReadingInput()
-			os.Exit(1)
-		}
-
-		fmt.Println()
-		if s.askForGPGKey(mode) {
-			fmt.Println("What is your personal GPG signing key ID?")
-			_, errSigningKeyID := fmt.Scanln(&inputPersonalSigningKeyID)
-			if errSigningKeyID != nil {
-				logger.PrintErrorReadingInput()
-				os.Exit(1)
-			}
-		}
-
-		// SSH setup
-		fmt.Println()
-		inputPersonalSSHKeyPath = s.setupSSHKeyForAccount("personal", inputPersonalEmail, sshDiscovery)
-		fmt.Println()
-
-	case cancelSelectLabel:
-		os.Exit(1)
+	fmt.Printf("\n=== %s Account Setup ===\n", format.TitleCase(mode))
+	var account models.Account
+	fmt.Printf("What is your %s username?\n", mode)
+	if _, err := fmt.Scanln(&account.Username); err != nil {
+		return account, models.ErrReadingInput
 	}
+	fmt.Printf("What is your %s email?\n", mode)
+	if _, err := fmt.Scanln(&account.Email); err != nil {
+		return account, models.ErrReadingInput
+	}
+	if s.askForGPGKey(mode) {
+		fmt.Printf("What is your %s GPG signing key ID?\n", mode)
+		if _, err := fmt.Scanln(&account.SigningKeyID); err != nil {
+			return account, models.ErrReadingInput
+		}
+	}
+	account.SSHKeyPath = s.setupSSHKeyForAccount(mode, account.Email, sshDiscovery)
+	return account, nil
 }
 
 func (s *SetupService) askForGPGKey(mode string) bool {
@@ -481,40 +384,5 @@ func (s *SetupService) getChoice(maxChoice int) int {
 			}
 		}
 		fmt.Println("❌ Invalid choice. Please try again.")
-	}
-}
-
-func (s *SetupService) checkForEmptyAccountData(savedAccounts *models.Accounts) {
-	if inputPersonalEmail == "" || inputPersonalUsername == "" {
-		inputPersonalEmail = savedAccounts.Personal.Email
-		inputPersonalUsername = savedAccounts.Personal.Username
-		if inputPersonalSigningKeyID == "" {
-			inputPersonalSigningKeyID = savedAccounts.Personal.SigningKeyID
-		}
-		if inputPersonalSSHKeyPath == "" {
-			inputPersonalSSHKeyPath = savedAccounts.Personal.SSHKeyPath
-		}
-	}
-
-	if inputWorkEmail == "" || inputWorkUsername == "" {
-		inputWorkEmail = savedAccounts.Work.Email
-		inputWorkUsername = savedAccounts.Work.Username
-		if inputWorkSigningKeyID == "" {
-			inputWorkSigningKeyID = savedAccounts.Work.SigningKeyID
-		}
-		if inputWorkSSHKeyPath == "" {
-			inputWorkSSHKeyPath = savedAccounts.Work.SSHKeyPath
-		}
-	}
-
-	if inputSchoolEmail == "" || inputSchoolUsername == "" {
-		inputSchoolEmail = savedAccounts.School.Email
-		inputSchoolUsername = savedAccounts.School.Username
-		if inputSchoolSigningKeyID == "" {
-			inputSchoolSigningKeyID = savedAccounts.School.SigningKeyID
-		}
-		if inputSchoolSSHKeyPath == "" {
-			inputSchoolSSHKeyPath = savedAccounts.School.SSHKeyPath
-		}
 	}
 }

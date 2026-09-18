@@ -28,7 +28,6 @@ var infoCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		logger.ReadAccountsData(savedAccounts)
-		os.Exit(1)
 	},
 }
 

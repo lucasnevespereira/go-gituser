@@ -72,15 +72,28 @@ Just run `gituser work` ✨
 
 ## Account Modes
 
-There is currently 3 modes available:
+GitUser includes three modes:
 
 - 💻 <b>work</b> : for a work related git account.
 - 📚 <b>school</b> : for a school related git account.
 - 🏠 <b>personal</b> : for a personal related git account.
 
+You can also create modes for other contexts, such as `freelance` or `open-source`.
+Run `gituser setup`, select **New custom mode**, enter a lowercase mode name, and configure its Git account. Run `gituser setup` again to update an existing custom mode.
+
+```bash
+gituser freelance
+gituser now
+gituser info
+```
+
+Custom mode names start with a lowercase letter and may contain lowercase letters, numbers, and hyphens. Command names such as `setup` and `info` are reserved.
+
+If multiple saved modes have the same Git identity, `gituser now` lists each matching mode because Git configuration alone cannot identify which one was selected last.
+
 ## Features
 
-- **🔄 Instant Account Switching** - Switch between work, school, and personal accounts
+- **🔄 Instant Account Switching** - Switch between built-in or custom accounts
 - **🔧 Complete Git Configuration** - Manages username, email, and GPG signing
 - **🗝️ SSH Key Management** - Automatically loads the correct SSH key for each account
 - **🎯 Interactive Setup** - Guided wizard to configure all your accounts
@@ -143,6 +156,7 @@ Switch between accounts:
 gituser work      # Switch to work account
 gituser personal  # Switch to personal account
 gituser school    # Switch to school account
+gituser freelance # Switch to a custom account after configuring it
 ```
 
 Check current account:
@@ -160,6 +174,7 @@ gituser now
 | `gituser work`         | Switch to work account                                         |
 | `gituser personal`     | Switch to personal account                                     |
 | `gituser school`       | Switch to school account                                       |
+| `gituser <mode>`       | Switch to a configured custom account                          |
 | **Information**        |                                                                |
 | `gituser now`          | Show current active account                                    |
 | `gituser info`         | Display all configured accounts                                |

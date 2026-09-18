@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/lucasnevespereira/go-gituser/internal/logger"
+	"github.com/lucasnevespereira/go-gituser/internal/storage"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -20,6 +21,7 @@ Quick Start:
   gituser work      # Switch to work account
   gituser personal  # Switch to personal account
   gituser school    # Switch to student account
+  gituser freelance # Switch to a custom account after setup
   gituser now       # Check current account
 
 Need help? Run: gituser help`,
@@ -30,6 +32,10 @@ Need help? Run: gituser help`,
 }
 
 func Execute() {
+	accounts, err := storage.NewAccountJSONStorage(storage.AccountsStorageFile).GetAccounts()
+	if err == nil {
+		registerCustomModes(accounts)
+	}
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

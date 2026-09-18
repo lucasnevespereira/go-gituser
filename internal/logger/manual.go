@@ -31,6 +31,7 @@ func PrintManual() {
 	fmt.Println("  💻 work     - for company projects")
 	fmt.Println("  🏠 personal - for side projects")
 	fmt.Println("  📚 school   - for university work")
+	fmt.Println("  🔖 custom   - create your own modes in gituser setup")
 	fmt.Println()
 
 	color.Cyan("📋 Essential Commands:")
@@ -38,6 +39,7 @@ func PrintManual() {
 	fmt.Println("  gituser work        # Switch to work")
 	fmt.Println("  gituser personal    # Switch to personal")
 	fmt.Println("  gituser school      # Switch to school")
+	fmt.Println("  gituser freelance   # Switch to a configured custom mode")
 	fmt.Println("  gituser now         # Show current account")
 	fmt.Println("  gituser info        # View all accounts")
 	fmt.Println()

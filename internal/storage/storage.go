@@ -39,13 +39,13 @@ func (s *AccountJSONStorage) GetAccounts() (*models.Accounts, error) {
 		return nil, err
 	}
 
-	var rowAccounts *models.Accounts
-	err = json.Unmarshal(data, &rowAccounts)
+	var accounts models.Accounts
+	err = json.Unmarshal(data, &accounts)
 	if err != nil {
 		return nil, err
 	}
 
-	return rowAccounts, nil
+	return &accounts, nil
 }
 
 func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Account, error) {
@@ -54,6 +54,7 @@ func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Acco
 		return nil, err
 	}
 
+	// Keep the lookup priority used by account files before custom modes existed.
 	if accounts.Personal.Username == username {
 		return &accounts.Personal, nil
 	}
@@ -62,6 +63,21 @@ func (s *AccountJSONStorage) GetAccountByUsername(username string) (*models.Acco
 	}
 	if accounts.School.Username == username {
 		return &accounts.School, nil
+	}
+
+	var found *models.Account
+	accounts.ForEachConfigured(func(mode string, account models.Account) bool {
+		if mode == models.PersonalMode || mode == models.WorkMode || mode == models.SchoolMode {
+			return true
+		}
+		if account.Username == username {
+			found = &account
+			return false
+		}
+		return true
+	})
+	if found != nil {
+		return found, nil
 	}
 
 	return nil, errors.New("account not found")

@@ -80,6 +80,7 @@ GitUser includes three modes:
 
 You can also create modes for other contexts, such as `freelance` or `open-source`.
 Run `gituser setup`, select **New custom mode**, enter a lowercase mode name, and configure its Git account. Run `gituser setup` again to update an existing custom mode.
+To remove one, select **Delete custom mode** in `gituser setup`, or run `gituser setup remove <mode>`. Both ask for confirmation and remove only the saved account; SSH key files and the current Git configuration stay as they are.
 
 ```bash
 gituser freelance
@@ -171,6 +172,7 @@ gituser now
 | ---------------------- | -------------------------------------------------------------- |
 | **Account Management** |                                                                |
 | `gituser setup`        | Interactive setup for all accounts (username, email, GPG, SSH) |
+| `gituser setup remove <mode>` | Remove a saved custom mode after confirmation |
 | `gituser work`         | Switch to work account                                         |
 | `gituser personal`     | Switch to personal account                                     |
 | `gituser school`       | Switch to school account                                       |

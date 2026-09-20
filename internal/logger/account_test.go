@@ -19,8 +19,6 @@ func captureAccountsOutput(t *testing.T, accounts *models.Accounts) string {
 	os.Stdout = writer
 	defer func() {
 		os.Stdout = previousStdout
-		reader.Close()
-		writer.Close()
 	}()
 
 	ReadAccountsData(accounts)
@@ -28,6 +26,9 @@ func captureAccountsOutput(t *testing.T, accounts *models.Accounts) string {
 		t.Fatal(err)
 	}
 	output, err := io.ReadAll(reader)
+	if closeErr := reader.Close(); closeErr != nil {
+		t.Fatal(closeErr)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}

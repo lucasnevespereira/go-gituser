@@ -18,15 +18,22 @@ import (
 
 type ISetupService interface {
 	SetupAccounts() error
+	DeleteCustomMode(mode string) error
 }
 
 type SetupService struct {
 	accountService IAccountService
+	selectOption   func(label string, items []string) (int, error)
 }
 
 func NewSetupService(accountService IAccountService) ISetupService {
 	return &SetupService{
 		accountService: accountService,
+		selectOption: func(label string, items []string) (int, error) {
+			prompt := promptui.Select{Label: label, Items: items}
+			index, _, err := prompt.Run()
+			return index, err
+		},
 	}
 }
 
@@ -35,6 +42,7 @@ const (
 	schoolSelectLabel   = "📚 School Account"
 	personalSelectLabel = "🏠 Personal Account"
 	customSelectLabel   = "➕ New custom mode"
+	deleteSelectLabel   = "🗑️ Delete custom mode"
 	cancelSelectLabel   = "Cancel"
 	yes                 = "Y"
 )
@@ -57,24 +65,30 @@ func (s *SetupService) SetupAccounts() error {
 			items = append(items, "🔖 "+mode)
 			modes = append(modes, mode)
 		}
-		items = append(items, customSelectLabel, cancelSelectLabel)
-		modes = append(modes, "", "")
+		newCustomIndex := len(items)
+		items = append(items, customSelectLabel)
+		deleteIndex := len(items)
+		items = append(items, deleteSelectLabel)
+		cancelIndex := len(items)
+		items = append(items, cancelSelectLabel)
+		modes = append(modes, "", "", "")
 
-		prompt := promptui.Select{
-			Label: "Please choose an account to configure",
-			Items: items,
-		}
-
-		index, _, err := prompt.Run()
+		index, err := s.selectOption("Please choose an account to configure", items)
 		if err != nil {
 			return models.ErrReadingInput
 		}
-		if index == len(items)-1 {
+		if index == cancelIndex {
 			return nil
+		}
+		if index == deleteIndex {
+			if err := s.chooseCustomModeToDelete(savedAccounts); err != nil {
+				return err
+			}
+			continue
 		}
 
 		mode := modes[index]
-		if index == len(items)-2 {
+		if index == newCustomIndex {
 			for {
 				fmt.Println("What should this mode be called? (e.g. freelance)")
 				if _, err := fmt.Scanln(&mode); err != nil {
@@ -112,6 +126,65 @@ func (s *SetupService) SetupAccounts() error {
 			return nil
 		}
 	}
+}
+
+func (s *SetupService) chooseCustomModeToDelete(accounts *models.Accounts) error {
+	modes := make([]string, 0, len(accounts.Custom))
+	for mode := range accounts.Custom {
+		modes = append(modes, mode)
+	}
+	sort.Strings(modes)
+	if len(modes) == 0 {
+		fmt.Println("No custom modes to delete.")
+		return nil
+	}
+
+	items := append(append([]string{}, modes...), cancelSelectLabel)
+	index, err := s.selectOption("Select a custom mode to delete", items)
+	if err != nil {
+		return models.ErrReadingInput
+	}
+	if index == len(modes) {
+		return nil
+	}
+	return s.confirmAndDeleteCustomMode(accounts, modes[index])
+}
+
+func (s *SetupService) DeleteCustomMode(mode string) error {
+	accounts, err := s.accountService.GetSavedAccounts()
+	if err != nil {
+		return models.ErrSetupAccounts
+	}
+	return s.confirmAndDeleteCustomMode(accounts, mode)
+}
+
+func (s *SetupService) confirmAndDeleteCustomMode(accounts *models.Accounts, mode string) error {
+	if _, exists := accounts.Custom[mode]; !exists {
+		return fmt.Errorf("custom mode %q not found", mode)
+	}
+
+	index, err := s.selectOption(fmt.Sprintf("Delete %q from saved accounts?", mode), []string{"No, keep it", "Yes, delete it"})
+	if err != nil {
+		return models.ErrReadingInput
+	}
+	if index != 1 {
+		fmt.Println("Deletion cancelled.")
+		return nil
+	}
+
+	updated := *accounts
+	updated.Custom = make(map[string]models.Account, len(accounts.Custom)-1)
+	for name, account := range accounts.Custom {
+		if name != mode {
+			updated.Custom[name] = account
+		}
+	}
+	if err := s.accountService.SaveAccounts(&updated); err != nil {
+		return models.ErrSetupAccounts
+	}
+	*accounts = updated
+	fmt.Printf("Custom mode %q deleted.\n", mode)
+	return nil
 }
 
 func (s *SetupService) selectUserAccount(mode string) (models.Account, error) {

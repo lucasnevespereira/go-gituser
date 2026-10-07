@@ -24,6 +24,7 @@ type ISetupService interface {
 type SetupService struct {
 	accountService IAccountService
 	selectOption   func(label string, items []string) (int, error)
+	readLine       func() (string, error)
 }
 
 func NewSetupService(accountService IAccountService) ISetupService {
@@ -33,6 +34,13 @@ func NewSetupService(accountService IAccountService) ISetupService {
 			prompt := promptui.Select{Label: label, Items: items}
 			index, _, err := prompt.Run()
 			return index, err
+		},
+		readLine: func() (string, error) {
+			line, err := bufio.NewReader(os.Stdin).ReadString('\n')
+			if err != nil && line == "" {
+				return "", err
+			}
+			return strings.TrimSpace(line), nil
 		},
 	}
 }
@@ -91,7 +99,7 @@ func (s *SetupService) SetupAccounts() error {
 		if index == newCustomIndex {
 			for {
 				fmt.Println("What should this mode be called? (e.g. freelance)")
-				if _, err := fmt.Scanln(&mode); err != nil {
+				if mode, err = s.readLine(); err != nil {
 					return models.ErrReadingInput
 				}
 				if err := models.ValidateCustomMode(mode); err != nil {
@@ -106,7 +114,8 @@ func (s *SetupService) SetupAccounts() error {
 			}
 		}
 
-		account, err := s.selectUserAccount(mode)
+		current, _ := savedAccounts.Get(mode)
+		account, err := s.selectUserAccount(mode, current)
 		if err != nil {
 			return err
 		}
@@ -116,12 +125,11 @@ func (s *SetupService) SetupAccounts() error {
 		}
 		logger.PrintRemeberToActiveMode(mode)
 
-		fmt.Println("Would you like to configure another account ? (y/n)")
-		var shouldConfigureAgain string
-		if _, err := fmt.Scanln(&shouldConfigureAgain); err != nil {
-			return models.ErrReadingInput
+		again, err := s.confirm("Would you like to configure another account?", false)
+		if err != nil {
+			return err
 		}
-		if strings.ToUpper(strings.TrimSpace(shouldConfigureAgain)) != yes {
+		if !again {
 			fmt.Println("Okay. Bye there!")
 			return nil
 		}
@@ -187,42 +195,91 @@ func (s *SetupService) confirmAndDeleteCustomMode(accounts *models.Accounts, mod
 	return nil
 }
 
-func (s *SetupService) selectUserAccount(mode string) (models.Account, error) {
+// selectUserAccount asks for the account fields. When current is already
+// configured, each prompt shows the saved value and Enter keeps it.
+func (s *SetupService) selectUserAccount(mode string, current models.Account) (models.Account, error) {
 	sshConnector := ssh.NewSSHConnector()
 	sshDiscovery := NewSSHDiscoveryService(sshConnector)
 
 	fmt.Printf("\n=== %s Account Setup ===\n", format.TitleCase(mode))
+	if current.Username != "" {
+		fmt.Println("💡 Press Enter to keep the current value shown in [brackets]")
+	}
+
 	var account models.Account
-	fmt.Printf("What is your %s username?\n", mode)
-	if _, err := fmt.Scanln(&account.Username); err != nil {
-		return account, models.ErrReadingInput
+	var err error
+	if account.Username, err = s.ask(fmt.Sprintf("What is your %s username?", mode), current.Username); err != nil {
+		return account, err
 	}
-	fmt.Printf("What is your %s email?\n", mode)
-	if _, err := fmt.Scanln(&account.Email); err != nil {
-		return account, models.ErrReadingInput
+	if account.Email, err = s.ask(fmt.Sprintf("What is your %s email?", mode), current.Email); err != nil {
+		return account, err
 	}
-	if s.askForGPGKey(mode) {
-		fmt.Printf("What is your %s GPG signing key ID?\n", mode)
-		if _, err := fmt.Scanln(&account.SigningKeyID); err != nil {
-			return account, models.ErrReadingInput
+
+	fmt.Printf("\n🔑 GPG Key Setup for %s Account\n", format.TitleCase(mode))
+	fmt.Println("=====================================")
+	useGPG, err := s.confirm("Would you like to use GPG signing for this account?", current.SigningKeyID != "")
+	if err != nil {
+		return account, err
+	}
+	if useGPG {
+		if account.SigningKeyID, err = s.ask(fmt.Sprintf("What is your %s GPG signing key ID?", mode), current.SigningKeyID); err != nil {
+			return account, err
+		}
+	}
+
+	if current.SSHKeyPath != "" {
+		fmt.Printf("\n🔑 SSH Key Setup for %s Account\n", format.TitleCase(mode))
+		fmt.Println("=====================================")
+		keep, err := s.confirm(fmt.Sprintf("Keep the current SSH key (%s)?", current.SSHKeyPath), true)
+		if err != nil {
+			return account, err
+		}
+		if keep {
+			account.SSHKeyPath = current.SSHKeyPath
+			return account, nil
 		}
 	}
 	account.SSHKeyPath = s.setupSSHKeyForAccount(mode, account.Email, sshDiscovery)
 	return account, nil
 }
 
-func (s *SetupService) askForGPGKey(mode string) bool {
-	fmt.Printf("\n🔑 GPG Key Setup for %s Account\n", format.TitleCase(mode))
-	fmt.Println("=====================================")
-
-	var useGPG string
-	fmt.Println("Would you like to use GPG signing for this account? (y/n)")
-	_, err := fmt.Scanln(&useGPG)
-	if err != nil {
-		logger.PrintErrorReadingInput()
-		os.Exit(1)
+// ask reads a value, falling back to current on an empty answer.
+func (s *SetupService) ask(question, current string) (string, error) {
+	for {
+		if current != "" {
+			fmt.Printf("%s [%s]\n", question, current)
+		} else {
+			fmt.Println(question)
+		}
+		input, err := s.readLine()
+		if err != nil {
+			return "", models.ErrReadingInput
+		}
+		if input != "" {
+			return input, nil
+		}
+		if current != "" {
+			return current, nil
+		}
+		fmt.Println("❌ This field is required.")
 	}
-	return strings.ToUpper(strings.TrimSpace(useGPG)) == yes
+}
+
+// confirm reads a yes/no answer, falling back to def on an empty answer.
+func (s *SetupService) confirm(question string, def bool) (bool, error) {
+	hint := "(y/N)"
+	if def {
+		hint = "(Y/n)"
+	}
+	fmt.Printf("%s %s\n", question, hint)
+	input, err := s.readLine()
+	if err != nil {
+		return false, models.ErrReadingInput
+	}
+	if input == "" {
+		return def, nil
+	}
+	return strings.HasPrefix(strings.ToUpper(input), yes), nil
 }
 
 func (s *SetupService) setupSSHKeyForAccount(mode, email string, sshDiscovery ISSHDiscoveryService) string {

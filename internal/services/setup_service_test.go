@@ -215,3 +215,60 @@ func TestSetupDirectDeletionRejectsNonCustomMode(t *testing.T) {
 		t.Fatalf("built-in mode changed: %+v", saved)
 	}
 }
+
+func scriptedSetupAnswers(t *testing.T, answers ...string) func() (string, error) {
+	t.Helper()
+	next := 0
+	t.Cleanup(func() {
+		if next != len(answers) {
+			t.Errorf("used %d of %d setup answers", next, len(answers))
+		}
+	})
+	return func() (string, error) {
+		t.Helper()
+		if next >= len(answers) {
+			t.Fatal("unexpected setup prompt")
+		}
+		next++
+		return answers[next-1], nil
+	}
+}
+
+func TestSetupKeepsCurrentValuesOnEmptyAnswers(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	current := models.Account{Username: "worker", Email: "typo@example.com", SigningKeyID: "ABC123", SSHKeyPath: "/keys/work"}
+	accountStorage := storage.NewAccountJSONStorage(storage.AccountsStorageFile)
+	if err := accountStorage.SaveAccounts(&models.Accounts{Work: current}); err != nil {
+		t.Fatal(err)
+	}
+	setup := NewSetupService(NewAccountService(accountStorage, &testGit{}, &testSSH{})).(*SetupService)
+	setup.selectOption = scriptedSetupSelections(t, []setupSelection{
+		{"Please choose an account to configure", workSelectLabel},
+	})
+	// username, email, use GPG, GPG key, keep SSH key, configure another
+	setup.readLine = scriptedSetupAnswers(t, "", "work@example.com", "", "", "", "")
+	if err := setup.SetupAccounts(); err != nil {
+		t.Fatal(err)
+	}
+
+	saved, err := accountStorage.GetAccounts()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := current
+	want.Email = "work@example.com"
+	if saved.Work != want {
+		t.Fatalf("saved work account = %+v, want %+v", saved.Work, want)
+	}
+}
+
+func TestSetupAskRequiresValueWithoutCurrent(t *testing.T) {
+	setup := &SetupService{readLine: scriptedSetupAnswers(t, "", "Ada Lovelace")}
+	username, err := setup.ask("username?", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if username != "Ada Lovelace" {
+		t.Fatalf("username = %q", username)
+	}
+}
